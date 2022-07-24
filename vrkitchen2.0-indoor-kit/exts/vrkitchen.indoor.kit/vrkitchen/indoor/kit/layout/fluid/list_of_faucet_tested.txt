@@ -1,0 +1,17 @@
+156 fluid_fill = Faucet(particle_params=particle_params, iso_surface_params=iso_surface_params,
+         liquid_material_path = "/World/Looks/OmniSurface_ClearWater", 
+         inflow_path  = "/World/mobility/inflow", 
+         link_paths = ["/World/mobility/link_1/joint_0"])
+
+
+1034 fluid_fill = Faucet(particle_params=particle_params, iso_surface_params=iso_surface_params,
+         liquid_material_path = "/World/Looks/OmniSurface_ClearWater", 
+         inflow_path  = "/World/mobility/inflow", 
+         link_paths = ["/World/mobility/link_1/joint_0"])
+
+
+1052 fluid_fill = Faucet(particle_params=particle_params, iso_surface_params=iso_surface_params,
+         liquid_material_path = "/World/Looks/OmniSurface_ClearWater", 
+         inflow_path  = "/World/mobility/inflow", 
+         link_paths = ["/World/mobility/link_2/joint_0"])
+

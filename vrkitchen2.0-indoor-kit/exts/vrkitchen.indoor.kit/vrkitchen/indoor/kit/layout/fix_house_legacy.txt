@@ -1,0 +1,455 @@
+### do not delete this file
+
+## UI design for house fixing
+ui.Label("\n Fix house", height=30, style = {"font_size": 20}, alignment=ui.Alignment.CENTER, visible=False)
+with ui.HStack(height=30, visible=False):
+    ui.Button("Fix material path", clicked_fn=self.fix_material_path)
+    ui.Button("Add default light", clicked_fn=self.add_default_light)
+with ui.HStack(height=30, visible=False):
+    ui.Label("Fix house start index:", width=100)
+    self.house_start_index_ui = omni.ui.IntField(
+        height= 20, 
+        style={ "margin": 8, "padding_height": 18 },
+        )
+    self.house_start_index_ui.model.set_value(100)
+    ui.Button("Fix all", height = 20, clicked_fn=self.fix_all_houses, style={ "margin": 8})
+
+ui.Label("\n Fix Storage", height=30, style = {"font_size": 20}, alignment=ui.Alignment.CENTER, visible=False)
+with ui.HStack(height=30):
+    ui.Label("Storage folder: ", width=20)
+    self.storage_folder_ui = omni.ui.StringField(height=20, style={ "margin_height": 8 })
+    self.storage_folder_ui.model.set_value(STORAGE_ASSET_PATH)
+with ui.HStack(height=30, visible=False):
+    ui.Button("Fix unit/axis", clicked_fn=self.fix_unit_and_axis, height = 30)
+    ui.Button("Fix linear joint", clicked_fn=self.fix_linear_joint, height = 30)
+with ui.HStack(height=30, visible=False):
+    ui.Label("Fix storage start index:",width=100)
+    self.storage_start_index_ui = omni.ui.IntField(
+        height= 20, width = 80,
+        style={ "margin": 8, "padding_height": 18 },
+        )
+    self.storage_start_index_ui.model.set_value(46440)
+    ui.Button("Fix all storage", clicked_fn=self.fix_all_storages)
+
+### functions
+def fix_material_path(self):
+    self.stage = omni.usd.get_context().get_stage()
+    looks_prim = self.stage.GetPrimAtPath("/World/Looks")
+    print("looks", looks_prim.GetPath())
+    for index, prim in enumerate(looks_prim.GetChildren()):
+        prim_path = str(prim.GetPath())
+        wire_name = prim_path.split("/")[-1]
+        mat_prim = self.stage.GetPrimAtPath("/World/Looks" + "/" + wire_name + "/" + wire_name)
+        if mat_prim:
+            # print("mat_prim", mat_prim)
+            attr = mat_prim.GetAttribute("inputs:diffuse_texture").Get()
+            if attr:
+                new_asset_path = str(attr).replace(":","_").replace("@","")
+                mat_prim.CreateAttribute("inputs:diffuse_texture", pxr.Sdf.ValueTypeNames.String, 
+                    False).Set(new_asset_path)
+
+
+    # #     print("prim: ", prim)
+    # test_prim = self.stage.GetPrimAtPath("/World/Looks/component_45146_solid_001_wire1/component_45146_solid_001_wire1")
+    # # shader = pxr.UsdShade.Shader(test_prim)
+    # # asset = shader.GetSourceAsset("mdl")
+    # # print("shader", asset)
+    # attr = test_prim.GetAttribute("inputs:diffuse_texture").Get()
+    # new_asset_path = str(attr).replace(":","_").replace("@","")
+    # print("attr", str(attr), new_asset_path)
+    # test_prim.CreateAttribute("inputs:diffuse_texture", pxr.Sdf.ValueTypeNames.String, False).Set(new_asset_path)
+
+    # # print(attr.GetTypeName())
+            
+def add_default_light(self):
+    # prim_path=f"{self.stage.GetDefaultPrim().GetPath().pathString}/defaultLight"
+    # carb.log_info("light prim path: " + prim_path)
+    omni.kit.commands.execute(
+        "CreatePrim",
+        prim_path="/World/defaultLight",
+        prim_type="DistantLight",
+        select_new_prim=False,
+        attributes={pxr.UsdLux.Tokens.angle: 1.0, pxr.UsdLux.Tokens.intensity: 500},
+        create_default_xform=True,
+    )
+
+def fix_unit_and_axis(self):
+    # carb.log_info("Up axis: y Unit: 1.00s")
+    self.stage = omni.usd.get_context().get_stage()
+    pxr.UsdGeom.SetStageUpAxis(self.stage, UsdGeom.Tokens.y)
+    default_prim = self.stage.GetDefaultPrim()
+
+    default_xform = pxr.UsdGeom.Xformable.Get(self.stage, default_prim.GetPath())
+    #default_xform.ClearXformOpOrder()
+    #translate_component = default_xform.AddXformOp(pxr.UsdGeom.XformOp.TypeTranslate)
+    #rotation_translate = default_xform.AddXformOp(pxr.UsdGeom.XformOp.TypeTranslate)
+    
+    # print("GetXformOpOrderAttr", default_xform.GetXformOpOrderAttr())
+
+    translate_component = default_xform.GetOrderedXformOps()[0]
+    orient_component = default_xform.GetOrderedXformOps()[1]
+    scale_component = default_xform.GetOrderedXformOps()[2]
+
+    # print(translate_component.Get())
+    # print(orient_component.Get())
+    # print(scale_component.Get())
+    
+    scale_component.Set((100, 100, 100))
+    orient_component.Set(pxr.Gf.Quatd(0.7071067811865475, -0.7071067811865476, 0, 0))
+    
+def fix_all_storages(self):
+    storage_asset_path = self.storage_folder_ui.model.get_value_as_string()
+    storage_start_index = self.storage_start_index_ui.model.get_value_as_int()
+
+    async def fix_storages():
+        for c, storage_folder in enumerate(os.listdir(storage_asset_path)):
+            if int(storage_folder) < storage_start_index:
+                continue
+
+            storage_usd_path = os.path.join(storage_asset_path, storage_folder, "mobility.usd")
+            success, error = await omni.usd.get_context().open_stage_async(storage_usd_path)
+            if not success:
+                raise Exception(f"Failed to open usd file: {error}") 
+            await omni.kit.app.get_app().next_update_async()
+
+            self.fix_unit_and_axis()
+            self.fix_linear_joint()
+
+            (result, err, saved_layers) = await omni.usd.get_context().save_as_stage_async(storage_usd_path)
+
+    asyncio.ensure_future(fix_storages())
+
+
+def fix_all_houses(self):
+    house_info_path = self.house_info_path_ui.model.get_value_as_string()
+    
+    async def fix_houses():
+        for house_folder in os.listdir(house_info_path):
+            house_start_index = self.house_start_index_ui.model.get_value_as_int()
+            if int(house_folder) < house_start_index:
+                continue
+
+            house_layout_usd_path = os.path.join(house_info_path, house_folder, "layout.usd")
+            success, error = await omni.usd.get_context().open_stage_async(house_layout_usd_path)
+            if not success:
+                raise Exception(f"Failed to open usd file: {error}") 
+            await omni.kit.app.get_app().next_update_async()
+
+            stage = omni.usd.get_context().get_stage()
+            prim_list = stage.TraverseAll()
+
+            has_light = False
+            for prim in prim_list:
+                # lowercase string
+                if "/world/defaultlight" in prim.GetPath().pathString.lower():
+                    has_light = True
+                    break
+            
+            carb.log_info(f"House at {house_folder}; Has light {has_light}")
+
+            # if has light, the scene is fixed
+            if not has_light:
+                self.add_default_light()
+                self.fix_material_path()
+                time.sleep(5)
+                (result, err, saved_layers) = await omni.usd.get_context().save_as_stage_async(house_layout_usd_path)
+    
+    asyncio.ensure_future(fix_houses())
+
+async def load_world_async(self):
+    """Function called when clicking load buttton
+    """
+    if World.instance() is None:
+        # await create_new_stage_async()
+        # self._world = World(**self._world_settings)
+        
+        self._world = World()
+        await self._world.init_simulation_context_async()
+    else:
+        self._world = World.instance()
+
+
+    await self._world.reset_async()
+    await self._world.pause_async()
+    pxr.UsdGeom.SetStageUpAxis(get_current_stage(), pxr.UsdGeom.Tokens.y)
+
+    return
+
+## randomization
+# ui.Label("\n Randomization", height=30, style = {"font_size": 20}, alignment=ui.Alignment.CENTER)
+# with ui.HStack(height=30):    
+#     ui.Button("Randomize light", clicked_fn=self.randomize_light, style={ "margin": 8})      
+#     ui.Button("Randomize material", clicked_fn=self.randomize_material, style={ "margin": 8})       
+#     ui.Button("Randomize offset", clicked_fn=self.randomize_offset, style={ "margin": 8}) 
+# with ui.HStack(height=30):         
+#     ui.Button("Record game offset", clicked_fn=self.randomize_option, style={ "margin_bottom": 8}) 
+
+ def randomize_material(self):
+        """
+        randomize mobility materials
+        """
+        self.randomize_option("material")
+
+def randomize_light(self):
+    self.randomize_option("light")
+
+def randomize_offset(self):
+    self.randomize_option("offset")
+
+def randomize_option(self, option:str="record"):
+    """
+    Randomize scene conditions with option
+    ::param:
+        option: light, material, game location
+
+        if option == record:
+            record game position and rotation
+    """
+    
+    # load json info from example
+    task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
+    task_type = self.task_types[task_index]
+    task_id = self.task_id_ui.model.get_value_as_int()
+    house_id = self.house_id_ui.model.get_value_as_int()
+    object_id = self.object_id_ui.model.get_value_as_int()
+    task_json = os.path.join(DATA_PATH, "tasks", task_type, str(house_id), str(object_id), str(task_id) + ".json")
+    # print("task_randomization_json_path: ", task_json)
+    if not hasattr(self, "randomizer"):
+        self.randomizer = Randomizer(task_json)
+    if option == "light":
+        print("randomize lighting condition")
+        self.randomizer.randomize_light()
+    elif option == "material":
+        self.randomizer.randomize_material()
+    elif option == "offset":
+        self.randomizer.randomize_game_location()
+    else:
+        # record game offset
+        self.randomizer.record_game_offset()
+
+    self.randomizer.record_randomization()
+
+# def check_grasp(self):
+#     if self.franka is None:
+#         import sys    
+#         print( "please setup robot first", file=sys.stderr)
+#         return
+#     self.franka.check_grasp()
+
+
+  def delete_house(self):
+        """ 
+        Delete house info json from house id
+        """
+        house_id = self.house_id_ui.model.get_value_as_int()
+        os.remove(os.path.join(DATA_PATH, "house", f"{house_id}.json"))
+        print(f"House {house_id} removed!")
+
+    def delete_task(self):
+        """ 
+        Delete house info json from house id
+        """
+        task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
+        task_type = self.task_types[task_index]
+        house_id = self.house_id_ui.model.get_value_as_int()
+        object_id = self.object_id_ui.model.get_value_as_int()
+        task_id = self.task_id_ui.model.get_value_as_int()
+        os.remove(os.path.join(DATA_PATH, "tasks", task_type, str(house_id), str(object_id), f"{task_id}.json"))
+        print(f"Task {task_type}/{house_id}/{object_id}/{task_id} removed!")
+
+    def record_house(self):
+        # setup house layout recorder
+        self.build_house_info()
+        self.house.get_asset_info()
+        self.house.save_asset_info()
+
+    def record_task(self, overwrite=True):
+        task = {}
+        if self.stage.GetPrimAtPath("/World/game/franka"):
+            # if has robot
+            task["robot"] = self.get_robot_info("/World/game/franka")
+        elif self.stage.GetPrimAtPath("/World/franka"):
+            # if has robot
+            task["robot"] = self.get_robot_info("/World/franka")
+        else:
+            raise Exception(f"Robot not found: franka must be in /World or /World/game!") 
+        # set task info
+        task["house_id"] = self.house_id_ui.model.get_value_as_int()
+        task["object_id"] = self.object_id_ui.model.get_value_as_int()
+        task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
+        task["task_type"] = self.task_types[task_index]
+        task["task_id"] = self.task_id_ui.model.get_value_as_int()
+        # output to json file
+        if overwrite:
+            filename = os.path.join(DATA_PATH, "tasks", task["task_type"], str(task["house_id"]), str(task["object_id"]), str(task["task_id"]) + ".json")
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
+            with open(filename, "w") as f:
+                json.dump(task, f, sort_keys=True, indent=4)
+
+    def load_house(self):
+        """
+        Load house information from house id
+        """        
+        # load layout information and set up layout
+        house_id = self.house_id_ui.model.get_value_as_int()
+        object_id = self.object_id_ui.model.get_value_as_int()
+        self.build_house_info()
+        self.house.load_asset_info(house_id, object_id)
+
+        # fix linear joint scale
+        self.fix_linear_joint(fix_driver=True)
+        
+        #asyncio.ensure_future(load_house_async())
+    
+    def build_house_info(self): 
+        # scene_asset_path = self.scene_asset_path_ui.model.get_value_as_string()
+        sapien_asset_path = self.sapien_asset_path_ui.model.get_value_as_string()
+        house_info_path = self.house_info_path_ui.model.get_value_as_string()
+        self.house = House(DATA_PATH, sapien_asset_path, house_info_path)
+        self.house.set_id(self.house_id_ui.model.get_value_as_int())
+        # self.house.set_task(task_type)
+
+
+## miror task legacy
+        default_task_index = self.task_types.index("put_object_into_box")
+        self.task_type_ui.model.get_item_value_model().set_value(default_task_index)
+        self.load_obj_new()
+
+        task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
+        task_type = self.task_types[task_index]
+        task_id = self.task_id_ui.model.get_value_as_int()
+ 
+
+        missions = json.load(open(os.path.join(DATA_PATH_NEW, "task", task_type, str(task_id), "missions.json")))
+        mission_info = list(missions.values())[0]
+        print("mission_info", mission_info)
+        joint_name = mission_info["goal"]["condition"]["joint"]
+        mobility_name = mission_info["goal"]["condition"]["target"]
+    
+    
+        # self.stage = omni.usd.get_context().get_stage()
+        # prim_list = list(self.stage.TraverseAll())
+        # joint_list = [ item for item in prim_list if joint_name in  
+        # item.GetPath().pathString and item.GetPath().pathString.startswith("/World/game/" + mobility_name)]
+
+        # print("joint_list", joint_list)
+        # assert len(joint_list) == 1
+
+        mobility_prim_path = "/World/game/" + mobility_name
+        # print("mobility_prim_path", mobility_prim_path)
+        # selection = omni.usd.get_context().get_selection()
+        # selection.clear_selected_prim_paths()
+        # selection.set_prim_path_selected(joint_list[0].GetPath().pathString, True, True, True, True)
+        # selection.set_prim_path_selected(mobility_prim_path, True, True, True, True)
+
+        xform = pxr.Gf.Matrix4d().SetTranslate([0,0,0])
+           
+        omni.kit.commands.execute(
+            "TransformPrimCommand",
+            path=mobility_prim_path,
+            new_transform_matrix=xform,
+        )
+
+        default_task_index = self.task_types.index("take_object_out_box")
+        self.task_type_ui.model.get_item_value_model().set_value(default_task_index)
+
+        # self.auto_add_robot()
+        # self.record_obj_new()
+        # self.record_robot_new()
+        # self.auto_add_task() 
+
+        # omni.usd.get_context().new_stage_async()
+        # omni.kit.app.get_app().next_update_async()
+
+## fix collision/rigid body 
+from omni.physx.scripts.utils import setCollider, setRigidBody, setStaticCollider
+async def fix_something():
+    asset_path = os.path.join(CUSTOM_ASSET_PATH, "Cup")
+    for asset in sorted(os.listdir(asset_path), key = lambda x: int(x)):
+        if int(asset) < 1:
+            continue
+        usd_path = os.path.join(asset_path, asset, "cup.usd")
+        success, error = await omni.usd.get_context().open_stage_async(usd_path)
+        if not success:
+            raise Exception(f"Failed to open usd file: {error}") 
+        await omni.kit.app.get_app().next_update_async()
+        await asyncio.sleep(2)
+        stage = omni.usd.get_context().get_stage()
+        prim = stage.GetPrimAtPath("/cup/cupShape")
+        print("setRigidBody")
+        setRigidBody(prim, "convexDecomposition", False)
+
+        (result, err, saved_layers) = await omni.usd.get_context().save_as_stage_async(usd_path)
+        # break
+
+asyncio.ensure_future(fix_something())
+
+# auto add task
+
+async def generate_pour_water_task():
+    self.auto_add_obj()
+    self.auto_add_robot()
+    await asyncio.sleep(1.0)
+    self.record_obj_new()
+    self.record_robot_new()
+    self.auto_add_task()
+    await asyncio.sleep(1.0)
+    self.auto_next_obj_only()
+    await asyncio.sleep(2.0)
+    self.add_mission_variances()
+
+asyncio.ensure_future(generate_pour_water_task())
+
+
+           
+        # -------------------------------------replay------------------------------------
+        # asyncio.ensure_future(fix_houses())
+        BaseChecker.IS_REPLAY = True # Set up task checker status
+
+        # load mission and replay
+        BaseChecker.IS_REPLAY = True # Set up task checker status
+        self.load_mission()
+
+        """
+        Replay trajectory
+        """
+        if self.franka is None:
+            import sys
+            print( "please setup robot first", file=sys.stderr)
+            return
+        # example_id = self.house_id_ui.model.get_value_as_int()
+        # room_layout_json = os.path.join(DATA_PATH, str(example_id) + ".json")
+
+        # if not os.path.exists(room_layout_json):
+        #     raise Exception( "The json file at path {} provided wasn't found".format(room_layout_json) )
+
+        # layout = json.load(open(room_layout_json))
+
+        # root_dir = SAVE_ROOT + layout["task"] + "-" + str(layout["task_id"])
+
+        task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
+        task_type = self.task_types[task_index]
+        task_id = self.task_id_ui.model.get_value_as_int()
+        robot_id = self.robot_id_ui.model.get_value_as_int()
+        mission_id = self.mission_id_ui.model.get_value_as_int()
+        trial_id = self.trial_id_ui.model.get_value_as_int()
+        house_id = self.house_id_ui.model.get_value_as_int()
+        anchor_id = self.anchor_id_ui.model.get_value_as_int()
+        annotator_index = self.annotator_ui.model.get_item_value_model().get_value_as_int()
+        annotator = ANNOTATORS[annotator_index]
+        
+        # root_dir = SAVE_ROOT + task_type + "-" + str(task_id) + "-" + str(robot_id) + "-" + str(mission_id) + "_" + str(trial_id)
+
+        root_dir = '-'.join([str(os.path.join(SAVE_ROOT, annotator, task_type)),str(task_id), \
+            str(robot_id), str(mission_id), str(house_id), str(anchor_id), str(trial_id) ])
+        print("root_dir", root_dir)
+
+        traj_dir = os.path.join(root_dir, TRAJ_FOLDER)
+        
+
+
+
+        self.timeline.play()
+
+        FrankabotGamePad.DISCREET_CONTROL = True
+        self.franka.replay(traj_dir)

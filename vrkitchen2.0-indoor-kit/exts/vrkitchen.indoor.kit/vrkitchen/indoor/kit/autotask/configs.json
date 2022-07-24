@@ -1,0 +1,2808 @@
+{
+    "open_drawer": [
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the drawer",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        }
+    ],
+    "open_cabinet": [
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -50,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the cabinet",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        }
+    ],
+    "pickup_object": [
+        {
+            "size": 15,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pick up the bottle.",
+                "condition": {
+                    "type": "translate_y",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 20
+                }
+            }
+        },
+        {
+            "size": 15,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pick up the bottle.",
+                "condition": {
+                    "type": "translate_y",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 40
+                }
+            }
+        },
+        {
+            "size": 15,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pick up the bottle.",
+                "condition": {
+                    "type": "translate_y",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 60
+                }
+            }
+        },
+        {
+            "size": 15,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pick up the bottle.",
+                "condition": {
+                    "type": "translate_y",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 80
+                }
+            }
+        }
+    ],
+    "reorient_object": [
+        {
+            "size": 15,
+            "orient": [
+                -0.8733046,
+                -0.4871745,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Place the bottle properly.",
+                "condition": {
+                    "type": "orient_y",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 15,
+            "orient": [
+                -0.8733046,
+                -0.4871745,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Place the bottle properly.",
+                "condition": {
+                    "type": "orient_y",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 45
+                }
+            }
+        },
+        {
+            "size": 15,
+            "orient": [
+                -0.8733046,
+                -0.4871745,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Place the bottle properly.",
+                "condition": {
+                    "type": "orient_y",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 135
+                }
+            }
+        },
+        {
+            "size": 15,
+            "orient": [
+                -0.8733046,
+                -0.4871745,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Place the bottle properly.",
+                "condition": {
+                    "type": "orient_y",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 180
+                }
+            }
+        }
+    ],
+    "put_object_into_box": [
+        {
+            "size": 0.5,
+            "orient": [
+                0.5,
+                -0.5,
+                -0.5,
+                -0.5
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Place the object into the box.",
+                "condition": {
+                    "type": "contain",
+                    "target": "",
+                    "container": "",
+                    "joint": "",
+                    "target_value": -1
+                }
+            }
+        }
+    ],
+    "take_object_out_box": [
+        {
+            "size": 0.5,
+            "orient": [
+                0.5,
+                -0.5,
+                -0.5,
+                -0.5
+            ],
+            "robot_offset": [
+                -20,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Take the object out of the box.",
+                "condition": {
+                    "type": "contain",
+                    "target": "",
+                    "container": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        }
+    ],
+    "open_door": [
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Open the door",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        }
+    ],
+    "close_door": [
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 1,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 1,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 1,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the door",
+                "condition": {
+                    "init_value": 1,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        }
+    ],
+    "pour_water": [
+        {
+            "size": 1.0,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pour the liquid out of the contrainer.",
+                "condition": {
+                    "init_value": 1,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 1.0,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pour the liquid out of the contrainer.",
+                "condition": {
+                    "init_value": 1,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 1.0,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pour the liquid out of the contrainer.",
+                "condition": {
+                    "init_value": 1,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 1.0,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pour the liquid out of the contrainer.",
+                "condition": {
+                    "init_value": 1,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.0
+                }
+            }
+        }
+    ],
+    "close_drawer": [
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 1,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 1,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 1,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 0,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -70,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "close the drawer",
+                "condition": {
+                    "init_value": 1,
+                    "type": "linear",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        }
+    ],
+    "close_cabinet": [
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 0.25,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 1,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 0.5,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 1,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 0.75,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 1,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 70,
+            "orient": [
+                0,
+                0,
+                0.7071068,
+                0.7071068
+            ],
+            "robot_offset": [
+                -870,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Close the cabinet",
+                "condition": {
+                    "init_value": 1,
+                    "type": "rotation",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        }
+    ],
+    "transfer_water": [
+        {
+            "size": 1.0,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pour the liquid into another contrainer.",
+                "condition": {
+                    "init_value": -1,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 1.0,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pour the liquid into another contrainer.",
+                "condition": {
+                    "init_value": -1,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 1.0,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pour the liquid into another contrainer.",
+                "condition": {
+                    "init_value": -1,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 1.0,
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Pour the liquid into another contrainer.",
+                "condition": {
+                    "init_value": -1,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        }
+    ],
+    "tap_water": [
+        {
+            "size": 20,
+            "orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Get tap water.",
+                "condition": {
+                    "init_value": 0,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.25
+                }
+            }
+        },
+        {
+            "size": 20,
+            "orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Get tap water.",
+                "condition": {
+                    "init_value": 0,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.5
+                }
+            }
+        },
+        {
+            "size": 20,
+            "orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Get tap water.",
+                "condition": {
+                    "init_value": 0,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 0.75
+                }
+            }
+        },
+        {
+            "size": 20,
+            "orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "robot_offset": [
+                -30,
+                0,
+                0
+            ],
+            "robot_orient": [
+                0.7071068,
+                -0.7071068,
+                0,
+                0
+            ],
+            "task_type": "",
+            "task_id": "",
+            "robot_id": "",
+            "mission_id": "",
+            "goal": {
+                "description": "Get tap water.",
+                "condition": {
+                    "init_value": 0,
+                    "type": "liquid",
+                    "target": "",
+                    "joint": "",
+                    "target_value": 1
+                }
+            }
+        }
+    ]
+}
