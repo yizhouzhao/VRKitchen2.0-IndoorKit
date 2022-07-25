@@ -134,7 +134,7 @@ def setup_physics_material(prim):
     print("physics material: path: ", _physicsMaterialPath)
 
 
-def add_ground_plane(prim_path = "/World/game"):
+def add_ground_plane(prim_path = "/World/game", visiable = False):
     stage = omni.usd.get_context().get_stage()
     if True: #IS_IN_ISAAC_SIM:
             purposes = [pxr.UsdGeom.Tokens.default_]
@@ -143,11 +143,18 @@ def add_ground_plane(prim_path = "/World/game"):
             bboxes = bboxcache.ComputeWorldBound(prim)
             # print("bboxes", bboxes)
             y = bboxes.ComputeAlignedRange().GetMin()[1]
-            physicsUtils.add_ground_plane(stage, "/groundPlane", "Y", 750.0, pxr.Gf.Vec3f(0.0, y, 0), pxr.Gf.Vec3f(0.2))
-            prim_list = list(stage.TraverseAll())
-            prim_list = [ item for item in prim_list if 'groundPlane' in item.GetPath().pathString and item.GetTypeName() == 'Mesh' ]
-            for prim in prim_list:
-                prim.GetAttribute('visibility').Set('invisible')
+            physicsUtils.add_ground_plane(stage, "/World/groundPlane", "Y", 750.0, pxr.Gf.Vec3f(0.0, y, 0), pxr.Gf.Vec3f(0.2))
+            
+            # select ground
+            selection = omni.usd.get_context().get_selection()
+            selection.clear_selected_prim_paths()
+            selection.set_prim_path_selected("/World/groundPlane", True, True, True, True)
+            
+            if not visiable:
+                prim_list = list(stage.TraverseAll())
+                prim_list = [ item for item in prim_list if 'groundPlane' in item.GetPath().pathString and item.GetTypeName() == 'Mesh' ]
+                for prim in prim_list:
+                    prim.GetAttribute('visibility').Set('invisible')
     else:
         # prim_path = stage.GetDefaultPrim().GetPath().pathString
         usd_context = omni.usd.get_context()

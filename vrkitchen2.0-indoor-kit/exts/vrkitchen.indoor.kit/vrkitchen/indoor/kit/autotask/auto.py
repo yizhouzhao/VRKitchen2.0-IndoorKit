@@ -300,6 +300,7 @@ class AutoTasker():
             
         # set robot xform
         robot_xform = pxr.UsdGeom.Xformable.Get(self.stage, robot_prim.GetPath())
+        robot_xform.ClearXformOpOrder()
 
         # print("position $ rotation: ", position[0], position[1], position[2], rotation)
         robot_xform.AddTranslateOp().Set(pxr.Gf.Vec3f(float(position[0]), float(position[1]), float(position[2])))
@@ -469,7 +470,7 @@ class AutoTasker():
             gui = self.stage.GetPrimAtPath(gui_path)
             if not gui:
                 gui = pxr.UsdGeom.Xform.Define(self.stage, gui_path)
-                gui_location = pxr.Gf.Vec3f(0, 100, 0)
+                gui_location = pxr.Gf.Vec3f(0, 50, 0)
                 gui.AddTranslateOp().Set(gui_location)
 
                 self.wiget_id = wm.add_widget(gui_path, LabelWidget(self.obj_id), wm.WidgetAlignment.TOP)

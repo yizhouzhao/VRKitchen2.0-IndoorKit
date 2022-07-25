@@ -1,0 +1,35 @@
+{
+    "pickup_object 0 0 0": {
+        "size": 15,
+        "orient": [
+            1,
+            0,
+            0,
+            0
+        ],
+        "robot_offset": [
+            -30,
+            0,
+            0
+        ],
+        "robot_orient": [
+            0.7071068,
+            -0.7071068,
+            0,
+            0
+        ],
+        "task_type": "",
+        "task_id": "",
+        "robot_id": "",
+        "mission_id": "",
+        "goal": {
+            "description": "",
+            "condition": {
+                "type": "translate_y",
+                "target": "mobility_Bottle_3380",
+                "joint": "",
+                "target_value": 20
+            }
+        }
+    }
+}

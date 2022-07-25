@@ -9,10 +9,10 @@ import json
 
 from omni.kit.material.library import get_material_prim_path, create_mdl_material
 
-from ..param import IS_IN_ISAAC_SIM, SCENE_ASSET_PATH, SAPIEN_ASSET_PATH, HOUSE_INFO_PATH, DATA_PATH
+from ..param import IS_IN_ISAAC_SIM, SAPIEN_ASSET_PATH, HOUSE_INFO_PATH, DATA_PATH
 
 class Randomizer():
-    def __init__(self, task_json_path, random_seed = 1) -> None:
+    def __init__(self, task_json_path=None, random_seed = 1) -> None:
         # self.house = house
         # self.layout = self.house.layout if house is not None else {}
         self.task_json_path = task_json_path
@@ -207,7 +207,7 @@ class Randomizer():
             #     select_new_prim=False,
             # )
     
-    def randomize_house(self, randomize_floor =True, randomize_wall = False):
+    def randomize_house(self, randomize_floor =True, randomize_wall = True):
         """
         randomize house's floor and wall
         
@@ -222,8 +222,8 @@ class Randomizer():
         # print(self.random_info["floor_materials"])
         len_floor = len(self.random_info["floor_materials"])
         len_wall = len(self.random_info["wall_materials"])
-        wall_mtl_url = self.random_info["wall_materials"][self.random_seed % len_wall] #random.choice(self.random_info["wall_materials"])  #random.choice(self.random_info["materials"]["train"])
-        floor_mtl_url = self.random_info["floor_materials"][self.random_seed % len_floor] # random.choice(self.random_info["floor_materials"])
+        wall_mtl_url = random.choice(self.random_info["wall_materials"])  #random.choice(self.random_info["materials"]["train"])
+        floor_mtl_url = random.choice(self.random_info["floor_materials"])
         wall_mtl_name = wall_mtl_url.split("/")[-1][:-4]
         floor_mtl_name = floor_mtl_url.split("/")[-1][:-4]
 
@@ -425,34 +425,58 @@ class Randomizer():
         Add sky to the environment
         """
         # return
-        if IS_IN_ISAAC_SIM:
-            from omni.isaac.core.utils.stage import add_reference_to_stage
+     
+        # FIXME: not compatible with new version
+        self.stage = omni.usd.get_context().get_stage()
+        omni.kit.undo.begin_group()
 
-            # FIXME: not compatible with new version
-            self.stage = omni.usd.get_context().get_stage()
-            omni.kit.undo.begin_group()
+        ENVIRONMENT_ROOT = "/World/Environment"
+        sky_prim_path = f"{ENVIRONMENT_ROOT}/sky"
 
-            ENVIRONMENT_ROOT = "/World/Environment"
-            sky_prim_path = f"{ENVIRONMENT_ROOT}/sky"
+        # disable light
+        light_prim_path = "/World/defaultLight"
+        light_prim = self.stage.GetPrimAtPath(light_prim_path)
+        if light_prim:
+            light_prim.GetAttribute('visibility').Set('invisible')
 
-            # disable light
-            light_prim_path = "/World/defaultLight"
-            light_prim = self.stage.GetPrimAtPath(light_prim_path)
-            if light_prim:
-                light_prim.GetAttribute('visibility').Set('invisible')
+        # if found existing env, return
+        if self.stage.GetPrimAtPath(sky_prim_path):
+            carb.log_warn("Sky already in the env")
+            # return
+        
+        # choose a sky
+        sky_list = ["Cirrus","ClearSky","CloudySky","CumulusHeavy","CumulusLight","NightSky","Overcast"]
+        sky_name = random.choice(sky_list)
+        sky_url = f"{url}{sky_name}.usd"
+        
+        sky_prim = self.stage.DefinePrim(sky_prim_path, "Xform")
+        if sky_prim:
+            sky_prim.GetReferences().AddReference(sky_url)
 
-            # if found existing env, return
-            if self.stage.GetPrimAtPath(sky_prim_path):
-                carb.log_warn("Sky already in the env")
-                return
-            
-            # choose a sky
-            sky_list = ["Cirrus","ClearSky","CloudySky","CumulusHeavy","CumulusLight","NightSky","Overcast"]
-            sky_name = sky_list[1] # random.choice(sky_list)
-            sky_url = f"{url}{sky_name}.usd"
-            # omni.kit.commands.execute("CreateUsdSkyPrimCommand", sky_url=sky_url, sky_path=sky_prim_path)
-            add_reference_to_stage(sky_url ,sky_prim_path )
+        rot = pxr.Gf.Vec3d(0, 0, 0)
+        properties = sky_prim.GetPropertyNames()
+        if "xformOp:rotateXYZ" in properties:
+            rotation = sky_prim.GetAttribute("xformOp:rotateXYZ")
+            rotation.Set(rot)
+        elif "xformOp:rotateZYX" in properties:
+            rotation = sky_prim.GetAttribute("xformOp:rotateZYX")
+            rotation.Set(rot)
+        elif "xformOp:transform" in properties:
+            carb.log_info("Object missing rotation op. Adding it.")
+            xform = pxr.UsdGeom.Xformable(sky_prim)
+            xform_op = xform.AddXformOp(pxr.UsdGeom.XformOp.TypeRotateXYZ, pxr.UsdGeom.XformOp.PrecisionDouble, "")
+            rotate = Gf.Vec3d(rot[0], rot[1], rot[2])
+            xform_op.Set(rotate)
 
-            # too light, lower intensity to pretect eyes
-            domelight_prim = self.stage.GetPrimAtPath("/World/Environment/sky/DomeLight")
-            domelight_prim.GetAttribute("intensity").Set(200)
+        # if IS_IN_ISAAC_SIM:
+        #     from omni.isaac.core.utils.stage import add_reference_to_stage
+        #     add_reference_to_stage(sky_url ,sky_prim_path)
+        # else:
+        #     omni.kit.commands.execute("CreateUsdSkyPrimCommand", sky_url=sky_url, sky_path=sky_prim_path)
+
+        # too light, lower intensity to pretect eyes
+        domelight_prim = self.stage.GetPrimAtPath("/World/Environment/sky/DomeLight")
+        domelight_prim.GetAttribute("intensity").Set(200)
+
+
+        
