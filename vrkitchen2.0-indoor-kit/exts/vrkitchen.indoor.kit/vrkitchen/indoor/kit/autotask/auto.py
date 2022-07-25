@@ -391,7 +391,6 @@ class AutoTasker():
             # for prim in prim_list:
             ground_prim.GetAttribute('visibility').Set('invisible')
 
-            # add sky
 
 
     def add_task(self):

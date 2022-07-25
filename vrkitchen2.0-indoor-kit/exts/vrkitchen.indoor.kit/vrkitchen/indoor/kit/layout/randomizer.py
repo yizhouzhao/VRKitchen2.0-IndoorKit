@@ -108,16 +108,17 @@ class Randomizer():
         """
         Randomize light intensity
         """
-        if len(self.random_info["lights"]) == 0:
-            self.random_info["lights"] = [100, 500, 1000] # light intensity indexes
+        # if len(self.random_info["lights"]) == 0:
+        self.random_info["lights"] = [100, 500, 1000] # light intensity indexes
         
         self.light_rnd = (self.light_rnd + 1) % len(self.random_info["lights"])
+        print("light_rnd: ", self.light_rnd)
         
         self.stage = omni.usd.get_context().get_stage()
         self.default_prim = self.stage.GetDefaultPrim()
-        # print("?", self.default_prim.GetPath().pathString + "/defaultLight")
+        print("?", self.default_prim.GetPath().pathString + "/defaultLight")
         light_prim = self.stage.GetPrimAtPath(self.default_prim.GetPath().pathString + "/defaultLight")
-        # print("light", light_prim.GetTypeName())
+        print("light", light_prim.GetTypeName())
         assert light_prim.GetTypeName() == "DistantLight"
         light_prim.GetAttribute("intensity").Set(self.random_info["lights"][self.light_rnd])
 
