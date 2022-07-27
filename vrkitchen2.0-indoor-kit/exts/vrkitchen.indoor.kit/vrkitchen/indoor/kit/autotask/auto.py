@@ -382,7 +382,7 @@ class AutoTasker():
             # add ground
             ground_prim = self.stage.GetPrimAtPath("/World/groundPlane")
             if not ground_prim:
-                physicsUtils.add_ground_plane(self.stage, "groundPlane", "Y", 1000.0, 
+                physicsUtils.add_ground_plane(self.stage, "/World/groundPlane", "Y", 1000.0, 
                     pxr.Gf.Vec3f(0.0, 0.0, 0), pxr.Gf.Vec3f(0.2))
                 ground_prim = self.stage.GetPrimAtPath("/World/groundPlane")
             

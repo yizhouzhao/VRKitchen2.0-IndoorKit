@@ -53,8 +53,8 @@ ANNOTATORS = [
 
 # Task
 TASK_TYPES = ["pickup_object","reorient_object", "transfer_water", "pour_water",
-    "open_drawer","open_cabinet", "open_door", "put_object_into_box", 
-    "close_drawer", "close_cabinet", "close_door", "take_object_out_box"]
+    "open_drawer","open_cabinet", "open_door"] # "put_object_into_box", 
+    #"close_drawer", "close_cabinet", "close_door", "take_object_out_box"]
 
 #Objects
 OBJECT_TYPES = ["Bottle", "Box", "Door", "Faucet", "LightSwitch", "Microwave", "StorageFurniture"]

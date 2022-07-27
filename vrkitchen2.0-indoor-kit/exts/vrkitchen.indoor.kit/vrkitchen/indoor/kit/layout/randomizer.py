@@ -108,17 +108,13 @@ class Randomizer():
         """
         Randomize light intensity
         """
-        # if len(self.random_info["lights"]) == 0:
-        self.random_info["lights"] = [100, 500, 1000] # light intensity indexes
-        
-        self.light_rnd = (self.light_rnd + 1) % len(self.random_info["lights"])
-        print("light_rnd: ", self.light_rnd)
+        self.random_info["lights"] = [0, 200, 400, 600, 800, 1000] # light intensity indexes
+        self.light_rnd = random.choice([_ for _ in range(len(self.random_info["lights"]))])
         
         self.stage = omni.usd.get_context().get_stage()
         self.default_prim = self.stage.GetDefaultPrim()
-        print("?", self.default_prim.GetPath().pathString + "/defaultLight")
+        # print("?", self.default_prim.GetPath().pathString + "/defaultLight")
         light_prim = self.stage.GetPrimAtPath(self.default_prim.GetPath().pathString + "/defaultLight")
-        print("light", light_prim.GetTypeName())
         assert light_prim.GetTypeName() == "DistantLight"
         light_prim.GetAttribute("intensity").Set(self.random_info["lights"][self.light_rnd])
 
@@ -435,10 +431,10 @@ class Randomizer():
         sky_prim_path = f"{ENVIRONMENT_ROOT}/sky"
 
         # disable light
-        light_prim_path = "/World/defaultLight"
-        light_prim = self.stage.GetPrimAtPath(light_prim_path)
-        if light_prim:
-            light_prim.GetAttribute('visibility').Set('invisible')
+        # light_prim_path = "/World/defaultLight"
+        # light_prim = self.stage.GetPrimAtPath(light_prim_path)
+        # if light_prim:
+        #     light_prim.GetAttribute('visibility').Set('invisible')
 
         # if found existing env, return
         if self.stage.GetPrimAtPath(sky_prim_path):
@@ -477,7 +473,7 @@ class Randomizer():
 
         # too light, lower intensity to pretect eyes
         domelight_prim = self.stage.GetPrimAtPath("/World/Environment/sky/DomeLight")
-        domelight_prim.GetAttribute("intensity").Set(200)
+        domelight_prim.GetAttribute("intensity").Set(0)
 
 
         
