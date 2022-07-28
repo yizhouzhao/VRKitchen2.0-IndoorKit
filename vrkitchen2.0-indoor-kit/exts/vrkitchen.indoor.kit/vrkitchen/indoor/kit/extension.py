@@ -41,9 +41,11 @@ class MyExtension(omni.ext.IExt):
         carb.settings.get_settings().set_int("/app/runLoops/main/rateLimitFrequency", int( FPS))
         carb.settings.get_settings().set_int("/persistent/simulation/minFrameRate", int(FPS))
 
-        # models
+        # stage and time
         self.stage = omni.usd.get_context().get_stage()
         self.timeline = omni.timeline.get_timeline_interface()
+
+        # robot
         self.franka = None
         self.auto_labeler = AutoLabeler(None)
         self.task_type = None
