@@ -149,6 +149,12 @@ class MyExtension(omni.ext.IExt):
                     ui.Label(" |", width=10)
                     ui.Button("Load house", clicked_fn=self.load_house_new, style={ "margin": 4})
 
+                ui.Label("\n Play", style = {"font_size": 20, "margin": 10}, height = 30, alignment=ui.Alignment.CENTER)
+                with ui.HStack(height=20):
+                    ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4})
+                    ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4})
+                    ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4})
+
                 ui.Label("\n Scene utility", style = {"font_size": 20, "margin": 10}, height = 30, alignment=ui.Alignment.CENTER)
                 with ui.HStack(height=30):
                     ui.Button("Add Ground", clicked_fn=self.auto_add_ground, style={ "margin": 2})
@@ -939,3 +945,29 @@ class MyExtension(omni.ext.IExt):
                     scale_factor = mobility_xform.GetOrderedXformOps()[2].Get()[0]
                     print("scale_factor", scale_factor)
                     joint.CreateUpperLimitAttr(upper_limit * scale_factor / 100)
+
+    ###################################################################################
+    ################################ Play       ######################################
+    ###################################################################################
+ 
+
+    def stop_record(self):
+        if self.franka is None:
+            carb.log_error( "please setup robot first")
+            return
+
+        self.franka.stop_record()
+        self.timeline.stop()
+    
+    def replay_record(self):
+        from .param import APP_VERION
+        if APP_VERION >= "2022.1.0":
+            from .robot_setup.franka_tensor import FrankaTensor
+            self.ft  = FrankaTensor()
+
+            self.timeline.play()
+
+    def start_record(self):
+        pass
+
+    
