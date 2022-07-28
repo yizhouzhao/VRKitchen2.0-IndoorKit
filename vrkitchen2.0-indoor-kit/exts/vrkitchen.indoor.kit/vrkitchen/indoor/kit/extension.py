@@ -68,24 +68,35 @@ class MyExtension(omni.ext.IExt):
                 with ui.HStack(height=30):
                     # set up tasks 
                     self.task_types = TASK_TYPES
-                    ui.Label(" Task type: ", width = 30, style={ "margin": 2 })
+                    ui.Label(" Task type: ", width = 30, style={ "margin": 2 , "color": "Firebrick"})
                     default_task_index = self.task_types.index("pickup_object")
-                    self.task_type_ui = ui.ComboBox(default_task_index, width = 120, *self.task_types, style={ "margin": 8 })
+                    self.task_type_ui = ui.ComboBox(default_task_index, width = 120, *self.task_types, style={ "margin": 8, "color": "Firebrick"})
 
-                    ui.Label(" Task id: ", width=20)
-                    self.task_id_ui = omni.ui.IntField(height=20, width = 60, style={ "margin": 8 })    
-
-                    ui.Button(" + ", clicked_fn=self.auto_next_task, width = 20, style={ "margin_height": 8})
+                    # ui.Button(" + ", clicked_fn=self.auto_next_task, width = 20, style={ "margin_height": 8})
                     # ui.Button("+ object id", clicked_fn=self.auto_next_obj_only, style={ "margin": 8})
 
+                    self.annotators = ANNOTATORS
+                    ui.Label("  Annotator: ", width = 30, style={ "font_size": 12 , "color": "PowderBlue"})
+                    annotator_index = ANNOTATORS.index("Yizhou")
+                    self.annotator_ui = ui.ComboBox(annotator_index, width = 100, *self.annotators, style={ "margin_height": 8, "font_size": 12, "color": "PowderBlue" })
+                    # self.auto_suggest.annotator_ui = self.annotator_ui
+
                 with ui.HStack(height=30):
-                    ui.Label("Object ", width=20)
-                    self.object_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8 , "margin_width": 4})
+                    ui.Label(" Task (Object) id: ", width=20, style={"color": "darkorange"})
+                    self.task_id_ui = omni.ui.IntField(height=20, width = 20, style={ "margin": 8 , "color": "darkorange"})    
+
+                    ui.Button("+", width = 20, style={"margin_height": 8, "font_size": 12, "color": "darkorange"},
+                        clicked_fn=lambda: self.task_id_ui.model.set_value(self.task_id_ui.model.get_value_as_int() + 1))
+                    ui.Button("-", width = 20, style={ "margin_height": 8, "font_size": 12, "color": "darkorange"},
+                        clicked_fn=lambda: self.task_id_ui.model.set_value(self.task_id_ui.model.get_value_as_int() - 1))
+
+                    ui.Label("  Object ", width=20, visible = False)
+                    self.object_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8 , "margin_width": 4},  visible = False)
                     self.object_id_ui.model.set_value(0)
                     ui.Button("+", width = 20, style={"margin_height": 8, "font_size": 12},
-                        clicked_fn=lambda: self.object_id_ui.model.set_value(self.object_id_ui.model.get_value_as_int() + 1))
+                        clicked_fn=lambda: self.object_id_ui.model.set_value(self.object_id_ui.model.get_value_as_int() + 1),  visible = False)
                     ui.Button("-", width = 20, style={ "margin_height": 8, "font_size": 12},
-                        clicked_fn=lambda: self.object_id_ui.model.set_value(self.object_id_ui.model.get_value_as_int() - 1))
+                        clicked_fn=lambda: self.object_id_ui.model.set_value(self.object_id_ui.model.get_value_as_int() - 1),  visible = False)
 
                     ui.Label("  Anchor:", width=20, visible = False)
                     self.anchor_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8 , "margin_width": 4},  visible = False)
@@ -96,24 +107,24 @@ class MyExtension(omni.ext.IExt):
                         clicked_fn=lambda: self.anchor_id_ui.model.set_value(self.anchor_id_ui.model.get_value_as_int() - 1),  visible = False)
    
 
-                    ui.Label("  Robot:", width=20)
-                    self.robot_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8 , "margin_width": 4})
+                    ui.Label("  Robot:", width=20,  visible = False)
+                    self.robot_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8 , "margin_width": 4},  visible = False)
                     ui.Button("+", width = 20, style={"margin_height": 8, "font_size": 12},
-                        clicked_fn=lambda: self.robot_id_ui.model.set_value(self.robot_id_ui.model.get_value_as_int() + 1))
+                        clicked_fn=lambda: self.robot_id_ui.model.set_value(self.robot_id_ui.model.get_value_as_int() + 1),  visible = False)
                     ui.Button("-", width = 20, style={ "margin_height": 8, "font_size": 12},
-                        clicked_fn=lambda: self.robot_id_ui.model.set_value(self.robot_id_ui.model.get_value_as_int() - 1))
+                        clicked_fn=lambda: self.robot_id_ui.model.set_value(self.robot_id_ui.model.get_value_as_int() - 1),  visible = False)
    
                     ui.Label("Mission ", width=20, visible = False)
-                    self.mission_id_ui = omni.ui.IntField(height=20, width = 40, style={ "margin": 8 })
+                    self.mission_id_ui = omni.ui.IntField(height=20, width = 40, style={ "margin": 8 }, visible = False)
                     
                     ui.Label(" | ", width=10)
 
-                    ui.Label("House:", width=20)
-                    self.house_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8, "margin_width": 4})
+                    ui.Label("House:", width=20, style = { "color": "Gold"})
+                    self.house_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8, "margin_width": 4,  "color": "Gold"})
                     self.house_id_ui.model.set_value(0)
-                    ui.Button("+", width = 20, style={"margin_height": 8, "font_size": 12},
+                    ui.Button("+", width = 20, style={"margin_height": 8, "font_size": 12,  "color": "Gold"},
                         clicked_fn=lambda: self.house_id_ui.model.set_value(self.house_id_ui.model.get_value_as_int() + 1))
-                    ui.Button("-", width = 20, style={ "margin_height": 8, "font_size": 12},
+                    ui.Button("-", width = 20, style={ "margin_height": 8, "font_size": 12,  "color": "Gold"},
                         clicked_fn=lambda: self.house_id_ui.model.set_value(self.house_id_ui.model.get_value_as_int() - 1))
    
                  
@@ -382,7 +393,7 @@ class MyExtension(omni.ext.IExt):
         from .autotask.auto_suggest import AutoSuggest
         self.auto_suggest = AutoSuggest()
 
-        self._window2 = ui.Window("VRKitchen Labeling", width=500, dockPreference=ui.DockPreference.LEFT_BOTTOM)
+        self._window2 = ui.Window("VRKitchen Labeling", width=500, dockPreference=ui.DockPreference.LEFT_BOTTOM, visible=False)
         with self._window2.frame:
             with ui.VStack():
                 # ui.Label("Labeling Helper", height=20, style = {"font_size": 20, "margin": 10}, alignment=ui.Alignment.CENTER)
@@ -392,12 +403,12 @@ class MyExtension(omni.ext.IExt):
                     ui.Label("Task type: ", width=20, style={"font_size": 12, "color": "PeachPuff"})
                     self.auto_suggest.suggest_task_type_ui = ui.ComboBox(0, width = 140, *self.suggest_task_types, 
                         style={ "margin_height": 2, "font_size": 12, "color": "PeachPuff"})
-                    self.annotators = ANNOTATORS
-                    ui.Label("  Annotator: ", width = 30, style={ "font_size": 12 , "color": "PowderBlue"})
-                    annotator_index = ANNOTATORS.index("Yizhou")
-                    self.annotator_ui = ui.ComboBox(annotator_index, width = 100, *self.annotators, style={ "margin_height": 2, "font_size": 12, "color": "PowderBlue" })
-                    self.auto_suggest.annotator_ui = self.annotator_ui
-                    # self.suggestion_task_type_ui.model.add_item_changed_fn(functools.partial(task_type_suggestion_call_back))
+                    # self.annotators = ANNOTATORS
+                    # ui.Label("  Annotator: ", width = 30, style={ "font_size": 12 , "color": "PowderBlue"})
+                    # annotator_index = ANNOTATORS.index("Yizhou")
+                    # self.annotator_ui = ui.ComboBox(annotator_index, width = 100, *self.annotators, style={ "margin_height": 2, "font_size": 12, "color": "PowderBlue" })
+                    # self.auto_suggest.annotator_ui = self.annotator_ui
+                    # # self.suggestion_task_type_ui.model.add_item_changed_fn(functools.partial(task_type_suggestion_call_back))
                     self.auto_suggest.suggest_task_type_ui.model.add_item_changed_fn(self._on_suggestion_task_type_change)
                        
                 with ui.HStack(height = 20):
@@ -518,7 +529,7 @@ class MyExtension(omni.ext.IExt):
                 #     ui.Button("Stop", width = 30, clicked_fn=self.stop_record, style={ "margin": 2, "color": "yellow"})
                 #     ui.Button("Load mission & Replay", clicked_fn=self.load_mission_and_replay_traj, style={ "margin": 2, "color": "firebrick"})
 
-                self.auto_suggest.info_ui = omni.ui.StringField(style={ "margin": 8, "font_size": 12, "color": "Yellow"}, multiline = True, read_only  = True, )
+                # self.auto_suggest.info_ui = omni.ui.StringField(style={ "margin": 8, "font_size": 12, "color": "Yellow"}, multiline = True, read_only  = True, )
                 
                 with ui.HStack(height=30, visible = False):
                     ui.Button("Reset", style={"margin_height": 2, "font_size": 12 },
