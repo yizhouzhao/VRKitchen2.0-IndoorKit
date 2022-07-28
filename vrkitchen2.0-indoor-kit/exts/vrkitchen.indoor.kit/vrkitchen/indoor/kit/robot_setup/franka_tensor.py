@@ -6,8 +6,10 @@ import importlib
 import os
 
 from ..param import IS_IN_CREAT, APP_VERION
+from .controller import Controller
+    
 
-if IS_IN_CREAT and APP_VERION >= "2022.1.1":
+if APP_VERION >= "2022.1.0":
     class FrankaTensor():
         def __init__(self, enable_tensor_api = True) -> None:
             carb.log_info("Franks Tensor started (only in Create >= 2022.1.1)")
@@ -26,6 +28,9 @@ if IS_IN_CREAT and APP_VERION >= "2022.1.1":
             self._setup_callbacks()
             if enable_tensor_api:
                 self._enable_tensor_api()
+
+            # controller
+            self.controller = Controller()
 
         def _enable_tensor_api(self):
                 manager = omni.kit.app.get_app().get_extension_manager()
@@ -82,11 +87,21 @@ if IS_IN_CREAT and APP_VERION >= "2022.1.1":
         def _setup_callbacks(self):
             stream = omni.timeline.get_timeline_interface().get_timeline_event_stream()
             self._timeline_sub = stream.create_subscription_to_pop(self._on_timeline_event)
+            
             # subscribe to Physics updates:
             self._physics_update_sub = omni.physx.get_physx_interface().subscribe_physics_step_events(self._on_physics_step)
             events = omni.physx.get_physx_interface().get_simulation_event_stream_v2()
             self._simulation_event_subscription = events.create_subscription_to_pop(self.on_simulation_event)
 
+            # subscribute to keyboard 
+            self._appwindow = omni.appwindow.get_default_app_window()
+            self._input = carb.input.acquire_input_interface()
+            self._keyboard = self._appwindow.get_keyboard()
+            self._sub_keyboard = self._input.subscribe_to_keyboard_events(self._keyboard, self._sub_keyboard_event)
+
+        def _sub_keyboard_event(self, event, *args, **kwargs):
+            self.controller.handle_keyboard_event(event)
+    
         def _on_timeline_event(self, e):
             if e.type == int(omni.timeline.TimelineEventType.STOP):
                 self._is_stopped = True
@@ -96,6 +111,8 @@ if IS_IN_CREAT and APP_VERION >= "2022.1.1":
                 self._timeline_sub = None
                 self._simulation_event_subscription = None
                 self._physics_update_sub = None
+
+                self._input.unsubscribe_to_keyboard_events(self._keyboard, self._sub_keyboard)
 
 
             if e.type == int(omni.timeline.TimelineEventType.PLAY):

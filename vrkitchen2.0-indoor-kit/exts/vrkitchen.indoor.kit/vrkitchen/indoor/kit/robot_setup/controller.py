@@ -21,7 +21,7 @@ class Controller():
             event.type == carb.input.KeyboardEventType.KEY_PRESS
             or event.type == carb.input.KeyboardEventType.KEY_REPEAT
             ): 
-            # print("event input", event.input)
+            print("event input", event.input)
             if event.input == carb.input.KeyboardInput.W:
                 self.w = True
             if event.input == carb.input.KeyboardInput.S:
@@ -36,7 +36,7 @@ class Controller():
                 self.e = True
 
         if event.type == carb.input.KeyboardEventType.KEY_RELEASE:
-            # print("event release", event.input)
+            print("event release", event.input)
             if event.input == carb.input.KeyboardInput.W:
                 self.w = False
             if event.input == carb.input.KeyboardInput.S:
