@@ -963,13 +963,22 @@ class MyExtension(omni.ext.IExt):
     
     def replay_record(self):
         from .param import APP_VERION
-        if APP_VERION >= "2022.1.0":
-            from .robot_setup.franka_tensor import FrankaTensor
-            self.ft  = FrankaTensor()
+        assert APP_VERION >= "2022.1.0", "need Omniverse Isaac-Sim/Create in 2022"
 
-            self.timeline.play()
+        from .robot_setup.franka_tensor import FrankaTensor
+        self.ft = FrankaTensor()
+        self.ft.is_replay = True
+
+        self.timeline.play()
 
     def start_record(self):
-        pass
+        from .param import APP_VERION
+        assert APP_VERION >= "2022.1.0", "need Omniverse Isaac-Sim/Create in 2022"
+
+        from .robot_setup.franka_tensor import FrankaTensor
+        self.ft = FrankaTensor()
+        self.ft.is_replay = False
+
+        self.timeline.play()
 
     

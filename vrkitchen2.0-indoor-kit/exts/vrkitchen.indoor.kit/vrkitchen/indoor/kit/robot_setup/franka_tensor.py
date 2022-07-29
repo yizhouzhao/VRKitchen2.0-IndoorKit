@@ -7,7 +7,9 @@ import os
 
 from ..param import IS_IN_CREAT, APP_VERION
 from .controller import Controller
+from .numpy_utils import orientation_error
     
+from pxr import Usd, UsdGeom, Gf
 
 if APP_VERION >= "2022.1.0":
     class FrankaTensor():
@@ -18,6 +20,13 @@ if APP_VERION >= "2022.1.0":
             self._tensor_api = None
             self._flatcache_was_enabled = True
             self._tensorapi_was_enabled = True
+
+            # stage
+            self.stage = omni.usd.get_context().get_stage()
+            self.franka_prim = self.stage.GetPrimAtPath("/World/game/franka")
+
+            # property
+            self.is_replay = False
 
             # counting and index 
             self.count_down = 24
@@ -65,23 +74,24 @@ if APP_VERION >= "2022.1.0":
             self.franka_indices = np.arange(self.frankas.count, dtype=np.int32)
 
             # !!!
-            self.default_dof_pos = np.array([0.0, 0.0, 0.0, -0.95, 0.0, 1.12, 0.0, 0.02, 0.02])
+            # self.default_dof_pos = np.array([0.0, 0.0, 0.0, -0.95, 0.0, 1.12, 0.0, 0.02, 0.02])
 
-            # set default dof pos:
-            init_dof_pos = np.stack(1 * [np.array(self.default_dof_pos, dtype=np.float32)])
-            self.frankas.set_dof_positions(init_dof_pos, self.franka_indices)
+            # # set default dof pos:
+            # init_dof_pos = np.stack(1 * [np.array(self.default_dof_pos, dtype=np.float32)])
+            # self.frankas.set_dof_positions(init_dof_pos, self.franka_indices)
 
             # end effector view
             self.hands = sim.create_rigid_body_view("/World/game/franka/panda_hand")
 
             # get initial hand transforms
             init_hand_transforms = self.hands.get_transforms().copy()
-            self.init_pos = init_hand_transforms[:, :3]
-            self.init_rot = init_hand_transforms[:, 3:]
+            self.hand_pos = init_hand_transforms[:, :3]
+            self.hand_rot = init_hand_transforms[:, 3:]
+
             
             # target 
-            self.target_pos = self.default_dof_pos[None, :]
-            self.target_hand_transform = init_hand_transforms
+            # self.target_pos = self.default_dof_pos[None, :]
+            # self.target_hand_transform = init_hand_transforms
 
     
         def _setup_callbacks(self):
@@ -143,21 +153,98 @@ if APP_VERION >= "2022.1.0":
             self.count_down -= 1
             # self.dof_pos = self.frankas.get_dof_positions()
             # print("dof_pos", self.dof_pos)
-            np_root = "E:/researches/VRKitchen2.0/learning/vrkit_data/AWS-pickup_object-0-0-0-8-0-0/trajectory/"
 
-            if self.count_down == 0:
-                npz_path = np_root + f"{(self.npz_index * 24):08d}.npz"
+            # playing 
+            if not self.is_replay:
+                if self.count_down == 0:
 
-                # pause when npz not exist
-                if not os.path.exists(npz_path):
-                    omni.timeline.get_timeline_interface().pause()
-                    return
+                    self.count_down = 6 # TODO: unify count_down is play and replay
+                    
+                    # get movement from keyboard 
+                    move_vec = self.controller.QueryMove()
+                    query_move =  move_vec != [0, 0, 0]
+                    
+                    # get rotation from keyboard 
+                    rotation_vec = self.controller.QueryRotation()
+                    query_rotation = rotation_vec != [0, 0]
 
-                robot_pos = np.load(npz_path)['robot_state']['pos']
-                print("robot_pos", robot_pos)
-                self.count_down = 24
-                self.npz_index += 1
+                    # get end effector transforms
+                    hand_transforms = self.hands.get_transforms().copy()
+                    current_hand_pos, current_hand_rot = hand_transforms[:, :3], hand_transforms[:, 3:]
 
-                self.target_pos = robot_pos[None, :]
-                self.frankas.set_dof_position_targets(self.target_pos, self.franka_indices)
+                    if query_move or query_rotation:
+                        self.hand_pos = current_hand_pos
+                        self.hand_rot = current_hand_rot
+                    # if no input
+                    # if not query_move and not query_rotation:
+                    #     return 
 
+                    # get franka xform mat # FIXME: time code?
+                    mat = UsdGeom.Xformable(self.franka_prim).ComputeLocalToWorldTransform(Usd.TimeCode.Default())
+                    
+                    move_vec_4d = Gf.Vec4d(move_vec[0], move_vec[1], move_vec[2], 0)
+                    hand_move = move_vec_4d * mat
+                    hand_move_np = np.array([[hand_move[0], hand_move[1], hand_move[2]]])
+
+                    target_pos = self.hand_pos + hand_move_np
+                    target_rot = self.hand_rot
+
+                    dof_target = self.move_to_target(target_pos, target_rot)
+                    self.frankas.set_dof_position_targets(dof_target, np.arange(1))
+
+            # replaying
+            else: # self.is_replay:
+                np_root = "E:/researches/VRKitchen2.0/learning/vrkit_data/AWS-pickup_object-0-0-0-8-0-0/trajectory/"
+
+                if self.count_down == 0:
+                    npz_path = np_root + f"{(self.npz_index * 24):08d}.npz"
+
+                    # pause when npz not exist
+                    if not os.path.exists(npz_path):
+                        omni.timeline.get_timeline_interface().pause()
+                        return
+
+                    robot_pos = np.load(npz_path)['robot_state']['pos']
+                    print("robot_pos", robot_pos)
+                    self.count_down = 24
+                    self.npz_index += 1
+
+                    self.target_pos = robot_pos[None, :]
+                    self.frankas.set_dof_position_targets(self.target_pos, self.franka_indices)
+
+        ######################################### robot control #########################################
+
+
+        def move_to_target(self, goal_pos, goal_rot):
+            """
+            Move hand to target points
+            """
+            # get end effector transforms
+            hand_transforms = self.hands.get_transforms().copy()
+            hand_pos, hand_rot = hand_transforms[:, :3], hand_transforms[:, 3:]
+            #hand_rot = hand_rot[:,[1,2,3,0]] # WXYZ
+
+            # get franka DOF states
+            dof_pos = self.frankas.get_dof_positions()
+
+            # compute position and orientation error
+            pos_err = goal_pos - hand_pos
+            orn_err = orientation_error(goal_rot, hand_rot)
+            dpose = np.concatenate([pos_err, orn_err], -1)[:, None].transpose(0, 2, 1)
+
+            jacobians = self.frankas.get_jacobians()
+
+            # jacobian entries corresponding to franka hand
+            franka_hand_index = 8  # !!!
+            j_eef = jacobians[:, franka_hand_index - 1, :]
+
+            # solve damped least squares
+            j_eef_T = np.transpose(j_eef, (0, 2, 1))
+            d = 0.05  # damping term
+            lmbda = np.eye(6) * (d ** 2)
+            u = (j_eef_T @ np.linalg.inv(j_eef @ j_eef_T + lmbda) @ dpose).reshape(1, 9)
+
+            # update position targets
+            pos_targets = dof_pos + u  # * 0.3
+
+            return pos_targets

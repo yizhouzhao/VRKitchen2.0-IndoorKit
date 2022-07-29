@@ -14,7 +14,13 @@ class Controller():
         self.q = False
         self.e = False
 
+        self.up = False
+        self.down = False
+        self.left = False
+        self.right = False
+
         # self.scale = 0.1
+        
         
     def handle_keyboard_event(self, event):
         if (
@@ -35,6 +41,15 @@ class Controller():
             if event.input == carb.input.KeyboardInput.E:
                 self.e = True
 
+            if event.input == carb.input.KeyboardInput.UP:
+                self.up = True
+            if event.input == carb.input.KeyboardInput.DOWN:
+                self.down = True
+            if event.input == carb.input.KeyboardInput.LEFT:
+                self.left = True
+            if event.input == carb.input.KeyboardInput.RIGHT:
+                self.right = True
+
         if event.type == carb.input.KeyboardEventType.KEY_RELEASE:
             print("event release", event.input)
             if event.input == carb.input.KeyboardInput.W:
@@ -50,6 +65,14 @@ class Controller():
             if event.input == carb.input.KeyboardInput.E:
                 self.e = False
 
+            if event.input == carb.input.KeyboardInput.UP:
+                self.up = False
+            if event.input == carb.input.KeyboardInput.DOWN:
+                self.down = False
+            if event.input == carb.input.KeyboardInput.LEFT:
+                self.left = False
+            if event.input == carb.input.KeyboardInput.RIGHT:
+                self.right = False
 
     def PoolUserControl(self):
         return self.user_control
@@ -60,22 +83,30 @@ class Controller():
     def QueryMove(self):
         move = [0, 0, 0]
         if self.w:
-            move[2] += 1 
+            move[0] += 1 
         if self.s:
-            move[2] -= 1
-        if self.a:
-            move[0] += 1
-        if self.d:
             move[0] -= 1
+        if self.a:
+            move[1] += 1
+        if self.d:
+            move[1] -= 1
+        if self.q:
+            move[2] -= 1
+        if self.e:
+            move[2] += 1
 
         return move
 
-    def QueryTurn(self):
-        turn = 0
-        if self.q:
-            turn += 90
-        if self.e:
-            turn -= 90
+    def QueryRotation(self):
+        rotation = [0, 0]
+        if self.up:
+            rotation[0] += 1 
+        if self.down:
+            rotation[0] -= 1
+        if self.left:
+            rotation[1] += 1
+        if self.right:
+            rotation[1] -= 1
 
-        return turn
+        return rotation
         
