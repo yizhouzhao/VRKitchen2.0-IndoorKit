@@ -29,9 +29,10 @@ if APP_VERION >= "2022.1.0":
             self.is_replay = False
 
             # counting and index 
-            self.count_down = 24
+            self.count_down = 120
             self.button_status = 0 
             self.npz_index = 0
+            self.is_start = True
 
             # setup subscriptions:
             self._setup_callbacks()
@@ -75,18 +76,21 @@ if APP_VERION >= "2022.1.0":
 
             # !!!
             # self.default_dof_pos = np.array([0.0, 0.0, 0.0, -0.95, 0.0, 1.12, 0.0, 0.02, 0.02])
+            self.default_dof_pos = np.array([1.2024134e-02, -5.6960440e-01, 7.3155526e-05, -2.8114836e+00,
+                -4.8544933e-03,  3.0270250e+00,  7.2893953e-01,  3.9919264e+00, 4.0000000e+00])
 
-            # # set default dof pos:
-            # init_dof_pos = np.stack(1 * [np.array(self.default_dof_pos, dtype=np.float32)])
-            # self.frankas.set_dof_positions(init_dof_pos, self.franka_indices)
+            # set default dof pos:
+            init_dof_pos = np.stack(1 * [np.array(self.default_dof_pos, dtype=np.float32)])
+            self.frankas.set_dof_position_targets(init_dof_pos, self.franka_indices)
+            self.last_gripper_action = 1 # open as default
 
             # end effector view
             self.hands = sim.create_rigid_body_view("/World/game/franka/panda_hand")
 
             # get initial hand transforms
-            init_hand_transforms = self.hands.get_transforms().copy()
-            self.hand_pos = init_hand_transforms[:, :3]
-            self.hand_rot = init_hand_transforms[:, 3:]
+            # init_hand_transforms = self.hands.get_transforms().copy()
+            # self.hand_pos = init_hand_transforms[:, :3]
+            # self.hand_rot = init_hand_transforms[:, 3:]
 
             
             # target 
@@ -153,7 +157,7 @@ if APP_VERION >= "2022.1.0":
             self.count_down -= 1
             # self.dof_pos = self.frankas.get_dof_positions()
             # print("dof_pos", self.dof_pos)
-
+        
             # playing 
             if not self.is_replay:
                 if self.count_down == 0:
@@ -168,15 +172,26 @@ if APP_VERION >= "2022.1.0":
                     rotation_vec = self.controller.QueryRotation()
                     query_rotation = rotation_vec != [0, 0]
 
+                    # get gripper
+                    gripper_val = self.controller.QueryGripper()
+                    query_gripper =  self.last_gripper_action != gripper_val
+
                     # get end effector transforms
                     hand_transforms = self.hands.get_transforms().copy()
                     current_hand_pos, current_hand_rot = hand_transforms[:, :3], hand_transforms[:, 3:]
 
-                    if query_move or query_rotation:
+                    # update record
+                    if query_move or query_rotation or query_gripper or self.is_start:
                         self.hand_pos = current_hand_pos
                         self.hand_rot = current_hand_rot
-                    # if no input
-                    # if not query_move and not query_rotation:
+                        self.last_gripper_action = gripper_val
+
+                        self.is_start = False
+
+                    # print("current_dof_pos", self.frankas.get_dof_positions())
+
+                    # # if no input 
+                    # if not query_move and not query_rotation and not query_gripper:
                     #     return 
 
                     # get franka xform mat # FIXME: time code?
@@ -190,6 +205,14 @@ if APP_VERION >= "2022.1.0":
                     target_rot = self.hand_rot
 
                     dof_target = self.move_to_target(target_pos, target_rot)
+
+                    if query_rotation:
+                        dof_target[...,5] += rotation_vec[0] * 0.1 # slowly but surely
+                        dof_target[...,6] += rotation_vec[1] * 0.2
+
+                    # print("last_gripper_action", self.last_gripper_action)
+                    dof_target[...,[-2, -1]] = 5 if self.last_gripper_action > 0 else -1
+
                     self.frankas.set_dof_position_targets(dof_target, np.arange(1))
 
             # replaying

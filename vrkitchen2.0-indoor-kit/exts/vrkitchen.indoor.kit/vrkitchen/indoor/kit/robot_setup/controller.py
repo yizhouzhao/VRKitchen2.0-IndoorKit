@@ -20,6 +20,7 @@ class Controller():
         self.right = False
 
         # self.scale = 0.1
+        self.left_control = False
         
         
     def handle_keyboard_event(self, event):
@@ -27,7 +28,7 @@ class Controller():
             event.type == carb.input.KeyboardEventType.KEY_PRESS
             or event.type == carb.input.KeyboardEventType.KEY_REPEAT
             ): 
-            print("event input", event.input)
+            # print("event input", event.input)
             if event.input == carb.input.KeyboardInput.W:
                 self.w = True
             if event.input == carb.input.KeyboardInput.S:
@@ -40,6 +41,7 @@ class Controller():
                 self.q = True
             if event.input == carb.input.KeyboardInput.E:
                 self.e = True
+                
 
             if event.input == carb.input.KeyboardInput.UP:
                 self.up = True
@@ -50,8 +52,11 @@ class Controller():
             if event.input == carb.input.KeyboardInput.RIGHT:
                 self.right = True
 
+            if event.input == carb.input.KeyboardInput.LEFT_CONTROL:
+                self.left_control = True
+
         if event.type == carb.input.KeyboardEventType.KEY_RELEASE:
-            print("event release", event.input)
+            # print("event release", event.input)
             if event.input == carb.input.KeyboardInput.W:
                 self.w = False
             if event.input == carb.input.KeyboardInput.S:
@@ -73,6 +78,9 @@ class Controller():
                 self.left = False
             if event.input == carb.input.KeyboardInput.RIGHT:
                 self.right = False
+
+            if event.input == carb.input.KeyboardInput.LEFT_CONTROL:
+                self.left_control = False
 
     def PoolUserControl(self):
         return self.user_control
@@ -110,3 +118,8 @@ class Controller():
 
         return rotation
         
+    def QueryGripper(self):
+        if not self.left_control:
+            return 1 # open
+        else:
+            return -1 # close
