@@ -78,9 +78,9 @@ class MyExtension(omni.ext.IExt):
                     # ui.Button("+ object id", clicked_fn=self.auto_next_obj_only, style={ "margin": 8})
 
                     self.annotators = ANNOTATORS
-                    ui.Label("  Annotator: ", width = 30, style={ "font_size": 12 , "color": "PowderBlue"})
+                    ui.Label("  Annotator: ", width = 30, style={ "font_size": 12 , "color": "PowderBlue"}, visible = False)
                     annotator_index = ANNOTATORS.index("Yizhou")
-                    self.annotator_ui = ui.ComboBox(annotator_index, width = 100, *self.annotators, style={ "margin_height": 8, "font_size": 12, "color": "PowderBlue" })
+                    self.annotator_ui = ui.ComboBox(annotator_index, width = 100, *self.annotators, style={ "margin_height": 8, "font_size": 12, "color": "PowderBlue" }, visible=False)
                     # self.auto_suggest.annotator_ui = self.annotator_ui
 
                 with ui.HStack(height=30):
@@ -951,33 +951,61 @@ class MyExtension(omni.ext.IExt):
     ###################################################################################
     ################################ Play       ######################################
     ###################################################################################
- 
+    
+    def init_franka_tensor(self):
+        """
+        Init franka tensor controller
+        """
+        from .param import APP_VERION
+        assert APP_VERION >= "2022.1.0", "need Omniverse Isaac-Sim/Create in 2022"
+
+        task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
+        task_type = self.task_types[task_index]
+        task_id = self.task_id_ui.model.get_value_as_int()
+        # robot_id = self.robot_id_ui.model.get_value_as_int()
+        # mission_id = self.mission_id_ui.model.get_value_as_int()
+        # house_id = self.house_id_ui.model.get_value_as_int()
+        # anchor_id = self.anchor_id_ui.model.get_value_as_int()
+        annotator_index = self.annotator_ui.model.get_item_value_model().get_value_as_int()
+        annotator = ANNOTATORS[annotator_index]
+
+        root_dir = '-'.join([str(os.path.join(SAVE_ROOT, annotator, task_type)),str(task_id)])#, \
+            #str(robot_id), str(mission_id), str(house_id), str(anchor_id)])
+
+        traj_dir = os.path.join(root_dir, TRAJ_FOLDER)
+        # print("traj_dir", traj_dir)
+
+        from .robot_setup.franka_tensor import FrankaTensor
+        self.ft = FrankaTensor(save_path=traj_dir)
 
     def stop_record(self):
-        if self.franka is None:
-            carb.log_error( "please setup robot first")
+        if not hasattr(self, "ft"):
+            carb.log_error( "please start & record first")
             return
 
-        self.franka.stop_record()
+        self.ft.is_record = False
+        self.ft.is_replay = False
         self.timeline.stop()
     
     def replay_record(self):
-        from .param import APP_VERION
-        assert APP_VERION >= "2022.1.0", "need Omniverse Isaac-Sim/Create in 2022"
-
-        from .robot_setup.franka_tensor import FrankaTensor
-        self.ft = FrankaTensor()
+        self.init_franka_tensor()
         self.ft.is_replay = True
+        self.ft.is_record = False
 
+        self.ft.load_record()
+       
         self.timeline.play()
 
     def start_record(self):
-        from .param import APP_VERION
-        assert APP_VERION >= "2022.1.0", "need Omniverse Isaac-Sim/Create in 2022"
-
-        from .robot_setup.franka_tensor import FrankaTensor
-        self.ft = FrankaTensor()
+        self.init_franka_tensor()
         self.ft.is_replay = False
+        self.ft.is_record = True
+
+        import shutil
+        if os.path.exists(self.ft.save_path):
+                shutil.rmtree(self.ft.save_path)
+        
+        os.makedirs(self.ft.save_path, exist_ok=True)
 
         self.timeline.play()
 

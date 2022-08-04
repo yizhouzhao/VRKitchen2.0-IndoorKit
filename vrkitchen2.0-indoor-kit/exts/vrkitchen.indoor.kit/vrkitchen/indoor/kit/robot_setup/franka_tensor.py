@@ -1,19 +1,23 @@
+from numpy.lib.index_tricks import fill_diagonal
 import omni
 import carb
 import types
 import numpy as np
 import importlib
 import os
+import shutil
 
-from ..param import IS_IN_CREAT, APP_VERION
+from ..param import IS_IN_CREAT, APP_VERION, SAVE_ROOT
 from .controller import Controller
 from .numpy_utils import orientation_error
     
 from pxr import Usd, UsdGeom, Gf
 
+    
+
 if APP_VERION >= "2022.1.0":
     class FrankaTensor():
-        def __init__(self, enable_tensor_api = True) -> None:
+        def __init__(self, save_path, enable_tensor_api = True) -> None:
             carb.log_info("Franks Tensor started (only in Create >= 2022.1.1)")
             self._is_stopped = True
             self._tensor_started = False
@@ -27,6 +31,7 @@ if APP_VERION >= "2022.1.0":
 
             # property
             self.is_replay = False
+            self.is_record = False
 
             # counting and index 
             self.count_down = 120
@@ -38,6 +43,11 @@ if APP_VERION >= "2022.1.0":
             self._setup_callbacks()
             if enable_tensor_api:
                 self._enable_tensor_api()
+
+            # task info
+            self.save_path = save_path
+            
+            self.record_lines = []
 
             # controller
             self.controller = Controller()
@@ -163,6 +173,11 @@ if APP_VERION >= "2022.1.0":
                 if self.count_down == 0:
 
                     self.count_down = 6 # TODO: unify count_down is play and replay
+
+                    if self.is_record:
+                        current_dof_pos = self.frankas.get_dof_positions()
+                        with open(os.path.join(self.save_path, 'record.csv'), 'a') as f:
+                            f.write(",".join(list([str(e) for e in current_dof_pos[0]] + [str(self.last_gripper_action)])) + '\n')
                     
                     # get movement from keyboard 
                     move_vec = self.controller.QueryMove()
@@ -180,6 +195,7 @@ if APP_VERION >= "2022.1.0":
                     hand_transforms = self.hands.get_transforms().copy()
                     current_hand_pos, current_hand_rot = hand_transforms[:, :3], hand_transforms[:, 3:]
 
+                
                     # update record
                     if query_move or query_rotation or query_gripper or self.is_start:
                         self.hand_pos = current_hand_pos
@@ -187,6 +203,9 @@ if APP_VERION >= "2022.1.0":
                         self.last_gripper_action = gripper_val
 
                         self.is_start = False
+
+                    
+
 
                     # print("current_dof_pos", self.frankas.get_dof_positions())
 
@@ -217,23 +236,35 @@ if APP_VERION >= "2022.1.0":
 
             # replaying
             else: # self.is_replay:
-                np_root = "E:/researches/VRKitchen2.0/learning/vrkit_data/AWS-pickup_object-0-0-0-8-0-0/trajectory/"
-
                 if self.count_down == 0:
-                    npz_path = np_root + f"{(self.npz_index * 24):08d}.npz"
-
-                    # pause when npz not exist
-                    if not os.path.exists(npz_path):
+                    
+                    self.count_down = 6
+                    # pause when record not exist
+                    if len(self.record_lines) == 0:
                         omni.timeline.get_timeline_interface().pause()
                         return
 
-                    robot_pos = np.load(npz_path)['robot_state']['pos']
-                    print("robot_pos", robot_pos)
-                    self.count_down = 24
-                    self.npz_index += 1
+                    # load joint
+                    record_line = self.record_lines.pop(0)
+                    self.target_pos = np.array([record_line[:-1]])
+                    self.last_gripper_action = record_line[-1]
 
-                    self.target_pos = robot_pos[None, :]
+                    # load discreet gripper
+                    self.target_pos[...,[-2, -1]] = 5 if self.last_gripper_action > 0 else -1
+
+                    # print("target_pos", self.target_pos)
+                    
                     self.frankas.set_dof_position_targets(self.target_pos, self.franka_indices)
+
+        def load_record(self):
+            if not os.path.exists(os.path.join(self.save_path, 'record.csv')):
+                carb.log_error( "please start & record first")
+                return
+
+            with open(os.path.join(self.save_path, 'record.csv'), 'r') as f:
+                for line in f.readlines():
+                    self.record_lines.append([float(e) for e in line.split(",")])
+
 
         ######################################### robot control #########################################
 
