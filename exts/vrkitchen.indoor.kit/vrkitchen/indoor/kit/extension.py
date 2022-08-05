@@ -84,7 +84,7 @@ class MyExtension(omni.ext.IExt):
                     # self.auto_suggest.annotator_ui = self.annotator_ui
 
                 with ui.HStack(height=30):
-                    ui.Label(" Task (Object) id: ", width=20, style={"color": "darkorange"})
+                    ui.Label(" Object id: ", width=20, style={"color": "darkorange"})
                     self.task_id_ui = omni.ui.IntField(height=20, width = 20, style={ "margin": 8 , "color": "darkorange"})    
 
                     ui.Button("+", width = 20, style={"margin_height": 8, "font_size": 12, "color": "darkorange"},
@@ -121,7 +121,7 @@ class MyExtension(omni.ext.IExt):
                     
                     ui.Label(" | ", width=10)
 
-                    ui.Label("House:", width=20, style = { "color": "Gold"})
+                    ui.Label(" House:", width=20, style = { "color": "Gold"})
                     self.house_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8, "margin_width": 4,  "color": "Gold"})
                     self.house_id_ui.model.set_value(0)
                     ui.Button("+", width = 20, style={"margin_height": 8, "font_size": 12,  "color": "Gold"},
