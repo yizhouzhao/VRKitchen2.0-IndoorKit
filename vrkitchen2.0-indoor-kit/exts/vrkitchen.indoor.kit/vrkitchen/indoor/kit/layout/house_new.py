@@ -708,21 +708,15 @@ class House():
         return [str((i,j)) for i,j in zip(suggested_house_ids, suggested_anchor_ids)]
 
     def build_HUD(self):
-        return
-        if IS_IN_CREAT:
-            self.stage = omni.usd.get_context().get_stage()
-            gui_path = self.stage.GetDefaultPrim().GetPath().pathString + "/GUI"
-            gui = self.stage.GetPrimAtPath(gui_path)
-            if not gui:
-                gui = pxr.UsdGeom.Xform.Define(self.stage, gui_path)
-                gui_location = pxr.Gf.Vec3f(0, 100, 100)
-                gui.AddTranslateOp().Set(gui_location)
 
-                suggested_house_anchor = self.house_anchor_id_suggestion()
-                suggestion = "Suggested (house-anchor):" + ",".join(suggested_house_anchor)
-                description = f"Task type: {self.task_type}, Task id: {self.task_id}, Robot id: {self.robot_id}"
-
-                self.wiget_id = wm.add_widget(gui_path, LabelWidget(suggestion, description), wm.WidgetAlignment.TOP)
+        self.stage = omni.usd.get_context().get_stage()
+        gui_path = self.stage.GetDefaultPrim().GetPath().pathString + "/GUI"
+        gui = self.stage.GetPrimAtPath(gui_path)
+        if not gui:
+            gui = pxr.UsdGeom.Xform.Define(self.stage, gui_path)
+            gui_location = pxr.Gf.Vec3f(0, 100, 100)
+            gui.AddTranslateOp().Set(gui_location)
+            self.wiget_id = wm.add_widget(gui_path, LabelWidget(f"House id: {self.house_id}"), wm.WidgetAlignment.TOP)
 
 
     

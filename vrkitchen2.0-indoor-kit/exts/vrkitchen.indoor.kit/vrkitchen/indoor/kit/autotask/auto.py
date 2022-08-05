@@ -16,9 +16,8 @@ from ..param import IS_IN_ISAAC_SIM, DATA_PATH_NEW, CUSTOM_ASSET_PATH, ROBOT_PAT
 from ..task_check import BaseChecker, JointChecker, GraspChecker, OrientChecker, ContainerChecker
 from .meta import AUTOTASK_META
 
-if IS_IN_CREAT:
-    import omni.kit.viewport_widgets_manager as wm
-    from ..ui.hud import LabelWidget
+import omni.kit.viewport_widgets_manager as wm
+from ..ui.hud import LabelWidget
 
 class AutoTasker():
     TASK_DESCRIPTION = ""
@@ -160,6 +159,7 @@ class AutoTasker():
             scale = calculate_door_size(prim)
         else:   
             scale  = [AUTOTASK_META[self.task_type][self.meta_id]["size"]]*3
+
         if prim.HasAttribute("xformOp:scale"):
             prim.GetAttribute("xformOp:scale").Set(pxr.Gf.Vec3f(scale))
         else:
@@ -173,18 +173,30 @@ class AutoTasker():
         # set up orient
         #if self.task_type  "reorient_object":
         orient  = AUTOTASK_META[self.task_type][self.meta_id]["orient"]
-        mat = omni.usd.utils.get_world_transform_matrix(prim) 
+        print("orient: ", orient)
+        mat = pxr.UsdGeom.Xformable(prim).ComputeLocalToWorldTransform(0)
         obj_xform = pxr.Gf.Matrix4d().SetRotate(pxr.Gf.Quatf(*orient))
-        new_xform = mat * obj_xform
+        new_xform = obj_xform * mat
+        print("new_xform", new_xform, "\n scale:", scale)
         omni.kit.commands.execute(
             "TransformPrimCommand",
             path=prim.GetPath().pathString,
-            new_transform_matrix=new_xform,
+            new_transform_matrix=mat,
         ) 
 
         # other imports
         if self.task_type in ["put_object_into_box", "transfer_water", "tap_water"]:
             self.add_auxilary_object()
+
+        # unbind material
+        if self.task_type in ["transfer_water", "pour_water"]:
+            print("unbind material")
+            omni.kit.commands.execute(
+                'BindMaterial',
+                prim_path=prim.GetPath().pathString + "/cupShape",
+                material_path=None,
+                strength=pxr.UsdShade.Tokens.strongerThanDescendants
+                )
 
     def add_auxilary_object(self):
         """
@@ -220,7 +232,7 @@ class AutoTasker():
             obj_usd_path = os.path.join(aux_folder, aux_obj_name, "cup.usd")
             position = [0,0,-20]
 
-        print("aux_prim_path", aux_prim_path)
+        # print("aux_prim_path", aux_prim_path)
         prim = self.stage.GetPrimAtPath(aux_prim_path)
         if not prim.IsValid():
             prim = self.stage.DefinePrim(aux_prim_path)
@@ -251,6 +263,16 @@ class AutoTasker():
             path=prim.GetPath().pathString,
             new_transform_matrix=obj_xform,
         ) 
+
+        # unbind material
+        if self.task_type in ["transfer_water", "pour_water"]:
+            print("unbind material")
+            omni.kit.commands.execute(
+                'BindMaterial',
+                prim_path=prim.GetPath().pathString + "/cupShape",
+                material_path=None,
+                strength=pxr.UsdShade.Tokens.strongerThanDescendants
+                )
 
     def add_robot(self):
         """
@@ -464,13 +486,12 @@ class AutoTasker():
         asyncio.ensure_future(open_new_scene())
     
     def build_HUD(self):
-        if IS_IN_CREAT:
-            gui_path = self.stage.GetDefaultPrim().GetPath().pathString + "/GUI"
-            gui = self.stage.GetPrimAtPath(gui_path)
-            if not gui:
-                gui = pxr.UsdGeom.Xform.Define(self.stage, gui_path)
-                gui_location = pxr.Gf.Vec3f(0, 50, 0)
-                gui.AddTranslateOp().Set(gui_location)
+        gui_path = self.stage.GetDefaultPrim().GetPath().pathString + "/GUI"
+        gui = self.stage.GetPrimAtPath(gui_path)
+        if not gui:
+            gui = pxr.UsdGeom.Xform.Define(self.stage, gui_path)
+            gui_location = pxr.Gf.Vec3f(0, 50, 0)
+            gui.AddTranslateOp().Set(gui_location)
 
-                self.wiget_id = wm.add_widget(gui_path, LabelWidget(self.obj_id), wm.WidgetAlignment.TOP)
+            self.wiget_id = wm.add_widget(gui_path, LabelWidget(f"Object id: {self.obj_id}"), wm.WidgetAlignment.TOP)
 

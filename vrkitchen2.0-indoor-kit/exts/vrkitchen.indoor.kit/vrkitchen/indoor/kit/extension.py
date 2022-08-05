@@ -65,14 +65,14 @@ class MyExtension(omni.ext.IExt):
         self._window = ui.Window("VRKitchen2.0-Indoor-Kit", width=600)
         with self._window.frame:
             with ui.VStack():
-                ui.Label("\n Set up Layout", style = {"font_size": 20, "margin": 10}, height = 30, alignment=ui.Alignment.CENTER)
+                ui.Label("Set up Layout", style = {"font_size": 20, "margin": 2}, height = 30, alignment=ui.Alignment.CENTER)
                 self.task_desc_ui = omni.ui.StringField(height=20, style={ "margin_height": 2 })
                 with ui.HStack(height=30):
                     # set up tasks 
                     self.task_types = TASK_TYPES
-                    ui.Label(" Task type: ", width = 30, style={ "margin": 2 , "color": "Firebrick"})
+                    ui.Label(" Task type: ", width = 30, style={ "margin": 2 , "color": "cornflowerblue", "font_size":18})
                     default_task_index = self.task_types.index("pickup_object")
-                    self.task_type_ui = ui.ComboBox(default_task_index, width = 120, *self.task_types, style={ "margin": 8, "color": "Firebrick"})
+                    self.task_type_ui = ui.ComboBox(default_task_index, width = 200, *self.task_types, style={ "margin": 8, "color": "cornflowerblue", "font_size":18})
 
                     # ui.Button(" + ", clicked_fn=self.auto_next_task, width = 20, style={ "margin_height": 8})
                     # ui.Button("+ object id", clicked_fn=self.auto_next_obj_only, style={ "margin": 8})
@@ -90,7 +90,7 @@ class MyExtension(omni.ext.IExt):
                     ui.Button("+", width = 20, style={"margin_height": 8, "font_size": 12, "color": "darkorange"},
                         clicked_fn=lambda: self.task_id_ui.model.set_value(self.task_id_ui.model.get_value_as_int() + 1))
                     ui.Button("-", width = 20, style={ "margin_height": 8, "font_size": 12, "color": "darkorange"},
-                        clicked_fn=lambda: self.task_id_ui.model.set_value(self.task_id_ui.model.get_value_as_int() - 1))
+                        clicked_fn=lambda: self.task_id_ui.model.set_value(max(self.task_id_ui.model.get_value_as_int() - 1, 0 )))
 
                     ui.Label("  Object ", width=20, visible = False)
                     self.object_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8 , "margin_width": 4},  visible = False)
@@ -125,11 +125,9 @@ class MyExtension(omni.ext.IExt):
                     self.house_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8, "margin_width": 4,  "color": "Gold"})
                     self.house_id_ui.model.set_value(0)
                     ui.Button("+", width = 20, style={"margin_height": 8, "font_size": 12,  "color": "Gold"},
-                        clicked_fn=lambda: self.house_id_ui.model.set_value(self.house_id_ui.model.get_value_as_int() + 1))
+                        clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 19)))
                     ui.Button("-", width = 20, style={ "margin_height": 8, "font_size": 12,  "color": "Gold"},
-                        clicked_fn=lambda: self.house_id_ui.model.set_value(self.house_id_ui.model.get_value_as_int() - 1))
-   
-                 
+                        clicked_fn=lambda: self.house_id_ui.model.set_value(max(self.house_id_ui.model.get_value_as_int() - 1, 0)))
 
                 with ui.HStack(height=20):
                     ui.Button("Add obj", clicked_fn=self.auto_add_obj, style={ "margin": 4})
@@ -151,13 +149,13 @@ class MyExtension(omni.ext.IExt):
                     ui.Label(" |", width=10)
                     ui.Button("Load house", clicked_fn=self.load_house_new, style={ "margin": 4})
 
-                ui.Label("\n Play", style = {"font_size": 20, "margin": 10}, height = 30, alignment=ui.Alignment.CENTER)
+                ui.Label("\n Play", style = {"font_size": 20, "margin": 2}, height = 30, alignment=ui.Alignment.CENTER)
                 with ui.HStack(height=20):
-                    ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4})
-                    ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4})
-                    ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4})
+                    ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
+                    ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
+                    ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
 
-                ui.Label("\n Scene utility", style = {"font_size": 20, "margin": 10}, height = 30, alignment=ui.Alignment.CENTER)
+                ui.Label("\n Scene utility", style = {"font_size": 20, "margin": 2}, height = 30, alignment=ui.Alignment.CENTER)
                 with ui.HStack(height=30):
                     ui.Button("Add Ground", clicked_fn=self.auto_add_ground, style={ "margin": 2})
                 with ui.HStack(height=30):
@@ -174,6 +172,10 @@ class MyExtension(omni.ext.IExt):
         """
         Initialize auto task labeling tool
         """
+        
+        # update stage
+        self.stage = omni.usd.get_context().get_stage()
+
         task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
         task_type = self.task_types[task_index]
         task_id = self.task_id_ui.model.get_value_as_int()
@@ -233,14 +235,32 @@ class MyExtension(omni.ext.IExt):
         self.init_auto_tasker()
         self.auto_tasker.add_obj() 
         self.auto_tasker.build_HUD()
+
+        if self.stage.GetPrimAtPath("/World/game"):
+            self.task_desc_ui.model.set_value("Task object added!")
         
     def auto_add_robot(self):
         self.init_auto_tasker()
         self.auto_tasker.add_robot()
-    
+
+        franka_prim = self.stage.GetPrimAtPath("/World/game/franka")
+        if franka_prim:
+            self.task_desc_ui.model.set_value("Robot added!")
+            selection = omni.usd.get_context().get_selection()
+            selection.clear_selected_prim_paths()
+            selection.set_prim_path_selected(franka_prim.GetPath().pathString, True, True, True, True)
+        
     def auto_add_house(self):
         self.init_auto_tasker()
         self.auto_tasker.add_house()
+
+        layout_prim = self.stage.GetPrimAtPath("/World/layout")
+        if layout_prim:
+            self.task_desc_ui.model.set_value("House added!")
+            selection = omni.usd.get_context().get_selection()
+            selection.clear_selected_prim_paths()
+            selection.set_prim_path_selected("/World/game", True, True, True, True)
+
     
     def auto_add_mission(self):
         self.init_auto_tasker()
@@ -316,6 +336,7 @@ class MyExtension(omni.ext.IExt):
         """
         self.init_new_house()
         self.house.record_obj_info()
+        self.task_desc_ui.model.set_value("object location recorded!")
 
 
     def record_robot_new(self):
@@ -325,15 +346,19 @@ class MyExtension(omni.ext.IExt):
         self.init_new_house()
         self.house.record_robot_info()
 
-        if BaseChecker.SUCCESS_UI:
-            BaseChecker.SUCCESS_UI.model.set_value("robot id (robot variation) recorded")
+        # if BaseChecker.SUCCESS_UI:
+        #     BaseChecker.SUCCESS_UI.model.set_value("robot id (robot variation) recorded")
+
+        self.task_desc_ui.model.set_value("robot location recorded!")
     
     def record_house_new(self):
         self.init_new_house()
         self.house.record_house_info()
 
-        if BaseChecker.SUCCESS_UI:
-            BaseChecker.SUCCESS_UI.model.set_value("house-anchor recorded")
+        # if BaseChecker.SUCCESS_UI:
+        #     BaseChecker.SUCCESS_UI.model.set_value("house-anchor recorded")
+
+        self.task_desc_ui.model.set_value("game location in house recorded!")
 
     def load_obj_new(self):
         """
@@ -986,6 +1011,8 @@ class MyExtension(omni.ext.IExt):
         self.ft.is_record = False
         self.ft.is_replay = False
         self.timeline.stop()
+
+        self.task_desc_ui.model.set_value("Stop.")
     
     def replay_record(self):
         self.init_franka_tensor()
@@ -995,6 +1022,8 @@ class MyExtension(omni.ext.IExt):
         self.ft.load_record()
        
         self.timeline.play()
+
+        self.task_desc_ui.model.set_value("Start replaying...")
 
     def start_record(self):
         self.init_franka_tensor()
@@ -1008,5 +1037,7 @@ class MyExtension(omni.ext.IExt):
         os.makedirs(self.ft.save_path, exist_ok=True)
 
         self.timeline.play()
+
+        self.task_desc_ui.model.set_value("Start recording...")
 
     

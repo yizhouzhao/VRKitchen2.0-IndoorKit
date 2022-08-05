@@ -7,18 +7,27 @@ import importlib
 import os
 import shutil
 
+
 from ..param import IS_IN_CREAT, APP_VERION, SAVE_ROOT
 from .controller import Controller
 from .numpy_utils import orientation_error
     
 from pxr import Usd, UsdGeom, Gf
 
-    
+import omni.kit.viewport_widgets_manager as wm
+from ..ui.hud import LabelWidgetMultiLine
 
 if APP_VERION >= "2022.1.0":
     class FrankaTensor():
-        def __init__(self, save_path, enable_tensor_api = True) -> None:
-            carb.log_info("Franks Tensor started (only in Create >= 2022.1.1)")
+        def __init__(self, save_path, build_HUD = True):
+            """
+            Franka tensor controller
+            ::params:
+                save_path: path to save the recordings
+                build_HUD: build UI 
+            """
+            carb.log_info("Franks Tensor started (only in Create/Isaac-Sim >= 2022.1.0)")
+
             self._is_stopped = True
             self._tensor_started = False
             self._tensor_api = None
@@ -41,8 +50,7 @@ if APP_VERION >= "2022.1.0":
 
             # setup subscriptions:
             self._setup_callbacks()
-            if enable_tensor_api:
-                self._enable_tensor_api()
+            self._enable_tensor_api()
 
             # task info
             self.save_path = save_path
@@ -51,6 +59,7 @@ if APP_VERION >= "2022.1.0":
 
             # controller
             self.controller = Controller()
+
 
         def _enable_tensor_api(self):
                 manager = omni.kit.app.get_app().get_extension_manager()
@@ -203,9 +212,6 @@ if APP_VERION >= "2022.1.0":
                         self.last_gripper_action = gripper_val
 
                         self.is_start = False
-
-                    
-
 
                     # print("current_dof_pos", self.frankas.get_dof_positions())
 
