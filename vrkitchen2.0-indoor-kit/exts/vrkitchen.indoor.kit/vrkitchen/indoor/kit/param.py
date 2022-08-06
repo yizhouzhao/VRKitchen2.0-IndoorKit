@@ -1,21 +1,17 @@
-try:
-    import carb
-except:
-    pass
+import carb
 import os
 from pathlib import Path
 
 root = str(Path(__file__).parent.joinpath("../../../../../../").resolve())
 ROOT = root
-# print("root:", ROOT)
-# ROOT = '/home/nikepupu/Desktop'
-# In isaac sim or create
-try:
-    IS_IN_ISAAC_SIM = str(carb.settings.get_settings().get("/app/window/title")).startswith("Isaac Sim")
-    IS_IN_CREAT = str(carb.settings.get_settings().get("/app/window/title")).startswith("Create")
-    APP_VERION = str(carb.settings.get_settings().get("/app/version"))
-except:
-    pass
+
+IS_IN_ISAAC_SIM = str(carb.settings.get_settings().get("/app/window/title")).startswith("Isaac Sim")
+IS_IN_CREAT = str(carb.settings.get_settings().get("/app/window/title")).startswith("Create")
+IS_IN_CODE = str(carb.settings.get_settings().get("/app/window/title")).startswith("Code")
+APP_VERION = str(carb.settings.get_settings().get("/app/version"))
+
+assert APP_VERION >= "2022.1.0", "Please start Isaac-Sim/Create/Code with version no small than 2022.1.0"
+print("APP name: ", str(carb.settings.get_settings().get("/app/window/title")), APP_VERION)  
 
 # root = '/home/yizhou/Research/' 
 

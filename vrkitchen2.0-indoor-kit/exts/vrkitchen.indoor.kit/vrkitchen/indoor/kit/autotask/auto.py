@@ -16,8 +16,9 @@ from ..param import IS_IN_ISAAC_SIM, DATA_PATH_NEW, CUSTOM_ASSET_PATH, ROBOT_PAT
 from ..task_check import BaseChecker, JointChecker, GraspChecker, OrientChecker, ContainerChecker
 from .meta import AUTOTASK_META
 
-import omni.kit.viewport_widgets_manager as wm
-from ..ui.hud import LabelWidget
+if IS_IN_CREAT:
+    import omni.kit.viewport_widgets_manager as wm
+    from ..ui.hud import LabelWidget
 
 class AutoTasker():
     TASK_DESCRIPTION = ""
@@ -486,12 +487,13 @@ class AutoTasker():
         asyncio.ensure_future(open_new_scene())
     
     def build_HUD(self):
-        gui_path = self.stage.GetDefaultPrim().GetPath().pathString + "/GUI"
-        gui = self.stage.GetPrimAtPath(gui_path)
-        if not gui:
-            gui = pxr.UsdGeom.Xform.Define(self.stage, gui_path)
-            gui_location = pxr.Gf.Vec3f(0, 50, 0)
-            gui.AddTranslateOp().Set(gui_location)
+        if IS_IN_CREAT or IS_IN_ISAAC_SIM:
+            gui_path = self.stage.GetDefaultPrim().GetPath().pathString + "/GUI"
+            gui = self.stage.GetPrimAtPath(gui_path)
+            if not gui:
+                gui = pxr.UsdGeom.Xform.Define(self.stage, gui_path)
+                gui_location = pxr.Gf.Vec3f(0, 50, 0)
+                gui.AddTranslateOp().Set(gui_location)
 
-            self.wiget_id = wm.add_widget(gui_path, LabelWidget(f"Object id: {self.obj_id}"), wm.WidgetAlignment.TOP)
+                self.wiget_id = wm.add_widget(gui_path, LabelWidget(f"Object id: {self.obj_id}"), wm.WidgetAlignment.TOP)
 

@@ -685,7 +685,7 @@ class MyExtension(omni.ext.IExt):
             self.load_obj_new()
             self.load_robot_new()
             self.load_house_new()
-            if not self.load_house_successful:
+            if not self.load_house_successful: 
                 self.auto_add_house()
             
             select_prim_path = "/World/game" 
@@ -811,7 +811,7 @@ class MyExtension(omni.ext.IExt):
             position, rotation = self.house.load_robot_info()
                 
         # print("position, rotation ", np.array(position), np.array(rotation))
-        if (not self.is_initial_setup) and IS_IN_ISAAC_SIM:
+        if False: # (not self.is_initial_setup) and IS_IN_ISAAC_SIM:
             # target_path = "/World/game/mobility_Bottle_3618"
             target_path = None
             for target_prim in self.stage.GetPrimAtPath("/World/game").GetChildren():

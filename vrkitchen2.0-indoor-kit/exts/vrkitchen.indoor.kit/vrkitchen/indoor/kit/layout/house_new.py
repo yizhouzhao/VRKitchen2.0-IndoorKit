@@ -19,12 +19,9 @@ from ..param import DATA_PATH_NEW, ASSET_PATH, HOUSE_INFO_PATH, IS_IN_ISAAC_SIM,
 from .utils import rename_prim, rotationXYZ_to_quaternion, freeze_prim
 from .modify import modify_game_obj_prim
 
-if IS_IN_CREAT:
+if IS_IN_CREAT or IS_IN_ISAAC_SIM:
     import omni.kit.viewport_widgets_manager as wm
     from ..ui.hud import LabelWidget
-else:
-    from omni.isaac.core.utils.prims import get_all_matching_child_prims, get_prim_type_name
-    from omni.isaac.core.utils.semantics import add_update_semantics
 
 from .utils import NpEncoder
 
@@ -708,15 +705,15 @@ class House():
         return [str((i,j)) for i,j in zip(suggested_house_ids, suggested_anchor_ids)]
 
     def build_HUD(self):
-
-        self.stage = omni.usd.get_context().get_stage()
-        gui_path = self.stage.GetDefaultPrim().GetPath().pathString + "/GUI"
-        gui = self.stage.GetPrimAtPath(gui_path)
-        if not gui:
-            gui = pxr.UsdGeom.Xform.Define(self.stage, gui_path)
-            gui_location = pxr.Gf.Vec3f(0, 100, 100)
-            gui.AddTranslateOp().Set(gui_location)
-            self.wiget_id = wm.add_widget(gui_path, LabelWidget(f"House id: {self.house_id}"), wm.WidgetAlignment.TOP)
+        if IS_IN_CREAT or IS_IN_ISAAC_SIM:
+            self.stage = omni.usd.get_context().get_stage()
+            gui_path = self.stage.GetDefaultPrim().GetPath().pathString + "/GUI"
+            gui = self.stage.GetPrimAtPath(gui_path)
+            if not gui:
+                gui = pxr.UsdGeom.Xform.Define(self.stage, gui_path)
+                gui_location = pxr.Gf.Vec3f(0, 100, 100)
+                gui.AddTranslateOp().Set(gui_location)
+                self.wiget_id = wm.add_widget(gui_path, LabelWidget(f"House id: {self.house_id}"), wm.WidgetAlignment.TOP)
 
 
     
