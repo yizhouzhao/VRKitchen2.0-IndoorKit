@@ -1,0 +1,22 @@
+{
+    "pickup_object 0 0 0": {
+        "task_type": "pickup_object",
+        "task_id": "0",
+        "robot_id": "0",
+        "anchor_id": "0",
+        "game_location": {
+            "translate": [
+                0.0,
+                9.577489180074727,
+                259.00897047279625
+            ],
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ]
+        },
+        "additional_collisions": []
+    }
+}

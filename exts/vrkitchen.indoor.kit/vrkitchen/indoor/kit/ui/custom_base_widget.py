@@ -44,7 +44,7 @@ class CustomBaseWidget:
         ui.Label(
             self.__attr_label,
             name="attribute_name",
-            width=80,
+            width=60,
         )
 
     def _build_body(self):
@@ -79,4 +79,4 @@ class CustomBaseWidget:
         with ui.HStack():
             self._build_head()
             self._build_body()
-            # self._build_tail()
+            self._build_tail()

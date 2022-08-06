@@ -29,6 +29,7 @@ from omni.ui import color as cl
 from omni.ui import constant as fl
 
 from .ui.custom_combobox_widget import TaskTypeComboboxWidget
+from .ui.custom_radio_collection import CustomImageButton
 
 
 # Any class derived from `omni.ext.IExt` in top level module (defined in `python.modules` of `extension.toml`) will be
@@ -75,12 +76,13 @@ class MyExtension(omni.ext.IExt):
             self._window.frame.style = julia_modeler_style
             with ui.ScrollingFrame():
                 with ui.VStack(height=0):
-                    self.task_desc_ui = ui.StringField(height=30, style={ "margin_height": 2, "font_size": 20, "alignment": ui.Alignment.RIGHT_CENTER})
+                    self.task_desc_ui = ui.StringField(height=60, style={ "margin_height": 2, "font_size": 20, "alignment": ui.Alignment.RIGHT_CENTER})
                     self.task_desc_ui.model.set_value(" Welcome to VRKitchen2.0 Indoor Kit!")
                     ui.Spacer(height=10)
                     with ui.CollapsableFrame("TASK LAYOUT"):
                         with ui.VStack(height=0, spacing=0):
-                            ui.Spacer(height=10)
+                            ui.Line(style_type_name_override="HeaderLine")
+                            ui.Spacer(height = 12)
                             with ui.HStack(height=30):
                                 # set up tasks  
                                 self.task_types = TASK_TYPES
@@ -88,7 +90,7 @@ class MyExtension(omni.ext.IExt):
                                 # default_task_index = self.task_types.index("pickup_object")
                                 # self.task_type_ui = ui.ComboBox(default_task_index, width = 200, *self.task_types, style={ "margin": 8, "color": "cornflowerblue", "font_size":18})
  
-                                self.task_type_ui = TaskTypeComboboxWidget(label="Task Type:\t", options=self.task_types)
+                                self.task_type_ui = TaskTypeComboboxWidget(label="Task type:\t", options=self.task_types)
                                 
                                 
                                 # ui.Button(" + ", clicked_fn=self.auto_next_task, width = 20, style={ "margin_height": 8})
@@ -102,13 +104,16 @@ class MyExtension(omni.ext.IExt):
 
                             with ui.HStack(height=30):
                                 with ui.HStack():
-                                    ui.Label("   Object id: ", width=30, style={"color": "darkorange"})
+                                    ui.Label("\tObject id: ", width=30, style={"color": "darkorange"})
                                     self.task_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={ "color": "darkorange"})    
 
                                     ui.Button("+", width = 30, style={"margin_height": 8,  "color": "darkorange", "border_color": cl.btn_border, "border_width": fl.border_width},
-                                        clicked_fn=lambda: self.task_id_ui.model.set_value(self.task_id_ui.model.get_value_as_int() + 1))
+                                        clicked_fn=lambda: self.task_id_ui.model.set_value(min(self.task_id_ui.model.get_value_as_int() + 1, 19)))
                                     ui.Button("-", width = 30, style={ "margin_height": 8, "color": "darkorange", "border_color": cl.btn_border, "border_width": fl.border_width},
                                         clicked_fn=lambda: self.task_id_ui.model.set_value(max(self.task_id_ui.model.get_value_as_int() - 1, 0 )))
+                                    
+                                    ui.Button("Add object", name = "add_button", clicked_fn=self.auto_add_obj, style={ "color": "darkorange"})
+                            
 
                                 ui.Label("  Object ", width=20, visible = False)
                                 self.object_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8 , "margin_width": 4},  visible = False)
@@ -137,43 +142,54 @@ class MyExtension(omni.ext.IExt):
                                 ui.Label("Mission ", width=20, visible = False)
                                 self.mission_id_ui = omni.ui.IntField(height=20, width = 40, style={ "margin": 8 }, visible = False)
                                 
-                                with ui.HStack():
-                                    ui.Label(" | ", width=10, style={"margin": 10})
-
-                                with ui.HStack():
-                                    ui.Label(" House id: ", width = 30, style = { "color": "Gold", "font_size": 14})
-                                    self.house_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={"color": "Gold"})
-                                    self.house_id_ui.model.set_value(0)
-                                    ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
-                                        clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 19)))
-                                    ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
-                                        clicked_fn=lambda: self.house_id_ui.model.set_value(max(self.house_id_ui.model.get_value_as_int() - 1, 0)))
-
-                            with ui.HStack(height=20):
-                                ui.Button("Add object", clicked_fn=self.auto_add_obj, style={ "margin": 4})
-                                ui.Button("Add robot", clicked_fn=self.auto_add_robot, style={ "margin": 4})
-                                ui.Button("Add mission", clicked_fn=self.auto_add_mission, style={ "margin": 4}, visible = False)
-                                ui.Label(" |", width=10)
-                                ui.Button("Add house", clicked_fn=self.auto_add_house, style={ "margin": 4})
-
-                            with ui.HStack(height=20):
-                                ui.Button("Record object", name = "kit_button", clicked_fn=self.record_obj_new, style={ "margin": 4})
-                                ui.Button("Record robot", name = "kit_button", clicked_fn=self.record_robot_new, style={ "margin": 4})
-                                ui.Label(" |", width=10)
-                                ui.Button("Record house", name = "kit_button", clicked_fn=self.record_house_new, style={ "margin": 4})
                             
-                            with ui.HStack(height=20):
+                            with ui.HStack():
+                                ui.Label("\tHouse id: ", width = 30, style = { "color": "Gold", "font_size": 14})
+                                self.house_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={"color": "Gold"})
+                                self.house_id_ui.model.set_value(0)
+                                ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                    clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 19)))
+                                ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                    clicked_fn=lambda: self.house_id_ui.model.set_value(max(self.house_id_ui.model.get_value_as_int() - 1, 0)))
+                                ui.Button("Add house", name = "add_button", clicked_fn=self.auto_add_house, style={ "color": "Gold"})
+
+
+                            with ui.HStack(height=20, visible = False): 
+                                ui.Button("Add robot", clicked_fn=self.auto_add_robot, style={ "margin": 4})
+                                ui.Button("Add mission", clicked_fn=self.auto_add_mission, style={ "margin": 4})
+                                # ui.Label(" |", width=10)
+                              
+                            with ui.HStack(height=20, visible = False):
+                                ui.Button("Record object", name = "record_button", clicked_fn=self.record_obj_new, style={ "margin": 4})
+                                ui.Button("Record robot", name = "record_button", clicked_fn=self.record_robot_new, style={ "margin": 4})
+                                ui.Label(" |", width=10)
+                                ui.Button("Record house", name = "record_button", clicked_fn=self.record_house_new, style={ "margin": 4})
+                            
+                            with ui.HStack(height=20): 
+                                ui.Button("Record scene", name = "record_button", clicked_fn=self.record_scene, style={ "margin": 4})
+                             
+
+                            with ui.HStack(height=20, visible = False):
                                 ui.Button("Load object", clicked_fn=self.load_obj_new, style={ "margin": 4})
                                 ui.Button("Load robot", clicked_fn=self.load_robot_new, style={ "margin": 4})
                                 # ui.Button("Load mission", clicked_fn=self.load_mission, style={ "margin": 4})      
                                 ui.Label(" |", width=10)
                                 ui.Button("Load house", clicked_fn=self.load_house_new, style={ "margin": 4})
+                    
+                    with ui.CollapsableFrame("PLAY"):
+                        with ui.VStack(height=0, spacing=0):
+                            ui.Line(style_type_name_override="HeaderLine")
+                            ui.Spacer(height = 12)
+                            
+                            ui.Button("Load scene", name = "load_button", clicked_fn=self.load_scene, style={ "margin": 4})
 
-                    ui.Label("\n Play", style = {"font_size": 20, "margin": 2}, height = 30, alignment=ui.Alignment.CENTER)
-                    with ui.HStack(height=20):
-                        ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
-                        ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
-                        ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
+                            CustomImageButton("Render Method", labels=["Path Traced", "Volumetric"],
+                                      default_value=1)
+
+                            with ui.HStack(height=30):
+                                ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
+                                ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
+                                ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
 
                     with ui.CollapsableFrame("SCENE UTILITY"):
                         with ui.VStack(height=0, spacing=4):
@@ -259,6 +275,8 @@ class MyExtension(omni.ext.IExt):
 
         if self.stage.GetPrimAtPath("/World/game"):
             self.task_desc_ui.model.set_value("Task object added!")
+
+        self.auto_add_robot()
         
     def auto_add_robot(self):
         self.init_auto_tasker()
@@ -266,11 +284,15 @@ class MyExtension(omni.ext.IExt):
 
         franka_prim = self.stage.GetPrimAtPath("/World/game/franka")
         if franka_prim:
-            self.task_desc_ui.model.set_value("Robot added!")
+            self.task_desc_ui.model.set_value("Feel free to move the robot, then you can `Add house`")
             selection = omni.usd.get_context().get_selection()
             selection.clear_selected_prim_paths()
             selection.set_prim_path_selected(franka_prim.GetPath().pathString, True, True, True, True)
-        
+
+            viewport = omni.kit.viewport_legacy.get_viewport_interface()
+            if viewport:
+                viewport.get_viewport_window().focus_on_selected()
+
     def auto_add_house(self):
         self.init_auto_tasker()
         self.auto_tasker.add_house()
@@ -350,6 +372,17 @@ class MyExtension(omni.ext.IExt):
         self.house = HouseNew(task_type, task_id, robot_id, mission_id, house_id, anchor_id, annotator)
         self.house.build_HUD()
         # print("robot", self.house.robot_id) 
+    
+    def record_scene(self):
+        """
+        Record obj + robot + house
+        """
+        self.init_new_house()
+        self.house.record_obj_info()
+        self.house.record_robot_info()
+        self.house.record_house_info()
+
+        self.task_desc_ui.model.set_value("Scene recorded! Please a start a new scene and load.")
 
     def record_obj_new(self):
         """
@@ -380,6 +413,14 @@ class MyExtension(omni.ext.IExt):
         #     BaseChecker.SUCCESS_UI.model.set_value("house-anchor recorded")
 
         self.task_desc_ui.model.set_value("game location in house recorded!")
+    
+    def load_scene(self):
+        """
+        Load obj + robot + house
+        """
+        self.load_obj_new()
+        self.load_robot_new()
+        self.load_house_new()
 
     def load_obj_new(self):
         """
@@ -722,3 +763,9 @@ class MyExtension(omni.ext.IExt):
         self.task_desc_ui.model.set_value("Start recording...")
 
     
+    ######################## debug ###############################
+
+    def debug(self, path):
+        print("debug", path)
+        self.debug_button.color = "red"
+        self.debug_button._build_fn()

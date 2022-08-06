@@ -59,6 +59,7 @@ class TaskTypeComboboxWidget(CustomBaseWidget):
             self.__combobox_widget.model.get_item_value_model().set_value(
                 self.__default_val)
             self.revert_img.enabled = False
+    
 
     def _build_body(self):
         """Main meat of the widget.  Draw the Rectangle, Combobox, and

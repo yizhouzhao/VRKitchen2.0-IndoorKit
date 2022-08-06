@@ -66,6 +66,9 @@ url.radio_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/radio_btn_on.svg"
 url.radio_btn_off_icon = f"{EXTENSION_FOLDER_PATH}/icons/radio_btn_off.svg"
 url.diag_bg_lines_texture = f"{EXTENSION_FOLDER_PATH}/icons/diagonal_texture_screenshot.png"
 
+####################### Indoor Kit ###########################################
+url.start_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/start.svg"
+
 # The main style dict
 julia_modeler_style = {
     "Button::tool_button": {
@@ -141,7 +144,7 @@ julia_modeler_style = {
         "alignment": ui.Alignment.RIGHT_TOP,
         "margin_height": fl.attr_label_v_spacing,
         "margin_width": fl.main_label_attr_hspacing,
-        "color": "cornflowerblue",
+        # "color": "cornflowerblue",
         "font_size": fl.main_label_font_size,
     },
     "Label::attribute_name:hovered": {"color": cl.main_attr_label_text_hover},
@@ -186,7 +189,7 @@ julia_modeler_style = {
         "border_width": fl.border_width,
     },
     "ComboBox::dropdown_menu": {
-        "color": "cornflowerblue",  # label color
+        # "color": "cornflowerblue",  # label color
         "padding_height": 1.25,
         "margin": 2,
         "background_color": cl.field_bg,
@@ -197,12 +200,21 @@ julia_modeler_style = {
     "Rectangle::combobox_icon_cover": {"background_color": cl.field_bg},
 
 
-    ################## custom
+    ################## VRKitchen Indoor Kit ###############
     "Field::choose_id": { 
         "margin": 8,
     },
 
-    "Button::kit_button": {
+    "Button::record_button": {
+        "background_color": cl.field_bg,
+        "border_color": cl.btn_border,
+        "border_width": fl.border_width,
+        "border_radius": 6,
+        "margin": 4,
+        "corner_flag": ui.CornerFlag.ALL,
+    },
+
+    "Button::load_button": {
         "background_color": cl.field_bg,
         "border_color": cl.btn_border,
         "border_width": fl.border_width,
@@ -210,4 +222,17 @@ julia_modeler_style = {
         "margin": 4,
         "corner_flag": ui.CornerFlag.ALL,
     },
+
+
+    "Button::add_button": {
+        "background_color": cl.field_bg,
+        "border_color": cl.btn_border,
+        "border_width": fl.border_width,
+        "border_radius": 2,
+        "margin": 8,
+        "corner_flag": ui.CornerFlag.ALL,
+    },
+
+    "Image::start_on": {"image_url": url.start_btn_on_icon},
+    # "Image::radio_off": {"image_url": url.radio_btn_off_icon},
 }

@@ -33,6 +33,8 @@ class CustomPathButtonWidget:
         self.__callback = btn_callback
         self.__frame = ui.Frame()
 
+        self.color = "blue"
+
         with self.__frame:
             self._build_fn()
 
@@ -58,6 +60,7 @@ class CustomPathButtonWidget:
 
     def _build_fn(self):
         """Draw all of the widget parts and set up callbacks."""
+        print("btn color", self.color)
         with ui.HStack():
             ui.Label(
                 self.__attr_label,
@@ -78,4 +81,7 @@ class CustomPathButtonWidget:
                 height=BLOCK_HEIGHT,
                 width=ui.Fraction(1),
                 clicked_fn=lambda path=self.get_path(): self.__callback(path),
+                style = {"color": self.color}
             )
+
+            # self.__btn.set_value("color", "red")

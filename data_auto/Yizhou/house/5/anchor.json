@@ -1,0 +1,22 @@
+{
+    "pour_water 1 0 0": {
+        "task_type": "pour_water",
+        "task_id": "1",
+        "robot_id": "0",
+        "anchor_id": "0",
+        "game_location": {
+            "translate": [
+                0.0,
+                3.088922122104011e-06,
+                248.9996358652012
+            ],
+            "orient": [
+                0.7639983468079043,
+                0,
+                0.645218200359219,
+                0
+            ]
+        },
+        "additional_collisions": []
+    }
+}
