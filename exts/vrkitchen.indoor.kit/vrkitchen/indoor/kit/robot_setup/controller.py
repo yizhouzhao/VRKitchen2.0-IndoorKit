@@ -1,10 +1,9 @@
 # controller
-import omni
 import carb
 
 class Controller():
     def __init__(self) -> None:
-        self.user_control = 0.25
+        self.user_control = 0.25 
         self.network_control = 0.25
 
         self.w = False

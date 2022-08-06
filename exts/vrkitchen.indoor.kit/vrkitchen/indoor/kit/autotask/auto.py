@@ -418,7 +418,7 @@ class AutoTasker():
 
     def add_task(self):
         """
-        Add task to current scene
+        Add task to current scene 
         """
         self.stage = omni.usd.get_context().get_stage()
 
