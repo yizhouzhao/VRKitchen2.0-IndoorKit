@@ -25,6 +25,10 @@ from .autotask.auto import AutoTasker
 # from .autotask.auto_label import AutoLabeler
 
 ###################### ui import ################
+from omni.ui import color as cl
+from omni.ui import constant as fl
+
+from .ui.custom_combobox_widget import TaskTypeComboboxWidget
 
 
 # Any class derived from `omni.ext.IExt` in top level module (defined in `python.modules` of `extension.toml`) will be
@@ -64,20 +68,29 @@ class MyExtension(omni.ext.IExt):
         """
         Build a window to control/debug layout 
         """
+        from  .ui.style import julia_modeler_style
         self._window = ui.Window("VRKitchen2.0-Indoor-Kit", width=600)
+
         with self._window.frame:
+            self._window.frame.style = julia_modeler_style
             with ui.ScrollingFrame():
                 with ui.VStack(height=0):
-                    self.task_desc_ui = omni.ui.StringField(height=40, style={ "margin_height": 2, "font_size": 20})
+                    self.task_desc_ui = ui.StringField(height=30, style={ "margin_height": 2, "font_size": 20, "alignment": ui.Alignment.RIGHT_CENTER})
+                    self.task_desc_ui.model.set_value(" Welcome to VRKitchen2.0 Indoor Kit!")
+                    ui.Spacer(height=10)
                     with ui.CollapsableFrame("TASK LAYOUT"):
                         with ui.VStack(height=0, spacing=0):
+                            ui.Spacer(height=10)
                             with ui.HStack(height=30):
-                                # set up tasks 
+                                # set up tasks  
                                 self.task_types = TASK_TYPES
-                                ui.Label(" Task type: ", width = 30, style={ "margin": 2 , "color": "cornflowerblue", "font_size":18})
-                                default_task_index = self.task_types.index("pickup_object")
-                                self.task_type_ui = ui.ComboBox(default_task_index, width = 200, *self.task_types, style={ "margin": 8, "color": "cornflowerblue", "font_size":18})
-
+                                # ui.Label(" Task type: ", width = 30, style={ "margin": 2 , "color": "cornflowerblue", "font_size":18})
+                                # default_task_index = self.task_types.index("pickup_object")
+                                # self.task_type_ui = ui.ComboBox(default_task_index, width = 200, *self.task_types, style={ "margin": 8, "color": "cornflowerblue", "font_size":18})
+ 
+                                self.task_type_ui = TaskTypeComboboxWidget(label="Task Type:\t", options=self.task_types)
+                                
+                                
                                 # ui.Button(" + ", clicked_fn=self.auto_next_task, width = 20, style={ "margin_height": 8})
                                 # ui.Button("+ object id", clicked_fn=self.auto_next_obj_only, style={ "margin": 8})
 
@@ -88,12 +101,12 @@ class MyExtension(omni.ext.IExt):
                                 # self.auto_suggest.annotator_ui = self.annotator_ui
 
                             with ui.HStack(height=30):
-                                ui.Label(" Object id: ", width=20, style={"color": "darkorange", "font_size": 18})
-                                self.task_id_ui = omni.ui.IntField(width = 30, style={ "margin": 8 , "color": "darkorange", "font_size": 18})    
+                                ui.Label("     Object id: ", width=30, style={"color": "darkorange"})
+                                self.task_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={ "color": "darkorange"})    
 
-                                ui.Button("+", width = 30, style={"margin_height": 8,  "color": "darkorange", "font_size": 18},
+                                ui.Button("+", width = 30, style={"margin_height": 8,  "color": "darkorange", "font_size": 18, "border_color": cl.btn_border, "border_width": fl.border_width},
                                     clicked_fn=lambda: self.task_id_ui.model.set_value(self.task_id_ui.model.get_value_as_int() + 1))
-                                ui.Button("-", width = 30, style={ "margin_height": 8, "color": "darkorange", "font_size": 18},
+                                ui.Button("-", width = 30, style={ "margin_height": 8, "color": "darkorange", "font_size": 18, "border_color": cl.btn_border, "border_width": fl.border_width},
                                     clicked_fn=lambda: self.task_id_ui.model.set_value(max(self.task_id_ui.model.get_value_as_int() - 1, 0 )))
 
                                 ui.Label("  Object ", width=20, visible = False)
@@ -125,12 +138,13 @@ class MyExtension(omni.ext.IExt):
                                 
                                 ui.Label(" | ", width=10)
 
-                                ui.Label(" House: ", width=20, style = { "color": "Gold", "font_size": 18})
-                                self.house_id_ui = omni.ui.IntField(width = 30, style={ "margin_height": 8, "margin_width": 4,  "color": "Gold", "font_size": 18})
+                            # with ui.HStack(height=30):
+                                ui.Label(" House: ", width = 30, style = { "color": "Gold", "font_size": 14})
+                                self.house_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={"color": "Gold"})
                                 self.house_id_ui.model.set_value(0)
-                                ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 18,  "color": "Gold"},
+                                ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
                                     clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 19)))
-                                ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 18,  "color": "Gold"},
+                                ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
                                     clicked_fn=lambda: self.house_id_ui.model.set_value(max(self.house_id_ui.model.get_value_as_int() - 1, 0)))
 
                             with ui.HStack(height=20):
