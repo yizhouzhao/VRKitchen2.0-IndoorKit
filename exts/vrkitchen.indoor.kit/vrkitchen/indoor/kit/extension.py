@@ -101,13 +101,14 @@ class MyExtension(omni.ext.IExt):
                                 # self.auto_suggest.annotator_ui = self.annotator_ui
 
                             with ui.HStack(height=30):
-                                ui.Label("     Object id: ", width=30, style={"color": "darkorange"})
-                                self.task_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={ "color": "darkorange"})    
+                                with ui.HStack():
+                                    ui.Label("   Object id: ", width=30, style={"color": "darkorange"})
+                                    self.task_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={ "color": "darkorange"})    
 
-                                ui.Button("+", width = 30, style={"margin_height": 8,  "color": "darkorange", "font_size": 18, "border_color": cl.btn_border, "border_width": fl.border_width},
-                                    clicked_fn=lambda: self.task_id_ui.model.set_value(self.task_id_ui.model.get_value_as_int() + 1))
-                                ui.Button("-", width = 30, style={ "margin_height": 8, "color": "darkorange", "font_size": 18, "border_color": cl.btn_border, "border_width": fl.border_width},
-                                    clicked_fn=lambda: self.task_id_ui.model.set_value(max(self.task_id_ui.model.get_value_as_int() - 1, 0 )))
+                                    ui.Button("+", width = 30, style={"margin_height": 8,  "color": "darkorange", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                        clicked_fn=lambda: self.task_id_ui.model.set_value(self.task_id_ui.model.get_value_as_int() + 1))
+                                    ui.Button("-", width = 30, style={ "margin_height": 8, "color": "darkorange", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                        clicked_fn=lambda: self.task_id_ui.model.set_value(max(self.task_id_ui.model.get_value_as_int() - 1, 0 )))
 
                                 ui.Label("  Object ", width=20, visible = False)
                                 self.object_id_ui = omni.ui.IntField(height=20, width = 25, style={ "margin_height": 8 , "margin_width": 4},  visible = False)
@@ -136,16 +137,17 @@ class MyExtension(omni.ext.IExt):
                                 ui.Label("Mission ", width=20, visible = False)
                                 self.mission_id_ui = omni.ui.IntField(height=20, width = 40, style={ "margin": 8 }, visible = False)
                                 
-                                ui.Label(" | ", width=10)
+                                with ui.HStack():
+                                    ui.Label(" | ", width=10, style={"margin": 10})
 
-                            # with ui.HStack(height=30):
-                                ui.Label(" House: ", width = 30, style = { "color": "Gold", "font_size": 14})
-                                self.house_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={"color": "Gold"})
-                                self.house_id_ui.model.set_value(0)
-                                ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
-                                    clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 19)))
-                                ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
-                                    clicked_fn=lambda: self.house_id_ui.model.set_value(max(self.house_id_ui.model.get_value_as_int() - 1, 0)))
+                                with ui.HStack():
+                                    ui.Label(" House id: ", width = 30, style = { "color": "Gold", "font_size": 14})
+                                    self.house_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={"color": "Gold"})
+                                    self.house_id_ui.model.set_value(0)
+                                    ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                        clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 19)))
+                                    ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                        clicked_fn=lambda: self.house_id_ui.model.set_value(max(self.house_id_ui.model.get_value_as_int() - 1, 0)))
 
                             with ui.HStack(height=20):
                                 ui.Button("Add object", clicked_fn=self.auto_add_obj, style={ "margin": 4})
@@ -155,10 +157,10 @@ class MyExtension(omni.ext.IExt):
                                 ui.Button("Add house", clicked_fn=self.auto_add_house, style={ "margin": 4})
 
                             with ui.HStack(height=20):
-                                ui.Button("Record object", clicked_fn=self.record_obj_new, style={ "margin": 4})
-                                ui.Button("Record robot", clicked_fn=self.record_robot_new, style={ "margin": 4})
+                                ui.Button("Record object", name = "kit_button", clicked_fn=self.record_obj_new, style={ "margin": 4})
+                                ui.Button("Record robot", name = "kit_button", clicked_fn=self.record_robot_new, style={ "margin": 4})
                                 ui.Label(" |", width=10)
-                                ui.Button("Record house", clicked_fn=self.record_house_new, style={ "margin": 4})
+                                ui.Button("Record house", name = "kit_button", clicked_fn=self.record_house_new, style={ "margin": 4})
                             
                             with ui.HStack(height=20):
                                 ui.Button("Load object", clicked_fn=self.load_obj_new, style={ "margin": 4})
