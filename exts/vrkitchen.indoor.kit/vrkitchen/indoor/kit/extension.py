@@ -29,7 +29,7 @@ from omni.ui import color as cl
 from omni.ui import constant as fl
 
 from .ui.custom_combobox_widget import TaskTypeComboboxWidget
-from .ui.custom_radio_collection import CustomImageButton
+from .ui.indoorkit_ui_widget import CustomRecordGroup, CustomControlGroup
 
 
 # Any class derived from `omni.ext.IExt` in top level module (defined in `python.modules` of `extension.toml`) will be
@@ -70,7 +70,7 @@ class MyExtension(omni.ext.IExt):
         Build a window to control/debug layout 
         """
         from  .ui.style import julia_modeler_style
-        self._window = ui.Window("VRKitchen2.0-Indoor-Kit", width=600)
+        self._window = ui.Window("VRKitchen2.0-Indoor-Kit", width=390)
 
         with self._window.frame:
             self._window.frame.style = julia_modeler_style
@@ -79,6 +79,7 @@ class MyExtension(omni.ext.IExt):
                     self.task_desc_ui = ui.StringField(height=60, style={ "margin_height": 2, "font_size": 20, "alignment": ui.Alignment.RIGHT_CENTER})
                     self.task_desc_ui.model.set_value(" Welcome to VRKitchen2.0 Indoor Kit!")
                     ui.Spacer(height=10)
+                    ui.Line(style_type_name_override="HeaderLine")
                     with ui.CollapsableFrame("TASK LAYOUT"):
                         with ui.VStack(height=0, spacing=0):
                             ui.Line(style_type_name_override="HeaderLine")
@@ -166,7 +167,7 @@ class MyExtension(omni.ext.IExt):
                                 ui.Button("Record house", name = "record_button", clicked_fn=self.record_house_new, style={ "margin": 4})
                             
                             with ui.HStack(height=20): 
-                                ui.Button("Record scene", name = "record_button", clicked_fn=self.record_scene, style={ "margin": 4})
+                                ui.Button("Record scene", height = 40, name = "record_button", clicked_fn=self.record_scene, style={ "margin": 4})
                              
 
                             with ui.HStack(height=20, visible = False):
@@ -176,17 +177,28 @@ class MyExtension(omni.ext.IExt):
                                 ui.Label(" |", width=10)
                                 ui.Button("Load house", clicked_fn=self.load_house_new, style={ "margin": 4})
                     
+                            ui.Spacer(height = 6)
+
+                    ui.Line(style_type_name_override="HeaderLine")
                     with ui.CollapsableFrame("PLAY"):
                         with ui.VStack(height=0, spacing=0):
-                            ui.Line(style_type_name_override="HeaderLine")
+                            ui.Line(style_type_name_override="HeaderLine") 
                             ui.Spacer(height = 12)
                             
-                            ui.Button("Load scene", name = "load_button", clicked_fn=self.load_scene, style={ "margin": 4})
+                            ui.Button("Load scene", height = 40, name = "load_button", clicked_fn=self.load_scene, style={ "margin": 4})
+                            
+                            record_group = CustomRecordGroup(
+                                on_click_record_fn=self.start_record,
+                                on_click_stop_fn=self.stop_record,
+                                on_click_replay_fn=self.replay_record,
+                                )
 
-                            CustomImageButton("Render Method", labels=["Path Traced", "Volumetric"],
-                                      default_value=1)
+                            control_group = CustomControlGroup()
 
-                            with ui.HStack(height=30):
+                            record_group.control_group = control_group
+
+                            
+                            with ui.HStack(height=30, visible = False):
                                 ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
                                 ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
                                 ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
@@ -727,7 +739,8 @@ class MyExtension(omni.ext.IExt):
 
     def stop_record(self):
         if not hasattr(self, "ft"):
-            carb.log_error( "please start & record first")
+            self.timeline.stop()
+            carb.log_error( "please load layout and start recording first")
             return
 
         self.ft.is_record = False

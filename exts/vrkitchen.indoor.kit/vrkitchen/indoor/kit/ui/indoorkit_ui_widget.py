@@ -1,108 +1,12 @@
-# Copyright (c) 2022, NVIDIA CORPORATION.  All rights reserved.
-#
-# NVIDIA CORPORATION and its licensors retain all intellectual property
-# and proprietary rights in and to this software, related documentation
-# and any modifications thereto.  Any use, reproduction, disclosure or
-# distribution of this software and related documentation without an express
-# license agreement from NVIDIA CORPORATION is strictly prohibited.
-#
-__all__ = ["CustomRadioCollection"]
-
 from typing import List, Optional
 
 import omni
 import omni.ui as ui
 
 from .style import ATTR_LABEL_WIDTH, cl
+from ..robot_setup.controller import Controller
 
-SPACING = 5
-
-
-class CustomRadioCollection:
-    """A custom collection of radio buttons.  The group_name is on the first
-    line, and each label and radio button are on subsequent lines.  This one
-    does not inherit from CustomBaseWidget because it doesn't have the same
-    Head label, and doesn't have a Revert button at the end.
-    """
-
-    def __init__(self,
-                 group_name: str,
-                 labels: List[str],
-                 model: ui.AbstractItemModel = None,
-                 default_value: bool = True,
-                 **kwargs):
-        self.__group_name = group_name
-        self.__labels = labels
-        self.__default_val = default_value
-        self.__images = []
-        self.__selection_model = ui.SimpleIntModel(default_value)
-        self.__frame = ui.Frame()
-        with self.__frame:
-            self._build_fn()
-
-    def destroy(self):
-        self.__images = []
-        self.__selection_model = None
-        self.__frame = None
-
-    @property
-    def model(self) -> Optional[ui.AbstractValueModel]:
-        """The widget's model"""
-        if self.__selection_model:
-            return self.__selection_model
-
-    @model.setter
-    def model(self, value: int):
-        """The widget's model"""
-        self.__selection_model.set(value)
-
-    def __getattr__(self, attr):
-        """
-        Pretend it's self.__frame, so we have access to width/height and
-        callbacks.
-        """
-        return getattr(self.__frame, attr)
-
-    def _on_value_changed(self, index: int = 0):
-        """Set states of all radio buttons so only one is On."""
-        self.__selection_model.set_value(index)
-        for i, img in enumerate(self.__images):
-            img.checked = i == index
-            img.name = "radio_on" if img.checked else "radio_off"
-
-    def _build_fn(self):
-        """Main meat of the widget.  Draw the group_name label, label and
-        radio button for each row, and set up callbacks to keep them updated.
-        """
-        with ui.VStack(spacing=SPACING):
-            ui.Spacer(height=2)
-            ui.Label(self.__group_name.upper(), name="radio_group_name",
-                     width=ATTR_LABEL_WIDTH)
-
-            for i, label in enumerate(self.__labels):
-                with ui.HStack():
-                    ui.Label(label, name="attribute_name",
-                             width=ATTR_LABEL_WIDTH)
-
-                    with ui.HStack():
-                        with ui.VStack():
-                            ui.Spacer(height=2)
-                            self.__images.append(
-                                ui.Image(
-                                    name=("radio_on" if self.__default_val == i else "radio_off"),
-                                    fill_policy=ui.FillPolicy.PRESERVE_ASPECT_FIT,
-                                    height=16, width=16, checked=self.__default_val
-                                )
-                            )
-                        ui.Spacer()
-            ui.Spacer(height=2)
-
-        # Set up a mouse click callback for each radio button image
-        for i in range(len(self.__labels)):
-            self.__images[i].set_mouse_pressed_fn(
-                lambda x, y, b, m, i=i: self._on_value_changed(i))
-
-
+SPACING = 5 
 
 class CustomRecordGroup:
     STYLE = {
@@ -139,7 +43,7 @@ class CustomRecordGroup:
         self.on_click_replay_fn = on_click_replay_fn
 
         # another ui for control
-        self.control_group = None 
+        self.control_group : CustomControlGroup = None 
 
 
         self._selected = False
@@ -203,6 +107,10 @@ class CustomRecordGroup:
                 self.play_label.text = "Pause"
                 self.image_play.name = "pause_on"
                 self.on_click_record_fn()
+
+                if self.control_group:
+                    self.control_group.enable()
+
             elif self.timeline.is_playing(): # if is playing, pause
                 self.play_label.text = "Continue"
                 self.image_play.name = "start_on"
@@ -242,6 +150,9 @@ class CustomRecordGroup:
             
             self.on_click_stop_fn()
 
+            if self.control_group:
+                self.control_group.disable()
+
     @property
     def selected(self):
         return self._selected
@@ -255,37 +166,101 @@ class CustomControlGroup():
         self.collapse_frame = ui.CollapsableFrame("\tRobot control")
         self.collapse_frame.collapsed = False
         self.collapse_frame.enabled = True
-
-        # control
-        self.W = False
-        self.S = False
-        self.A = False
-        self.D = False
         
-        self.UP = False
-        self.DOWN = False
-        self.LEFT = False
-        self.RIGHT = False
-        
-
-        # ui
+        # ui 
         with self.collapse_frame:
             with ui.VStack(height=0, spacing=0):
                 with ui.HStack():
                     ui.Label("position control: ")
-                    ui.Button("W", name = "control_button", tooltip = "move end factor forward")
-                    ui.Button("S", name = "control_button", tooltip = "move end factor backward")
-                    ui.Button("A", name = "control_button", tooltip = "move end factor to left")
-                    ui.Button("D", name = "control_button", tooltip = "move end factor to right")
+                    self.button_w = ui.Button("W", name = "control_button", tooltip = "move end factor forward")
+                    self.button_s = ui.Button("S", name = "control_button", tooltip = "move end factor backward")
+                    self.button_a = ui.Button("A", name = "control_button", tooltip = "move end factor to left")
+                    self.button_d = ui.Button("D", name = "control_button", tooltip = "move end factor to right")
+
+                    self.button_q = ui.Button("Q", name = "control_button", tooltip = "move end factor to down")
+                    self.button_e = ui.Button("E", name = "control_button", tooltip = "move end factor to up")
 
                 with ui.HStack():
                     ui.Label("rotation control: ")
-                    ui.Button("UP", name = "control_button",  tooltip = "Rotate hand upward")
-                    ui.Button("DOWN", name = "control_button", tooltip = "Rotate hand downard")
-                    ui.Button("LEFT", name = "control_button", tooltip = "Rotate hand to left")
-                    ui.Button("RIGHT", name = "control_button", tooltip = "Rotate hand to right")
+                    self.button_up = ui.Button("UP", name = "control_button",  tooltip = "Rotate hand upward")
+                    self.button_down = ui.Button("DOWN", name = "control_button", tooltip = "Rotate hand downard")
+                    self.button_left = ui.Button("LEFT", name = "control_button", tooltip = "Rotate hand to left")
+                    self.button_right = ui.Button("RIGHT", name = "control_button", tooltip = "Rotate hand to right")
 
                 with ui.HStack():
                     ui.Label("gripper control: ")
-                    ui.Button("LEFT CTRL", name = "control_button", tooltip = "Close/Open gripper")
+                    self.button_control = ui.Button("LEFT CTRL", name = "control_button", tooltip = "Close/Open gripper")
             
+        self.button_list = [self.button_w, self.button_s, self.button_a, self.button_d, self.button_q, self.button_e,
+                            self.button_up, self.button_down, self.button_left, self.button_right,
+                            ]
+    
+        self.button_w.set_clicked_fn(lambda : self._on_button("w"))
+        self.button_s.set_clicked_fn(lambda : self._on_button("s"))
+        self.button_a.set_clicked_fn(lambda : self._on_button("a"))
+        self.button_d.set_clicked_fn(lambda : self._on_button("d"))
+        self.button_q.set_clicked_fn(lambda : self._on_button("q"))
+        self.button_e.set_clicked_fn(lambda : self._on_button("e"))
+
+        self.button_up.set_clicked_fn(lambda : self._on_button("up", 2))
+        self.button_down.set_clicked_fn(lambda : self._on_button("down", 2))
+        self.button_left.set_clicked_fn(lambda : self._on_button("left", 2))
+        self.button_right.set_clicked_fn(lambda : self._on_button("right", 2))
+
+        self.button_control.set_clicked_fn(lambda: self._on_button_control())
+
+        self.disable()
+    
+    def enable(self):
+        """
+        Enable itself by showing the robot controling buttons
+        """
+        self.collapse_frame.collapsed = False
+        self.collapse_frame.enabled = True
+
+        self.enable_buttons()
+    
+    def disable(self):
+        """
+        Disable itself by closing the robot controling buttons
+        """
+        self.collapse_frame.collapsed = True
+        # self.collapse_frame.enabled = False
+
+
+    def disable_buttons(self):
+        for button in self.button_list:
+            button.name = "control_button_disabled"
+            # button.enabled = False
+            Controller.reset_movement()
+    
+    def enable_buttons(self):
+        for button in self.button_list:
+            button.enabled = True
+            button.name = "control_button"
+            Controller.reset_movement()
+    
+
+    def _on_button(self, attr_name:str, style = 1):
+        attr = getattr(Controller, attr_name)
+        # print("attr", attr_name, attr)
+        button = getattr(self, f"button_{attr_name}")
+        if attr:
+            setattr(Controller, attr_name, False)
+            button.name = "control_button"
+            self.enable_buttons()
+        else:
+            self.disable_buttons()
+            setattr(Controller, attr_name, True)
+            button.enabled = True
+            button.name = f"control_button_pressed{style}"
+
+    def _on_button_control(self):
+        if Controller.left_control:
+            Controller.left_control = False
+            self.button_control.text = "LEFT CTRL"
+            self.button_control.name = "control_button"
+        else:
+            Controller.left_control = True
+            self.button_control.text = "Gripper closed"
+            self.button_control.name = "control_button_pressed3"

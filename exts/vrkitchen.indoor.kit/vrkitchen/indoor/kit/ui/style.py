@@ -67,7 +67,11 @@ url.radio_btn_off_icon = f"{EXTENSION_FOLDER_PATH}/icons/radio_btn_off.svg"
 url.diag_bg_lines_texture = f"{EXTENSION_FOLDER_PATH}/icons/diagonal_texture_screenshot.png"
 
 ####################### Indoor Kit ###########################################
-url.start_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/start.svg"
+url.start_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/toolbar_play.svg"  
+url.replay_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/toolbar_replay.svg" 
+url.stop_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/toolbar_stop.svg" 
+url.pause_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/timeline_pause.svg" 
+
 
 # The main style dict
 julia_modeler_style = {
@@ -233,6 +237,66 @@ julia_modeler_style = {
         "corner_flag": ui.CornerFlag.ALL,
     },
 
-    "Image::start_on": {"image_url": url.start_btn_on_icon},
+    "Button::control_button": {
+        "background_color": cl.field_bg,
+        "border_color": cl.btn_border,
+        "border_width": fl.border_width,
+        "border_radius": 4,
+        "margin": 2,
+        "corner_flag": ui.CornerFlag.ALL,
+    },
+
+    "Button::control_button_disabled": {
+        "background_color": cl(0.1, 0.7, 0.3, 0.4),
+        "border_color": cl.btn_border,
+        "border_width": fl.border_width,
+        "border_radius": 4,
+        "margin": 2,
+        "corner_flag": ui.CornerFlag.ALL,
+    },
+
+    "Button::control_button_pressed1": {
+        "background_color": cl( 0.7, 0.1, 0.3, 0.3),
+        "border_color": cl.btn_border,
+        "border_width": fl.border_width,
+        "border_radius": 4,
+        "margin": 2,
+        "corner_flag": ui.CornerFlag.ALL,
+    },
+
+    "Button::control_button_pressed2": {
+        "background_color": cl(0.1, 0.3, 0.7, 0.3),
+        "border_color": cl.btn_border,
+        "border_width": fl.border_width,
+        "border_radius": 4,
+        "margin": 2,
+        "corner_flag": ui.CornerFlag.ALL,
+    },
+
+    "Button::control_button_pressed3": {
+        "background_color": cl(0.7, 0.3, 0.7, 0.3),
+        "border_color": cl.btn_border,
+        "border_width": fl.border_width,
+        "border_radius": 4,
+        "margin": 2,
+        "corner_flag": ui.CornerFlag.ALL,
+    },
+
+
+    "Image::start_on": {
+        "image_url": url.start_btn_on_icon,
+        },
+
+    "Image::replay_on": {
+        "image_url": url.replay_btn_on_icon,
+        },
+    
+    "Image::stop_on": {
+        "image_url": url.stop_btn_on_icon,
+        },
+    
+    "Image::pause_on": {
+        "image_url": url.pause_btn_on_icon,
+        },
     # "Image::radio_off": {"image_url": url.radio_btn_off_icon},
 }

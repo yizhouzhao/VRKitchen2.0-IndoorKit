@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33">
+  <g id="toolbar_stop" transform="translate(-11546.3 781.5)">
+    <g id="select" transform="translate(-47.7 386.5)">
+      <rect id="Rectangle_678" data-name="Rectangle 678" width="33" height="33" transform="translate(11594 -1168)" fill="none"/>
+    </g>
+    <path id="stop" d="M699.232,148.871v20.452l-.06.184-.092.124-.124.156-.124.121-.156.092-.184.063-.152.032H678.348l-.152-.032-.184-.063-.156-.092-.124-.121-.121-.156-.092-.124-.064-.184V148.687l.064-.184.092-.124.121-.152.124-.124.156-.092.184-.063.152-.029H698.34l.152.029.184.063.156.092.124.124.124.152.092.124.06.184Z" transform="translate(10874.444 -924.019)" fill="#77878a" fill-rule="evenodd"/>
+  </g>
+</svg>

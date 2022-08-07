@@ -2,24 +2,42 @@
 import carb
 
 class Controller():
+    w = False
+    s = False
+    a = False
+    d = False
+    q = False
+    e = False
+
+    up = False
+    down = False
+    left = False
+    right = False
+
+    # Controller.scale = 0.1
+    left_control = False
+
     def __init__(self) -> None:
         self.user_control = 0.25 
         self.network_control = 0.25
 
-        self.w = False
-        self.s = False
-        self.a = False
-        self.d = False
-        self.q = False
-        self.e = False
+        Controller.reset_movement()
+    
+    @classmethod
+    def reset_movement(cls):
+        Controller.w = False
+        Controller.s = False
+        Controller.a = False
+        Controller.d = False
+        Controller.q = False
+        Controller.e = False
 
-        self.up = False
-        self.down = False
-        self.left = False
-        self.right = False
+        Controller.up = False
+        Controller.down = False
+        Controller.left = False
+        Controller.right = False
 
-        # self.scale = 0.1
-        self.left_control = False
+        # Controller.left_control = False
         
         
     def handle_keyboard_event(self, event):
@@ -29,96 +47,96 @@ class Controller():
             ): 
             # print("event input", event.input)
             if event.input == carb.input.KeyboardInput.W:
-                self.w = True
+                Controller.w = True
             if event.input == carb.input.KeyboardInput.S:
-                self.s = True
+                Controller.s = True
             if event.input == carb.input.KeyboardInput.A:
-                self.a = True
+                Controller.a = True
             if event.input == carb.input.KeyboardInput.D:
-                self.d = True
+                Controller.d = True
             if event.input == carb.input.KeyboardInput.Q:
-                self.q = True
+                Controller.q = True
             if event.input == carb.input.KeyboardInput.E:
-                self.e = True
+                Controller.e = True
                 
 
             if event.input == carb.input.KeyboardInput.UP:
-                self.up = True
+                Controller.up = True
             if event.input == carb.input.KeyboardInput.DOWN:
-                self.down = True
+                Controller.down = True
             if event.input == carb.input.KeyboardInput.LEFT:
-                self.left = True
+                Controller.left = True
             if event.input == carb.input.KeyboardInput.RIGHT:
-                self.right = True
+                Controller.right = True
 
             if event.input == carb.input.KeyboardInput.LEFT_CONTROL:
-                self.left_control = True
+                Controller.left_control = True
 
         if event.type == carb.input.KeyboardEventType.KEY_RELEASE:
             # print("event release", event.input)
             if event.input == carb.input.KeyboardInput.W:
-                self.w = False
+                Controller.w = False
             if event.input == carb.input.KeyboardInput.S:
-                self.s = False
+                Controller.s = False
             if event.input == carb.input.KeyboardInput.A:
-                self.a = False
+                Controller.a = False
             if event.input == carb.input.KeyboardInput.D:
-                self.d = False
+                Controller.d = False
             if event.input == carb.input.KeyboardInput.Q:
-                self.q = False
+                Controller.q = False
             if event.input == carb.input.KeyboardInput.E:
-                self.e = False
+                Controller.e = False
 
             if event.input == carb.input.KeyboardInput.UP:
-                self.up = False
+                Controller.up = False
             if event.input == carb.input.KeyboardInput.DOWN:
-                self.down = False
+                Controller.down = False
             if event.input == carb.input.KeyboardInput.LEFT:
-                self.left = False
+                Controller.left = False
             if event.input == carb.input.KeyboardInput.RIGHT:
-                self.right = False
+                Controller.right = False
 
             if event.input == carb.input.KeyboardInput.LEFT_CONTROL:
-                self.left_control = False
+                Controller.left_control = False
 
     def PoolUserControl(self):
         return self.user_control
 
     def PoolNetworkControl(self):
-        return 0.1 if self.w else 0.25
+        return 0.1 if Controller.w else 0.25
 
     def QueryMove(self):
         move = [0, 0, 0]
-        if self.w:
+        if Controller.w:
             move[0] += 1 
-        if self.s:
+        if Controller.s:
             move[0] -= 1
-        if self.a:
+        if Controller.a:
             move[1] += 1
-        if self.d:
+        if Controller.d:
             move[1] -= 1
-        if self.q:
+        if Controller.q:
             move[2] -= 1
-        if self.e:
+        if Controller.e:
             move[2] += 1
 
         return move
 
     def QueryRotation(self):
         rotation = [0, 0]
-        if self.up:
+        if Controller.up:
             rotation[0] += 1 
-        if self.down:
+        if Controller.down:
             rotation[0] -= 1
-        if self.left:
+        if Controller.left:
             rotation[1] += 1
-        if self.right:
+        if Controller.right:
             rotation[1] -= 1
 
         return rotation
         
     def QueryGripper(self):
-        if not self.left_control:
+        if not Controller.left_control:
             return 1 # open
         else:
             return -1 # close

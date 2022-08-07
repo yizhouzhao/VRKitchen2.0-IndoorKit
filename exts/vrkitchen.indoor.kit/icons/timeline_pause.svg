@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="33" height="33" viewBox="0 0 33 33">
+  <defs>
+    <clipPath id="clip-path">
+      <rect width="21.762" height="21.86" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="toolbar_pause" transform="translate(-11504.3 781.5)">
+    <g id="Repeat_Grid_1" data-name="Repeat Grid 1" transform="translate(11509.9 -775.93)" clip-path="url(#clip-path)">
+      <g transform="translate(-11509.9 776.1)">
+        <path id="toolbar_pause-2" data-name="toolbar_pause" d="M672.007,148.858v20.161l-.06.182-.092.122-.092.153-.156.119-.152.091-.184.063-.155.031h-7.235l-.184-.031-.184-.063-.156-.091-.121-.119-.124-.153-.092-.122-.063-.182V148.676l.063-.181.092-.122.124-.15.121-.122.156-.091.184-.063.184-.028h7.235l.155.028.184.063.152.091.156.122.092.15.092.122.06.181Zm-12.683,0v19.98l-.029.181-.063.182-.092.122-.092.153-.152.119-.156.091-.124.063-.184.031h-7.263l-.187-.031-.184-.063-.124-.091-.152-.119-.124-.153-.092-.122-.06-.182V148.676l.06-.181.092-.122.124-.15.152-.122.124-.091.184-.063.187-.028h7.263l.184.028.124.063.156.091.152.122.092.15.092.122.063.181Z" transform="translate(10859.655 -924.019)" fill="#77878a" fill-rule="evenodd"/>
+      </g>
+    </g>
+    <g id="select" transform="translate(-89.7 386.5)">
+      <rect id="Rectangle_678" data-name="Rectangle 678" width="33" height="33" transform="translate(11594 -1168)" fill="none"/>
+    </g>
+  </g>
+</svg>
