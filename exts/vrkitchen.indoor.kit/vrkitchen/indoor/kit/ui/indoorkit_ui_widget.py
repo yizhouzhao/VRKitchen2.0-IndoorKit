@@ -526,8 +526,120 @@ class CustomIdNotice():
     def __init__(self) -> None:
         self.ui = ui.HStack()
         with self.ui:
+            ui.Spacer(width=4)
             self.task_ui = ui.Button("pickup_object", name = "control_button", style = {"color": "lightsteelblue", "border_color": "lightsteelblue"}, enabled = False)
+            ui.Spacer(width=4)
             self.object_ui = ui.Button("object: 0", name = "control_button", style = {"color": "DarkSalmon", "border_color": "DarkSalmon"}, enabled = False)
+            ui.Spacer(width=4)
             self.house_ui = ui.Button("house: 1", name = "control_button", style = {"color": "Plum", "border_color": "Plum"}, enabled = False)
         
         self.ui.visible = False
+
+
+class CustomRenderTypeSelectionGroup(CustomBaseWidget):
+    def __init__(self,
+        on_select_fn: callable = None 
+    ) -> None:
+        self.on_select_fn = on_select_fn
+        self.sky_type = ""
+        CustomBaseWidget.__init__(self, label = "Render type:")
+
+    def _build_body(self):
+        with ui.HStack():
+            self.button_gdb = ui.Button("RGB", name = "control_button")
+            self.button_depth= ui.Button("Depth", name = "control_button")
+            self.button_semanic = ui.Button("Semantic Map", name = "control_button")
+
+        # self.button_clear.set_clicked_fn(lambda : self._on_button("clear"))
+        # self.button_cloudy.set_clicked_fn(lambda : self._on_button("cloudy"))
+        # self.button_overcast.set_clicked_fn(lambda : self._on_button("overcast"))
+        # self.button_night.set_clicked_fn(lambda : self._on_button("night"))
+
+        # self.button_list = [self.button_clear, self.button_cloudy, self.button_overcast,  self.button_night]
+
+    def enable_buttons(self):
+        for button in self.button_list:
+            button.enabled = True
+            button.name = "control_button"
+
+    def _on_button(self, sky_type:str):
+        if self.on_select_fn:
+            self.on_select_fn(sky_type.capitalize())
+        self.enable_buttons()
+        button = getattr(self, f"button_{sky_type}")
+        button.name = f"control_button_pressed{2}"
+        self.revert_img.enabled = True
+
+    def _restore_default(self):
+        """Restore the default value."""
+        if self.revert_img.enabled:
+            self.revert_img.enabled = False
+            self.enable_buttons()
+            self.on_select_fn("")
+
+class CustomPathButtonWidget:
+    """A compound widget for holding a path in a StringField, and a button
+    that can perform an action.
+    TODO: Get text ellision working in the path field, to start with "..."
+    """
+    def __init__(self,
+                 label: str,
+                 path: str,
+                 btn_label: str,
+                 btn_callback: callable = None):
+        self.__attr_label = label
+        self.__pathfield: ui.StringField = None
+        self.__path = path
+        self.__btn_label = btn_label
+        self.__btn = None
+        self.__callback = btn_callback
+        self.__frame = ui.Frame()
+
+        with self.__frame:
+            self._build_fn()
+
+    def destroy(self):
+        self.__pathfield = None
+        self.__btn = None
+        self.__callback = None
+        self.__frame = None
+
+    @property
+    def model(self) -> Optional[ui.AbstractItem]:
+        """The widget's model"""
+        if self.__pathfield:
+            return self.__pathfield.model
+
+    @model.setter
+    def model(self, value: ui.AbstractItem):
+        """The widget's model"""
+        self.__pathfield.model = value
+
+    def get_path(self):
+        return self.model.as_string
+
+    def _build_fn(self):
+        """Draw all of the widget parts and set up callbacks."""
+        with ui.VStack():
+            with ui.HStack():
+                ui.Label(
+                    self.__attr_label,
+                    name="attribute_name",
+                    width=120,
+                )
+                self.__pathfield = ui.StringField(
+                    name="path_field",
+                    height=20,
+                )
+                
+                # # TODO: Add clippingType=ELLIPSIS_LEFT for long paths
+                self.__pathfield.model.set_value(self.__path)
+
+                self.__btn = ui.Button(
+                    self.__btn_label,
+                    name="tool_button",
+                    height=20,
+                    clicked_fn=lambda path=self.get_path(): self.__callback(path),
+                )
+
+                ui.Spacer(width = 8)

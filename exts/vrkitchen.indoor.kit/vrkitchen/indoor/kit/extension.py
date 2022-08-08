@@ -16,21 +16,19 @@ import numpy as np
 
 ############# VRKitchen import ##################
 from .param import *
-from .layout.house import House
+# from .layout.house import House
 from .layout.randomizer import Randomizer
 from .layout.utils import rotationXYZ_to_quaternion
 
 from .layout.house_new import House as HouseNew
 from .autotask.auto import AutoTasker
 # from .autotask.auto_label import AutoLabeler
+from .render.helper import CustomSyntheticDataHelper 
 
 ###################### ui import ################
-from omni.ui import color as cl
-from omni.ui import constant as fl
-
 from .ui.custom_combobox_widget import TaskTypeComboboxWidget
 from .ui.indoorkit_ui_widget import CustomRecordGroup, CustomControlGroup, CustomBoolWidget, CustomSliderWidget, \
-    CustomSkySelectionGroup, CustomIdNotice
+    CustomSkySelectionGroup, CustomIdNotice, CustomPathButtonWidget, CustomRenderTypeSelectionGroup
 
 
 # Any class derived from `omni.ext.IExt` in top level module (defined in `python.modules` of `extension.toml`) will be
@@ -47,7 +45,7 @@ class MyExtension(omni.ext.IExt):
         FPS = 60.0
         carb.settings.get_settings().set_bool("/app/runLoops/main/rateLimitEnabled", True)
         carb.settings.get_settings().set_int("/app/runLoops/main/rateLimitFrequency", int( FPS))
-        carb.settings.get_settings().set_int("/persistent/simulation/minFrameRate", int(FPS))
+        # carb.settings.get_settings().set_int("/persistent/simulation/minFrameRate", int(FPS))
 
         # stage and time
         self.stage = omni.usd.get_context().get_stage()
@@ -60,7 +58,9 @@ class MyExtension(omni.ext.IExt):
 
         # build windows
         self.build_setup_layout_window()
-        # self.build_robot_control_window() 
+
+        # set up render
+        self.render_helper = CustomSyntheticDataHelper()
     
     ################################################################################################
     ######################################## Build omni ui window ##################################
@@ -82,8 +82,8 @@ class MyExtension(omni.ext.IExt):
                     ui.Spacer(height=10)
                     ui.Line(style_type_name_override="HeaderLine")
 
-                    self.task_layout_collapse_ui =  ui.CollapsableFrame("TASK LAYOUT") 
-                    self.task_layout_collapse_ui.set_collapsed_changed_fn(lambda x:self.on_task_layout_ui_collapse(x))
+                    self.task_layout_collapse_ui =  ui.CollapsableFrame("TASK LAYOUT", build_header_fn=self._build_custom_frame_header) 
+                    # self.task_layout_collapse_ui.set_collapsed_changed_fn(lambda x:self.on_task_layout_ui_collapse(x))
                     with self.task_layout_collapse_ui:
                         with ui.VStack(height=0, spacing=0):
                             ui.Line(style_type_name_override="HeaderLine")
@@ -112,9 +112,9 @@ class MyExtension(omni.ext.IExt):
                                     ui.Label("\tObject id: ", width=30, style={"color": "DarkSalmon"})
                                     self.task_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={ "color": "DarkSalmon"})    
 
-                                    ui.Button("+", width = 30, style={"margin_height": 8,  "color": "DarkSalmon", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                    ui.Button("+", width = 30, style={"margin_height": 8,  "color": "DarkSalmon", "border_color": 1, "border_width": 1},
                                         clicked_fn=lambda: self.task_id_ui.model.set_value(min(self.task_id_ui.model.get_value_as_int() + 1, 19)))
-                                    ui.Button("-", width = 30, style={ "margin_height": 8, "color": "DarkSalmon", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                    ui.Button("-", width = 30, style={ "margin_height": 8, "color": "DarkSalmon", "border_color": 1, "border_width": 1},
                                         clicked_fn=lambda: self.task_id_ui.model.set_value(max(self.task_id_ui.model.get_value_as_int() - 1, 0 )))
                                     
                                     ui.Button("Add object", name = "add_button", clicked_fn=self.auto_add_obj, style={ "color": "DarkSalmon"})
@@ -148,13 +148,13 @@ class MyExtension(omni.ext.IExt):
                                 self.mission_id_ui = omni.ui.IntField(height=20, width = 40, style={ "margin": 8 }, visible = False)
                                 
                             
-                            with ui.HStack():
+                            with ui.HStack(): 
                                 ui.Label("\tHouse id: ", width = 30, style = { "color": "Plum", "font_size": 14})
                                 self.house_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={"color": "Plum"})
                                 self.house_id_ui.model.set_value(0)
-                                ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Plum", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Plum", "border_color": 1, "border_width": 1},
                                     clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 19)))
-                                ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Plum", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Plum", "border_color": 1, "border_width": 1},
                                     clicked_fn=lambda: self.house_id_ui.model.set_value(max(self.house_id_ui.model.get_value_as_int() - 1, 0)))
                                 ui.Button("Add house", name = "add_button", clicked_fn=self.auto_add_house, style={ "color": "Plum"})
 
@@ -180,44 +180,20 @@ class MyExtension(omni.ext.IExt):
                                 # ui.Button("Load mission", clicked_fn=self.load_mission, style={ "margin": 4})      
                                 ui.Label(" |", width=10)
                                 ui.Button("Load house", clicked_fn=self.load_house_new, style={ "margin": 4})
-                
 
-                    ui.Spacer(height = 10)
-                    ui.Line(style_type_name_override="HeaderLine")
-                    with ui.CollapsableFrame("PLAY"):
-                        with ui.VStack(height=0, spacing=0):
-                            ui.Line(style_type_name_override="HeaderLine") 
-                            ui.Spacer(height = 12)
-                            # notice
-                            self.id_note_ui = CustomIdNotice()
-
-                            # scene loading
-                            ui.Spacer(height = 6)
-                            ui.Button("Load scene", height = 40, name = "load_button", clicked_fn=self.load_scene, style={ "margin": 4})
-                            
-                            # play and record
-                            record_group = CustomRecordGroup(
-                                on_click_record_fn=self.start_record,
-                                on_click_stop_fn=self.stop_record,
-                                on_click_replay_fn=self.replay_record,
-                                )
-
-                            # robot control
-                            control_group = CustomControlGroup()
-                            record_group.control_group = control_group
-             
-                            # with ui.HStack(height=30, visible = False):
-                            #     ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
-                            #     ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
-                            #     ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
-                    
                     ui.Spacer(height = 10)
                     ui.Line(style_type_name_override="HeaderLine")
                     with ui.CollapsableFrame("SCENE UTILITY"):
                         with ui.VStack(height=0, spacing=4):
                             # with ui.HStack(height=30):
                             ui.Line(style_type_name_override="HeaderLine")
+
+                            # scene id notice
+                            self.id_note_ui = CustomIdNotice()
                             
+                            # scene loading
+                            ui.Button("Load scene", height = 40, name = "load_button", clicked_fn=self.load_scene, style={ "margin": 4})
+             
                             # ground plan
                             CustomBoolWidget(label="Visible ground:", default_value=False, on_checked_fn = self.auto_add_ground)
                             # light intensity
@@ -233,7 +209,44 @@ class MyExtension(omni.ext.IExt):
                                 # ui.Button("Randomize house material", clicked_fn=self.randomize_material, style={ "margin": 2}) 
                                 # ui.Button("Randomize sky", clicked_fn=self.randomize_sky, style={ "margin": 2}) 
                                 # ui.Button("Randomize light", clicked_fn=self.randomize_light, style={ "margin": 2}) 
-                    
+
+
+                    ui.Spacer(height = 10)
+                    ui.Line(style_type_name_override="HeaderLine")
+                    with ui.CollapsableFrame("PLAY"):
+                        with ui.VStack(height=0, spacing=0):
+                            ui.Line(style_type_name_override="HeaderLine") 
+                            ui.Spacer(height = 12)
+                            
+               
+                            # play and record
+                            record_group = CustomRecordGroup(
+                                on_click_record_fn=self.start_record,
+                                on_click_stop_fn=self.stop_record,
+                                on_click_replay_fn=self.replay_record,
+                                )
+
+                            # robot control
+                            control_group = CustomControlGroup()
+                            record_group.control_group = control_group
+             
+                            # with ui.HStack(height=30, visible = False):
+                            #     ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
+                            #     ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
+                            #     ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
+
+                            ui.Button("render", clicked_fn = self.setup_viewport)
+
+                            CustomBoolWidget(label="Render image:", default_value=False, on_checked_fn = self.randomize_material)
+                            
+                            CustomRenderTypeSelectionGroup()
+                            CustomPathButtonWidget(
+                                label="Export path:",
+                                path=".../export/mesh1.usd",
+                                btn_label="Capture image"
+                            )
+
+
 
     ################################################################################################
     ######################################## Auto task labeling ####################################
@@ -553,7 +566,7 @@ class MyExtension(omni.ext.IExt):
     ######################################## Second window #########################################
     ################################################################################################              
 
-    
+    # pass
    
     ###################################################################################
     ################################ Robot       ######################################
@@ -660,6 +673,7 @@ class MyExtension(omni.ext.IExt):
             # selection.clear_selected_prim_paths()
             # selection.set_prim_path_selected(robot_parent_path + "/franka", True, True, True, True)
 
+        # setup physics
         from pxr import PhysxSchema, UsdPhysics
         physicsScenePath = "/World/physicsScene"
         scene = UsdPhysics.Scene.Get(self.stage, physicsScenePath)
@@ -672,46 +686,11 @@ class MyExtension(omni.ext.IExt):
 
         physxSceneAPI = PhysxSchema.PhysxSceneAPI.Apply(scene.GetPrim())
         physxSceneAPI.CreateEnableCCDAttr().Set(True)
-        physxSceneAPI.GetTimeStepsPerSecondAttr().Set(120)
+        physxSceneAPI.GetTimeStepsPerSecondAttr().Set(60)
         physxSceneAPI.CreateEnableGPUDynamicsAttr().Set(True)
         physxSceneAPI.CreateEnableEnhancedDeterminismAttr().Set(True)
 
         physxSceneAPI.CreateEnableStabilizationAttr().Set(True)
-    
-
-    ###################################################################################
-    ################################ Liquid       ######################################
-    ###################################################################################
-   
-
-    def init_fluid_helper(self):
-        from .layout.fluid.cup_setup import CupFluidHelper
-        # cup_id = 0 # self.cup_id_ui.model.get_value_as_int()
-        # r = self.r_ui.model.get_value_as_float()
-        # g = self.g_ui.model.get_value_as_float()
-        # b = self.b_ui.model.get_value_as_float()
- 
-        self.cup_fluid_helper = CupFluidHelper()
-
-    def set_up_fluid_helper(self): 
-        # Fluid System setup
-        self.init_fluid_helper()
-        self.cup_fluid_helper.create()
-    
-    def add_liquid_to_cup(self, task_type):
-        self.init_fluid_helper()
-        self.stage = omni.usd.get_context().get_stage()
-        game_prim = self.stage.GetPrimAtPath("/World/game")
-
-        enable_physics = True
-        if task_type == 'tap_water':
-            enable_physics = False
-        for prim in game_prim.GetChildren():
-            if "mobility_" in prim.GetPath().pathString and task_type in ["pour_water", "transfer_water"]:
-                self.cup_fluid_helper.modify_cup_scene(prim, add_liquid = True, set_physics = enable_physics)
-            elif "container_" in prim.GetPath().pathString:
-                self.cup_fluid_helper.modify_cup_scene(prim, add_liquid = False, set_physics = enable_physics)
-
 
     def get_robot_info(self, robot_prim_path = "/World/game/franka"):
         """
@@ -767,9 +746,44 @@ class MyExtension(omni.ext.IExt):
                     scale_factor = mobility_xform.GetOrderedXformOps()[2].Get()[0]
                     print("scale_factor", scale_factor)
                     joint.CreateUpperLimitAttr(upper_limit * scale_factor / 100)
+    
 
     ###################################################################################
-    ################################ Play       ######################################
+    ################################ Liquid       ######################################
+    ###################################################################################
+   
+
+    def init_fluid_helper(self):
+        from .layout.fluid.cup_setup import CupFluidHelper
+        # cup_id = 0 # self.cup_id_ui.model.get_value_as_int()
+        # r = self.r_ui.model.get_value_as_float()
+        # g = self.g_ui.model.get_value_as_float()
+        # b = self.b_ui.model.get_value_as_float()
+ 
+        self.cup_fluid_helper = CupFluidHelper()
+
+    def set_up_fluid_helper(self): 
+        # Fluid System setup
+        self.init_fluid_helper()
+        self.cup_fluid_helper.create()
+    
+    def add_liquid_to_cup(self, task_type):
+        self.init_fluid_helper()
+        self.stage = omni.usd.get_context().get_stage()
+        game_prim = self.stage.GetPrimAtPath("/World/game")
+
+        enable_physics = True
+        if task_type == 'tap_water':
+            enable_physics = False
+        for prim in game_prim.GetChildren():
+            if "mobility_" in prim.GetPath().pathString and task_type in ["pour_water", "transfer_water"]:
+                self.cup_fluid_helper.modify_cup_scene(prim, add_liquid = True, set_physics = enable_physics)
+            elif "container_" in prim.GetPath().pathString:
+                self.cup_fluid_helper.modify_cup_scene(prim, add_liquid = False, set_physics = enable_physics)
+
+
+    ###################################################################################
+    ################################ Play and Record      #############################
     ###################################################################################
     
     def init_franka_tensor(self):
@@ -799,6 +813,9 @@ class MyExtension(omni.ext.IExt):
         self.ft = FrankaTensor(save_path=traj_dir)
 
     def stop_record(self):
+        """
+        Stop recording button
+        """
         if not hasattr(self, "ft"):
             self.timeline.stop()
             carb.log_error( "please load layout and start recording first")
@@ -811,6 +828,9 @@ class MyExtension(omni.ext.IExt):
         self.task_desc_ui.model.set_value("Stop.")
     
     def replay_record(self):
+        """
+        Replay recording button
+        """
         self.init_franka_tensor()
         self.ft.is_replay = True
         self.ft.is_record = False
@@ -822,6 +842,9 @@ class MyExtension(omni.ext.IExt):
         self.task_desc_ui.model.set_value("Start replaying...")
 
     def start_record(self):
+        """
+        Play and record
+        """
         self.init_franka_tensor()
         self.ft.is_replay = False
         self.ft.is_record = True
@@ -838,23 +861,50 @@ class MyExtension(omni.ext.IExt):
 
     
     ######################## ui ###############################
-
-    def on_task_layout_ui_collapse(self, task_block_collapsed):
+       
+    def _build_custom_frame_header(self, collapsed, text):
         """
         When task layout ui collapse, show id notified for task, object, and house id
         """
-        # print("on_task_layout_ui_collapse", task_block_collapsed)
-        self.id_note_ui.ui.visible = task_block_collapsed
+        if collapsed:
+            alignment = ui.Alignment.RIGHT_CENTER
+            width = 8
+            height = 8
+        else:
+            alignment = ui.Alignment.CENTER_BOTTOM
+            width = 8
+            height = 8
 
-        task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
-        task_type = self.task_types[task_index]
-        task_id = self.task_id_ui.model.get_value_as_int()
-        robot_id = self.robot_id_ui.model.get_value_as_int()
-        anchor_id = self.anchor_id_ui.model.get_value_as_int()
-        mission_id = self.mission_id_ui.model.get_value_as_int()
-        house_id = self.house_id_ui.model.get_value_as_int()
+        with ui.HStack():
+            ui.Spacer(width=8)
+            with ui.VStack(width=0):
+                ui.Spacer()
+                ui.Triangle(
+                    style = {"Triangle": {"background_color": 0xDDDDDDDD}}, width=width, height=height, alignment=alignment
+                )
+                ui.Spacer()
+            ui.Spacer(width=8)
+            ui.Label(text, width = 100)
+            if collapsed:
+                self.id_note_ui = CustomIdNotice()
+                # print("on_task_layout_ui_collapse", task_block_collapsed)
+                self.id_note_ui.ui.visible = collapsed
 
-        self.id_note_ui.task_ui.text = task_type
-        self.id_note_ui.object_ui.text = f"Object: {task_id}"
-        self.id_note_ui.house_ui.text = f"House: {house_id}"
+                task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
+                task_type = self.task_types[task_index]
+                task_id = self.task_id_ui.model.get_value_as_int()
+                robot_id = self.robot_id_ui.model.get_value_as_int()
+                anchor_id = self.anchor_id_ui.model.get_value_as_int()
+                mission_id = self.mission_id_ui.model.get_value_as_int()
+                house_id = self.house_id_ui.model.get_value_as_int()
+
+                self.id_note_ui.task_ui.text = task_type
+                self.id_note_ui.object_ui.text = f"Object: {task_id}"
+                self.id_note_ui.house_ui.text = f"House: {house_id}"
+
+    ############################# render #########################
+
+
+    def setup_viewport(self, camera_path = "/OmiverseKit_Persp"):
         
+        self.render_helper.render_image()

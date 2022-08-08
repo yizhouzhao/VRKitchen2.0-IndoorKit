@@ -2,8 +2,7 @@ import carb
 import os
 from pathlib import Path
 
-root = str(Path(__file__).parent.joinpath("../../../../../").resolve())
-ROOT = root
+ROOT = str(Path(__file__).parent.joinpath("../../../../../").resolve())
 
 IS_IN_ISAAC_SIM = str(carb.settings.get_settings().get("/app/window/title")).startswith("Isaac Sim")
 IS_IN_CREAT = str(carb.settings.get_settings().get("/app/window/title")).startswith("Create")

@@ -18,5 +18,25 @@
             ]
         },
         "additional_collisions": []
+    },
+    "reorient_object 10 0 0": {
+        "task_type": "reorient_object",
+        "task_id": "10",
+        "robot_id": "0",
+        "anchor_id": "0",
+        "game_location": {
+            "translate": [
+                0.0,
+                9.518568356246568,
+                183.64629667995266
+            ],
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ]
+        },
+        "additional_collisions": []
     }
 }

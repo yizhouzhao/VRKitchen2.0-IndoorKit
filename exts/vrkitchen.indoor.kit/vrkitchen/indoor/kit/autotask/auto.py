@@ -13,7 +13,7 @@ from omni.physx.scripts import physicsUtils
 
 from ..param import IS_IN_ISAAC_SIM, DATA_PATH_NEW, CUSTOM_ASSET_PATH, ROBOT_PATH, SAPIEN_ASSET_PATH, IS_IN_CREAT, \
     GAME_OBJ_NAMES, CONTAINER_NAMES, OTHER_OBJ_NAMES, HOUSE_INFO_PATH
-from ..task_check import BaseChecker, JointChecker, GraspChecker, OrientChecker, ContainerChecker
+from ..task_check import BaseChecker #, JointChecker, GraspChecker, OrientChecker, ContainerChecker
 from .meta import AUTOTASK_META
 
 if IS_IN_CREAT:
@@ -178,11 +178,11 @@ class AutoTasker():
         mat = pxr.UsdGeom.Xformable(prim).ComputeLocalToWorldTransform(0)
         obj_xform = pxr.Gf.Matrix4d().SetRotate(pxr.Gf.Quatf(*orient))
         new_xform = obj_xform * mat
-        print("new_xform", new_xform, "\n scale:", scale)
+        # print("new_xform", new_xform, "\n scale:", scale)
         omni.kit.commands.execute(
             "TransformPrimCommand",
             path=prim.GetPath().pathString,
-            new_transform_matrix=mat,
+            new_transform_matrix=new_xform,
         ) 
 
         # other imports
