@@ -522,3 +522,12 @@ class CustomSkySelectionGroup(CustomBaseWidget):
             self.on_select_fn("")
 
 
+class CustomIdNotice():
+    def __init__(self) -> None:
+        self.ui = ui.HStack()
+        with self.ui:
+            self.task_ui = ui.Button("pickup_object", name = "control_button", style = {"color": "lightsteelblue", "border_color": "lightsteelblue"}, enabled = False)
+            self.object_ui = ui.Button("object: 0", name = "control_button", style = {"color": "DarkSalmon", "border_color": "DarkSalmon"}, enabled = False)
+            self.house_ui = ui.Button("house: 1", name = "control_button", style = {"color": "Plum", "border_color": "Plum"}, enabled = False)
+        
+        self.ui.visible = False

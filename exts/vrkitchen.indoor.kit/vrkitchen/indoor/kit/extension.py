@@ -30,7 +30,7 @@ from omni.ui import constant as fl
 
 from .ui.custom_combobox_widget import TaskTypeComboboxWidget
 from .ui.indoorkit_ui_widget import CustomRecordGroup, CustomControlGroup, CustomBoolWidget, CustomSliderWidget, \
-    CustomSkySelectionGroup
+    CustomSkySelectionGroup, CustomIdNotice
 
 
 # Any class derived from `omni.ext.IExt` in top level module (defined in `python.modules` of `extension.toml`) will be
@@ -81,7 +81,10 @@ class MyExtension(omni.ext.IExt):
                     self.task_desc_ui.model.set_value(" Welcome to VRKitchen2.0 Indoor Kit!")
                     ui.Spacer(height=10)
                     ui.Line(style_type_name_override="HeaderLine")
-                    with ui.CollapsableFrame("TASK LAYOUT"):
+
+                    self.task_layout_collapse_ui =  ui.CollapsableFrame("TASK LAYOUT") 
+                    self.task_layout_collapse_ui.set_collapsed_changed_fn(lambda x:self.on_task_layout_ui_collapse(x))
+                    with self.task_layout_collapse_ui:
                         with ui.VStack(height=0, spacing=0):
                             ui.Line(style_type_name_override="HeaderLine")
                             ui.Spacer(height = 12)
@@ -185,25 +188,28 @@ class MyExtension(omni.ext.IExt):
                         with ui.VStack(height=0, spacing=0):
                             ui.Line(style_type_name_override="HeaderLine") 
                             ui.Spacer(height = 12)
-                            
+                            # notice
+                            self.id_note_ui = CustomIdNotice()
+
+                            # scene loading
+                            ui.Spacer(height = 6)
                             ui.Button("Load scene", height = 40, name = "load_button", clicked_fn=self.load_scene, style={ "margin": 4})
                             
-                            
+                            # play and record
                             record_group = CustomRecordGroup(
                                 on_click_record_fn=self.start_record,
                                 on_click_stop_fn=self.stop_record,
                                 on_click_replay_fn=self.replay_record,
                                 )
 
+                            # robot control
                             control_group = CustomControlGroup()
-
                             record_group.control_group = control_group
-
-                            
-                            with ui.HStack(height=30, visible = False):
-                                ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
-                                ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
-                                ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
+             
+                            # with ui.HStack(height=30, visible = False):
+                            #     ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
+                            #     ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
+                            #     ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
                     
                     ui.Spacer(height = 10)
                     ui.Line(style_type_name_override="HeaderLine")
@@ -831,9 +837,24 @@ class MyExtension(omni.ext.IExt):
         self.task_desc_ui.model.set_value("Start recording...")
 
     
-    ######################## debug ###############################
+    ######################## ui ###############################
 
-    def debug(self, path):
-        print("debug", path)
-        self.debug_button.color = "red"
-        self.debug_button._build_fn()
+    def on_task_layout_ui_collapse(self, task_block_collapsed):
+        """
+        When task layout ui collapse, show id notified for task, object, and house id
+        """
+        # print("on_task_layout_ui_collapse", task_block_collapsed)
+        self.id_note_ui.ui.visible = task_block_collapsed
+
+        task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
+        task_type = self.task_types[task_index]
+        task_id = self.task_id_ui.model.get_value_as_int()
+        robot_id = self.robot_id_ui.model.get_value_as_int()
+        anchor_id = self.anchor_id_ui.model.get_value_as_int()
+        mission_id = self.mission_id_ui.model.get_value_as_int()
+        house_id = self.house_id_ui.model.get_value_as_int()
+
+        self.id_note_ui.task_ui.text = task_type
+        self.id_note_ui.object_ui.text = f"Object: {task_id}"
+        self.id_note_ui.house_ui.text = f"House: {house_id}"
+        

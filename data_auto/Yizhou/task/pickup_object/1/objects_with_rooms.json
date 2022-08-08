@@ -1,0 +1,26 @@
+{
+    "1 0": [
+        {
+            "asset_path": "./Custom/Bottle/3398/mobility.usd",
+            "obj_type": "Bottle",
+            "obj_id": "3398",
+            "materials": [],
+            "translate": [
+                0.0,
+                10.14055856010399,
+                70.50119966704143
+            ],
+            "orient": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                15.0,
+                15.0,
+                15.0
+            ]
+        }
+    ]
+}

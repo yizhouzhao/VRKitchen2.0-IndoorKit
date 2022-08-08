@@ -103,7 +103,7 @@ class TaskTypeComboboxWidget():
                             ui.Image(name="collapsable_closed", width=12, height=12)
                     ui.Spacer(width=2)  # Right margin
 
-            ui.Spacer(width=ui.Percent(30))
+            ui.Spacer(width=ui.Percent(5))
 
         self.__combobox_widget.model.add_item_changed_fn(self._on_value_changed)
 
@@ -120,7 +120,7 @@ class TaskTypeComboboxWidget():
         we have a Revert Arrow button at the end of each widget line.
         """
         with ui.HStack(width=0):
-            ui.Spacer(width=5)
+            # ui.Spacer(width=5)
             with ui.VStack(height=0):
                 ui.Spacer(height=3)
                 self.revert_img = ui.Image(
