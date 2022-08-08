@@ -77,7 +77,7 @@ url.pause_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/timeline_pause.svg"
 julia_modeler_style = {
     "Button::tool_button": {
         "background_color": cl.field_bg,
-        "margin_height": 0,
+        "margin_height": 8,
         "margin_width": 6,
         "border_color": cl.btn_border,
         "border_width": fl.border_width,

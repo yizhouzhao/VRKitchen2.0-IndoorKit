@@ -1,21 +1,25 @@
 import omni
 import pxr
 import carb
-from pxr import UsdPhysics, UsdShade, Gf
+from pxr import UsdPhysics, UsdShade, Gf, Semantics
 from omni.physx.scripts import physicsUtils
 from omni.physx.scripts.utils import setCollider, setRigidBody, setStaticCollider, removeCollider
 
 from ..param import IS_IN_ISAAC_SIM
+from .utils import add_semantics
 
 if IS_IN_ISAAC_SIM:
     from omni.isaac.core.utils.semantics import add_update_semantics
+
 
 def modify_game_obj_prim(prim):
     """
     modify game object attributes:
     if Bottle, add rigibody, physical material, and mass
     """
-    print("modifyiing: " + prim.GetPath().pathString)
+    # add game object semantic
+    add_semantics(prim, "game_obj")
+    # print("modifyiing: " + prim.GetPath().pathString)
     if "Bottle" in prim.GetPath().pathString or "standalone" in prim.GetPath().pathString:
         """
         Set bottle rigidbox and physical material

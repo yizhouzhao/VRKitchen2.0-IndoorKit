@@ -1,10 +1,19 @@
 # utility functions
 import omni
 import pxr
-from pxr import Gf
+from pxr import Gf, Semantics
 import carb
 import json
 import numpy as np
+
+def add_semantics(prim, semantic_label):
+    if not prim.HasAPI(Semantics.SemanticsAPI):
+        sem = Semantics.SemanticsAPI.Apply(prim, "Semantics")
+        sem.CreateSemanticTypeAttr()
+        sem.CreateSemanticDataAttr()
+        sem.GetSemanticTypeAttr().Set("class")
+        sem.GetSemanticDataAttr().Set(semantic_label)
+
 def rename_prim(old_prim_name, new_prim_name):
     # old_prim_name = prim.GetPath().pathString
     # new_prim_name = prim.GetPath().GetParentPath()

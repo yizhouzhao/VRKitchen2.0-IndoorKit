@@ -18,18 +18,20 @@ import numpy as np
 from .param import *
 # from .layout.house import House
 from .layout.randomizer import Randomizer
-from .layout.utils import rotationXYZ_to_quaternion
+from .layout.utils import rotationXYZ_to_quaternion, add_semantics
 
 from .layout.house_new import House as HouseNew
 from .autotask.auto import AutoTasker
 # from .autotask.auto_label import AutoLabeler
 from .render.helper import CustomSyntheticDataHelper 
 
+
 ###################### ui import ################
 from .ui.custom_combobox_widget import TaskTypeComboboxWidget
 from .ui.indoorkit_ui_widget import CustomRecordGroup, CustomControlGroup, CustomBoolWidget, CustomSliderWidget, \
     CustomSkySelectionGroup, CustomIdNotice, CustomPathButtonWidget, CustomRenderTypeSelectionGroup
 
+from omni.kit.window.popup_dialog import MessageDialog
 
 # Any class derived from `omni.ext.IExt` in top level module (defined in `python.modules` of `extension.toml`) will be
 # instantiated when extension gets enabled and `on_startup(ext_id)` will be called. Later when extension gets disabled
@@ -235,16 +237,19 @@ class MyExtension(omni.ext.IExt):
                             #     ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
                             #     ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
 
-                            ui.Button("render", clicked_fn = self.setup_viewport)
+                            # ui.Button("render", clicked_fn = self.setup_viewport)
 
-                            CustomBoolWidget(label="Render image:", default_value=False, on_checked_fn = self.randomize_material)
+                            # CustomBoolWidget(label="Render image:", default_value=False, on_checked_fn = self.randomize_material)
                             
-                            CustomRenderTypeSelectionGroup()
-                            CustomPathButtonWidget(
-                                label="Export path:",
-                                path=".../export/mesh1.usd",
-                                btn_label="Capture image"
-                            )
+                            with ui.CollapsableFrame("Render"):
+                                with ui.VStack(height=0, spacing=0):
+                                    CustomRenderTypeSelectionGroup(on_select_fn=self.set_render_type)
+                                    CustomPathButtonWidget(
+                                        label="Export folder:",
+                                        path=f"{ROOT}/data_render",
+                                        btn_label="Capture image",
+                                        btn_callback = self.render_an_image,
+                                    )
 
 
 
@@ -340,6 +345,7 @@ class MyExtension(omni.ext.IExt):
             if viewport:
                 viewport.get_viewport_window().focus_on_selected()
 
+
     def auto_add_house(self):
         self.init_auto_tasker()
         self.auto_tasker.add_house()
@@ -351,6 +357,8 @@ class MyExtension(omni.ext.IExt):
             selection.clear_selected_prim_paths()
             selection.set_prim_path_selected("/World/game", True, True, True, True)
 
+            floor_prim = self.stage.GetPrimAtPath("/World/layout/floor")
+            
     
     def auto_add_mission(self):
         self.init_auto_tasker()
@@ -504,9 +512,23 @@ class MyExtension(omni.ext.IExt):
         """
         Load obj + robot + house
         """
+        dialog = MessageDialog(
+            title="Loading scene ......",
+            message=f"Please wait ......",
+            disable_cancel_button=True,
+            ok_handler=lambda dialog: dialog.hide()
+        )
+        dialog.show()
+        
         self.load_obj_new()
         self.load_robot_new()
         self.load_house_new()
+
+        dialog.hide()
+        dialog.destroy()
+        
+
+        
 
     def load_obj_new(self):
         """
@@ -546,13 +568,30 @@ class MyExtension(omni.ext.IExt):
         self.is_initial_setup = False
         self.init_new_house()
         self.setup_robot(new_method=True)
+
+        franka_prim = omni.usd.get_context().get_stage().GetPrimAtPath("/World/game/franka")
+        if franka_prim:
+            add_semantics(franka_prim, "franka")
     
     def load_house_new(self):
+        self.stage = omni.usd.get_context().get_stage()
         self.init_new_house()
         self.load_house_successful = self.house.load_house_info()
 
         # if load house successfully, randomize sky, floor, and wall
         if self.load_house_successful:
+            floor_prim = self.stage.GetPrimAtPath("/World/layout/floor")
+            if floor_prim:
+                add_semantics(floor_prim, "floor")
+
+            furniture_prim = self.stage.GetPrimAtPath("/World/layout/furniture")
+            if furniture_prim:
+                add_semantics(furniture_prim, "furniture")
+
+            wall_prim = self.stage.GetPrimAtPath("/World/layout/roomStruct")
+            if wall_prim:
+                add_semantics(wall_prim, "wall")
+                
             from .layout.randomizer import Randomizer
             
             if not hasattr(self, "house_randomizer"):
@@ -561,6 +600,8 @@ class MyExtension(omni.ext.IExt):
             self.house_randomizer.randomize_house(randomize_floor=True, randomize_wall=True)
             # if IS_IN_CREAT:
             #     self.house_randomizer.randomize_sky()
+
+            
 
     ################################################################################################
     ######################################## Second window #########################################
@@ -704,7 +745,7 @@ class MyExtension(omni.ext.IExt):
         quad = robot_prim.GetAttribute("xformOp:orient").Get()
         if not quad:
             rotateXYZ = robot_prim.GetAttribute("xformOp:rotateXYZ").Get()
-            print(rotateXYZ)
+            # print(rotateXYZ)
             quad = rotationXYZ_to_quaternion(rotateXYZ)
         translate = robot_prim.GetAttribute("xformOp:translate").Get()
         scale = robot_prim.GetAttribute("xformOp:scale").Get()
@@ -859,6 +900,23 @@ class MyExtension(omni.ext.IExt):
 
         self.task_desc_ui.model.set_value("Start recording...")
 
+    def set_render_type(self, render_type):
+        """
+        Set up rendering type for current camera
+        """
+        self.render_helper.reset()
+        self.render_helper.render_type = render_type
+        print("Setting render_type", self.render_helper.render_type)
+
+    def render_an_image(self, export_folder: str = None):
+        
+        task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
+        task_type = self.task_types[task_index]
+        task_id = self.task_id_ui.model.get_value_as_int()
+        house_id = self.house_id_ui.model.get_value_as_int()
+
+        self.render_helper.render_image(export_folder, prefix = f"{task_type}_{task_id}_{house_id}")
+
     
     ######################## ui ###############################
        
@@ -905,6 +963,4 @@ class MyExtension(omni.ext.IExt):
     ############################# render #########################
 
 
-    def setup_viewport(self, camera_path = "/OmiverseKit_Persp"):
-        
-        self.render_helper.render_image()
+    

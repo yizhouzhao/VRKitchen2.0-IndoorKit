@@ -388,8 +388,10 @@ class CupFluidHelper():
             marchprim.CreateAttribute("fluidColor", Sdf.ValueTypeNames.Float3, False).Set(Gf.Vec3f(1, 0, 0))
             marchprim.CreateAttribute("fluidDiffuseReflectance", Sdf.ValueTypeNames.Float3, False).Set(Gf.Vec3f(0.6, 0, 0))
 
+        print("creating Isosurface")
         from ...param import USE_ISO_SURFACE
         if USE_ISO_SURFACE:
+            print("creating Isosurface")
             create_isoSurface()
 
     def set_color(self):
