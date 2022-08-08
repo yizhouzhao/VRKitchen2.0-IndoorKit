@@ -44,7 +44,7 @@ class CustomBaseWidget:
         ui.Label(
             self.__attr_label,
             name="attribute_name",
-            width=60,
+            width=120,
         )
 
     def _build_body(self):

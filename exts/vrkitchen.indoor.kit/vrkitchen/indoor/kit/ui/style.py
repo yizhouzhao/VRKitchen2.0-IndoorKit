@@ -148,7 +148,7 @@ julia_modeler_style = {
         "alignment": ui.Alignment.RIGHT_TOP,
         "margin_height": fl.attr_label_v_spacing,
         "margin_width": fl.main_label_attr_hspacing,
-        # "color": "cornflowerblue",
+        # "color": "lightsteelblue",
         "font_size": fl.main_label_font_size,
     },
     "Label::attribute_name:hovered": {"color": cl.main_attr_label_text_hover},
@@ -193,7 +193,7 @@ julia_modeler_style = {
         "border_width": fl.border_width,
     },
     "ComboBox::dropdown_menu": {
-        # "color": "cornflowerblue",  # label color
+        "color": "lightsteelblue",  # label color
         "padding_height": 1.25,
         "margin": 2,
         "background_color": cl.field_bg,

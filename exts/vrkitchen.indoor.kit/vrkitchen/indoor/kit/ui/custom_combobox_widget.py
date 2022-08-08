@@ -16,7 +16,7 @@ from .custom_base_widget import CustomBaseWidget
 from .style import BLOCK_HEIGHT
 
 
-class TaskTypeComboboxWidget(CustomBaseWidget):
+class TaskTypeComboboxWidget():
     """A customized combobox widget"""
 
     def __init__(self,
@@ -29,10 +29,20 @@ class TaskTypeComboboxWidget(CustomBaseWidget):
         self.__combobox_widget = None
 
         # Call at the end, rather than start, so build_fn runs after all the init stuff
-        CustomBaseWidget.__init__(self, model=model, **kwargs)
+        # CustomBaseWidget.__init__(self, model=model, **kwargs)
+
+        self.existing_model: Optional[ui.AbstractItemModel] = kwargs.pop("model", None)
+        self.revert_img = None
+        self.__attr_label: Optional[str] = kwargs.pop("label", "")
+        self.__frame = ui.Frame()
+        with self.__frame:
+            self._build_fn()
 
     def destroy(self):
-        CustomBaseWidget.destroy()
+        self.existing_model = None
+        self.revert_img = None
+        self.__attr_label = None
+        self.__frame = None
         self.__options = None
         self.__combobox_widget = None
 
@@ -96,3 +106,39 @@ class TaskTypeComboboxWidget(CustomBaseWidget):
             ui.Spacer(width=ui.Percent(30))
 
         self.__combobox_widget.model.add_item_changed_fn(self._on_value_changed)
+
+    def _build_head(self):
+        """Build the left-most piece of the widget line (label in this case)"""
+        ui.Label(
+            self.__attr_label,
+            width=80,
+            style = {"color": "lightsteelblue", "margin_height": 2, "alignment": ui.Alignment.RIGHT_TOP}
+        )
+
+    def _build_tail(self):
+        """Build the right-most piece of the widget line. In this case,
+        we have a Revert Arrow button at the end of each widget line.
+        """
+        with ui.HStack(width=0):
+            ui.Spacer(width=5)
+            with ui.VStack(height=0):
+                ui.Spacer(height=3)
+                self.revert_img = ui.Image(
+                    name="revert_arrow",
+                    fill_policy=ui.FillPolicy.PRESERVE_ASPECT_FIT,
+                    width=12,
+                    height=13,
+                    enabled=False,
+                )
+            ui.Spacer(width=5)
+
+        # call back for revert_img click, to restore the default value
+        self.revert_img.set_mouse_pressed_fn(
+            lambda x, y, b, m: self._restore_default())
+
+    def _build_fn(self):
+        """Puts the 3 pieces together."""
+        with ui.HStack():
+            self._build_head()
+            self._build_body()
+            self._build_tail()

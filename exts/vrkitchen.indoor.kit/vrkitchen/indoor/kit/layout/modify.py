@@ -136,7 +136,8 @@ def setup_physics_material(prim):
 
 def add_ground_plane(prim_path = "/World/game", visiable = False):
     stage = omni.usd.get_context().get_stage()
-    if True: #IS_IN_ISAAC_SIM:
+    ground_prim = stage.GetPrimAtPath("/World/groundPlane")
+    if not ground_prim: #IS_IN_ISAAC_SIM:
             purposes = [pxr.UsdGeom.Tokens.default_]
             bboxcache = pxr.UsdGeom.BBoxCache(pxr.Usd.TimeCode.Default(), purposes)
             prim = stage.GetPrimAtPath(prim_path)
@@ -150,17 +151,21 @@ def add_ground_plane(prim_path = "/World/game", visiable = False):
             selection.clear_selected_prim_paths()
             selection.set_prim_path_selected("/World/groundPlane", True, True, True, True)
             
-            if not visiable:
-                prim_list = list(stage.TraverseAll())
-                prim_list = [ item for item in prim_list if 'groundPlane' in item.GetPath().pathString and item.GetTypeName() == 'Mesh' ]
-                for prim in prim_list:
-                    prim.GetAttribute('visibility').Set('invisible')
-    else:
-        # prim_path = stage.GetDefaultPrim().GetPath().pathString
-        usd_context = omni.usd.get_context()
-        bboxes = usd_context.compute_path_world_bounding_box(prim_path)
+            ground_prim = stage.GetPrimAtPath("/World/groundPlane")
+    
+    visibility = "visible" if visiable else 'invisible'
+    ground_prim.GetAttribute('visibility').Set(visibility)
+        # prim_list = list(stage.TraverseAll())
+        # prim_list = [ item for item in prim_list if 'groundPlane' in item.GetPath().pathString and item.GetTypeName() == 'Mesh' ]
+        # for prim in prim_list:
+        #     prim.GetAttribute('visibility').Set('invisible')
 
-        physicsUtils.add_ground_plane(stage, "/groundPlane", "Y", 750.0, pxr.Gf.Vec3f(0.0, bboxes[0][1], 0), pxr.Gf.Vec3f(0.2))
+    # else:
+    #     # prim_path = stage.GetDefaultPrim().GetPath().pathString
+    #     usd_context = omni.usd.get_context()
+    #     bboxes = usd_context.compute_path_world_bounding_box(prim_path)
+
+    #     physicsUtils.add_ground_plane(stage, "/groundPlane", "Y", 750.0, pxr.Gf.Vec3f(0.0, bboxes[0][1], 0), pxr.Gf.Vec3f(0.2))
 
 def add_physical_material_to(keyword:str):
     """

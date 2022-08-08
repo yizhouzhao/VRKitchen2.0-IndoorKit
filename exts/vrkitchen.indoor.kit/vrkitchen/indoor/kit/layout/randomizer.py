@@ -162,6 +162,11 @@ class Randomizer():
 
         # load from saved params
         try:
+            # load the materials from nucleus url link
+            mat_root_path = "http://localhost:8080/omniverse://127.0.0.1/NVIDIA/Materials/"
+            carb.log_info(f"Collecting files for {mat_root_path}")
+            result1, entries = omni.client.list(mat_root_path)
+
             from .material.param import NECLEUS_MATERIALS
             self.material_dict = NECLEUS_MATERIALS
         except:
@@ -204,7 +209,7 @@ class Randomizer():
             #     select_new_prim=False,
             # )
     
-    def randomize_house(self, randomize_floor =True, randomize_wall = True):
+    def randomize_house(self, rand = True, randomize_floor =True, randomize_wall = True):
         """
         randomize house's floor and wall
         
@@ -217,10 +222,10 @@ class Randomizer():
         self.random_info["floor_materials"] = [x for k in ["Wood"] for x in self.material_dict[k]] # Carpet
         self.random_info["wall_materials"] = [x for k in ["Wall_Board"] for x in self.material_dict[k]] # "Masonry", "Architecture"
         # print(self.random_info["floor_materials"])
-        len_floor = len(self.random_info["floor_materials"])
-        len_wall = len(self.random_info["wall_materials"])
-        wall_mtl_url = random.choice(self.random_info["wall_materials"])  #random.choice(self.random_info["materials"]["train"])
-        floor_mtl_url = random.choice(self.random_info["floor_materials"])
+        # len_floor = len(self.random_info["floor_materials"])
+        # len_wall = len(self.random_info["wall_materials"])
+        wall_mtl_url = random.choice(self.random_info["wall_materials"]) if rand else self.random_info["wall_materials"][0]
+        floor_mtl_url = random.choice(self.random_info["floor_materials"]) if rand else self.random_info["floor_materials"][0]
         wall_mtl_name = wall_mtl_url.split("/")[-1][:-4]
         floor_mtl_name = floor_mtl_url.split("/")[-1][:-4]
 
@@ -417,7 +422,7 @@ class Randomizer():
             json.dump(self.task_json, f, indent=4)
 
     
-    def randomize_sky(self, url= "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Skies/Dynamic/"):
+    def randomize_sky(self, sky_type:str = None, url= "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Skies/Dynamic/"):
         """
         Add sky to the environment
         """
@@ -425,9 +430,8 @@ class Randomizer():
      
         # FIXME: not compatible with new version
         self.stage = omni.usd.get_context().get_stage()
-        omni.kit.undo.begin_group()
 
-        ENVIRONMENT_ROOT = "/World/Environment"
+        ENVIRONMENT_ROOT = "/Environment"
         sky_prim_path = f"{ENVIRONMENT_ROOT}/sky"
 
         # disable light
@@ -436,20 +440,27 @@ class Randomizer():
         # if light_prim:
         #     light_prim.GetAttribute('visibility').Set('invisible')
 
-        # if found existing env, return
-        if self.stage.GetPrimAtPath(sky_prim_path):
-            carb.log_warn("Sky already in the env")
-            # return
-        
-        # choose a sky
-        sky_list = ["Cirrus","ClearSky","CloudySky","CumulusHeavy","CumulusLight","NightSky","Overcast"]
-        sky_name = random.choice(sky_list)
+        if sky_type:
+            sky_name = f"{sky_type}Sky" if not sky_type == "Overcast" else "Overcast"
+        else:
+            sky_list = ["ClearSky","CloudySky","Overcast","NightSky"]
+            sky_name = random.choice(sky_list)
+            
         sky_url = f"{url}{sky_name}.usd"
-        
-        sky_prim = self.stage.DefinePrim(sky_prim_path, "Xform")
-        if sky_prim:
-            sky_prim.GetReferences().AddReference(sky_url)
 
+        # if found existing env, return
+        sky_prim = self.stage.GetPrimAtPath(sky_prim_path)
+        if sky_prim:
+            carb.log_warn("Sky already in the env")
+            sky_prim.GetReferences().ClearReferences()
+        else:
+            sky_prim = self.stage.DefinePrim(sky_prim_path, "Xform")
+
+        if len(sky_type) == 0:
+            # invalid sky type:
+            return
+        
+        sky_prim.GetReferences().AddReference(sky_url)
         rot = pxr.Gf.Vec3d(0, 0, 0)
         properties = sky_prim.GetPropertyNames()
         if "xformOp:rotateXYZ" in properties:
@@ -465,15 +476,16 @@ class Randomizer():
             rotate = Gf.Vec3d(rot[0], rot[1], rot[2])
             xform_op.Set(rotate)
 
-        # if IS_IN_ISAAC_SIM:
-        #     from omni.isaac.core.utils.stage import add_reference_to_stage
-        #     add_reference_to_stage(sky_url ,sky_prim_path)
-        # else:
-        #     omni.kit.commands.execute("CreateUsdSkyPrimCommand", sky_url=sky_url, sky_path=sky_prim_path)
+            # if IS_IN_ISAAC_SIM:
+            #     from omni.isaac.core.utils.stage import add_reference_to_stage
+            #     add_reference_to_stage(sky_url ,sky_prim_path)
+            # else:
+            #     omni.kit.commands.execute("CreateUsdSkyPrimCommand", sky_url=sky_url, sky_path=sky_prim_path)
 
-        # too light, lower intensity to pretect eyes
-        domelight_prim = self.stage.GetPrimAtPath("/World/Environment/sky/DomeLight")
-        domelight_prim.GetAttribute("intensity").Set(0)
+            # too light, lower intensity to pretect eyes
+            # 
+            # domelight_prim = self.stage.GetPrimAtPath("/Environment/sky/DomeLight")
+            # domelight_prim.GetAttribute("intensity").Set(0)
 
 
         
