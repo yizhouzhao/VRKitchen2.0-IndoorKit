@@ -29,7 +29,8 @@ from omni.ui import color as cl
 from omni.ui import constant as fl
 
 from .ui.custom_combobox_widget import TaskTypeComboboxWidget
-from .ui.indoorkit_ui_widget import CustomRecordGroup, CustomControlGroup
+from .ui.indoorkit_ui_widget import CustomRecordGroup, CustomControlGroup, CustomBoolWidget, CustomSliderWidget, \
+    CustomSkySelectionGroup
 
 
 # Any class derived from `omni.ext.IExt` in top level module (defined in `python.modules` of `extension.toml`) will be
@@ -76,7 +77,7 @@ class MyExtension(omni.ext.IExt):
             self._window.frame.style = julia_modeler_style
             with ui.ScrollingFrame():
                 with ui.VStack(height=0):
-                    self.task_desc_ui = ui.StringField(height=60, style={ "margin_height": 2, "font_size": 20, "alignment": ui.Alignment.RIGHT_CENTER})
+                    self.task_desc_ui = ui.StringField(height=20, style={ "margin_height": 2})
                     self.task_desc_ui.model.set_value(" Welcome to VRKitchen2.0 Indoor Kit!")
                     ui.Spacer(height=10)
                     ui.Line(style_type_name_override="HeaderLine")
@@ -105,15 +106,15 @@ class MyExtension(omni.ext.IExt):
 
                             with ui.HStack(height=30):
                                 with ui.HStack():
-                                    ui.Label("\tObject id: ", width=30, style={"color": "darkorange"})
-                                    self.task_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={ "color": "darkorange"})    
+                                    ui.Label("\tObject id: ", width=30, style={"color": "DarkSalmon"})
+                                    self.task_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={ "color": "DarkSalmon"})    
 
-                                    ui.Button("+", width = 30, style={"margin_height": 8,  "color": "darkorange", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                    ui.Button("+", width = 30, style={"margin_height": 8,  "color": "DarkSalmon", "border_color": cl.btn_border, "border_width": fl.border_width},
                                         clicked_fn=lambda: self.task_id_ui.model.set_value(min(self.task_id_ui.model.get_value_as_int() + 1, 19)))
-                                    ui.Button("-", width = 30, style={ "margin_height": 8, "color": "darkorange", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                    ui.Button("-", width = 30, style={ "margin_height": 8, "color": "DarkSalmon", "border_color": cl.btn_border, "border_width": fl.border_width},
                                         clicked_fn=lambda: self.task_id_ui.model.set_value(max(self.task_id_ui.model.get_value_as_int() - 1, 0 )))
                                     
-                                    ui.Button("Add object", name = "add_button", clicked_fn=self.auto_add_obj, style={ "color": "darkorange"})
+                                    ui.Button("Add object", name = "add_button", clicked_fn=self.auto_add_obj, style={ "color": "DarkSalmon"})
                             
 
                                 ui.Label("  Object ", width=20, visible = False)
@@ -145,14 +146,14 @@ class MyExtension(omni.ext.IExt):
                                 
                             
                             with ui.HStack():
-                                ui.Label("\tHouse id: ", width = 30, style = { "color": "Gold", "font_size": 14})
-                                self.house_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={"color": "Gold"})
+                                ui.Label("\tHouse id: ", width = 30, style = { "color": "Plum", "font_size": 14})
+                                self.house_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={"color": "Plum"})
                                 self.house_id_ui.model.set_value(0)
-                                ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Plum", "border_color": cl.btn_border, "border_width": fl.border_width},
                                     clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 19)))
-                                ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Gold", "border_color": cl.btn_border, "border_width": fl.border_width},
+                                ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Plum", "border_color": cl.btn_border, "border_width": fl.border_width},
                                     clicked_fn=lambda: self.house_id_ui.model.set_value(max(self.house_id_ui.model.get_value_as_int() - 1, 0)))
-                                ui.Button("Add house", name = "add_button", clicked_fn=self.auto_add_house, style={ "color": "Gold"})
+                                ui.Button("Add house", name = "add_button", clicked_fn=self.auto_add_house, style={ "color": "Plum"})
 
 
                             with ui.HStack(height=20, visible = False): 
@@ -176,9 +177,9 @@ class MyExtension(omni.ext.IExt):
                                 # ui.Button("Load mission", clicked_fn=self.load_mission, style={ "margin": 4})      
                                 ui.Label(" |", width=10)
                                 ui.Button("Load house", clicked_fn=self.load_house_new, style={ "margin": 4})
-                    
-                            ui.Spacer(height = 6)
+                
 
+                    ui.Spacer(height = 10)
                     ui.Line(style_type_name_override="HeaderLine")
                     with ui.CollapsableFrame("PLAY"):
                         with ui.VStack(height=0, spacing=0):
@@ -186,6 +187,7 @@ class MyExtension(omni.ext.IExt):
                             ui.Spacer(height = 12)
                             
                             ui.Button("Load scene", height = 40, name = "load_button", clicked_fn=self.load_scene, style={ "margin": 4})
+                            
                             
                             record_group = CustomRecordGroup(
                                 on_click_record_fn=self.start_record,
@@ -202,15 +204,29 @@ class MyExtension(omni.ext.IExt):
                                 ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
                                 ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
                                 ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
-
+                    
+                    ui.Spacer(height = 10)
+                    ui.Line(style_type_name_override="HeaderLine")
                     with ui.CollapsableFrame("SCENE UTILITY"):
                         with ui.VStack(height=0, spacing=4):
-                            with ui.HStack(height=30):
-                                ui.Button("Add Ground", clicked_fn=self.auto_add_ground, style={ "margin": 2})
-                            with ui.HStack(height=30):
-                                ui.Button("Randomize house material", clicked_fn=self.randomize_material, style={ "margin": 2}) 
-                                ui.Button("Randomize sky", clicked_fn=self.randomize_sky, style={ "margin": 2}) 
-                                ui.Button("Randomize light", clicked_fn=self.randomize_light, style={ "margin": 2}) 
+                            # with ui.HStack(height=30):
+                            ui.Line(style_type_name_override="HeaderLine")
+                            
+                            # ground plan
+                            CustomBoolWidget(label="Visible ground:", default_value=False, on_checked_fn = self.auto_add_ground)
+                            # light intensity
+                            CustomSliderWidget(min=0, max=3000, label="Light intensity:", default_val=1000, on_slide_fn = self.change_light_intensity)
+                            # sky selection
+                            CustomSkySelectionGroup(on_select_fn=self.randomize_sky)
+                                # ui.Button("Add Ground", clicked_fn=self.auto_add_ground, style={ "margin": 2})
+                             # Randomize house material
+                            
+                            CustomBoolWidget(label="Random house material:", default_value=False, on_checked_fn = self.randomize_material)
+                                      
+                            # with ui.HStack(height=30):
+                                # ui.Button("Randomize house material", clicked_fn=self.randomize_material, style={ "margin": 2}) 
+                                # ui.Button("Randomize sky", clicked_fn=self.randomize_sky, style={ "margin": 2}) 
+                                # ui.Button("Randomize light", clicked_fn=self.randomize_light, style={ "margin": 2}) 
                     
 
     ################################################################################################
@@ -296,7 +312,7 @@ class MyExtension(omni.ext.IExt):
 
         franka_prim = self.stage.GetPrimAtPath("/World/game/franka")
         if franka_prim:
-            self.task_desc_ui.model.set_value("Feel free to move the robot, then you can `Add house`")
+            self.task_desc_ui.model.set_value("Feel free to move the robot, \nthen you can `Add house`")
             selection = omni.usd.get_context().get_selection()
             selection.clear_selected_prim_paths()
             selection.set_prim_path_selected(franka_prim.GetPath().pathString, True, True, True, True)
@@ -329,29 +345,46 @@ class MyExtension(omni.ext.IExt):
     ######################################## Modify Scene ##########################################
     ################################################################################################              
 
-    def auto_add_ground(self):
+    def auto_add_ground(self, visible = False):
         """
         Add ground to the scene
         """
+        self.stage = omni.usd.get_context().get_stage()
+        if not self.stage.GetPrimAtPath("/World/game"):
+            carb.log_error("Please add /World/game first!")
+            self.task_desc_ui.model.set_value(f"Please `Add Object`")
+            return 
+
         from .layout.modify import add_ground_plane
-        add_ground_plane()
-        self.task_desc_ui.model.set_value("Add ground to scene (not visible)")
+        add_ground_plane(visiable=visible)
+        self.task_desc_ui.model.set_value(f"Add ground to scene (visible : {visible})")
 
-    def randomize_material(self):
+        selection = omni.usd.get_context().get_selection()
+        selection.clear_selected_prim_paths()
+        selection.set_prim_path_selected("/World/groundPlane", True, True, True, True)
+
+
+    def randomize_material(self, rand = True):
+        """
+        Randomize house materials
+        """
+        self.stage = omni.usd.get_context().get_stage()
+        if not self.stage.GetPrimAtPath("/World/layout"):
+            carb.log_error("Please add /World/layout (load scene) first!")
+            self.task_desc_ui.model.set_value(f"Please `Load Scene`")
+            return 
+
+        self.randomizer = Randomizer()
+        self.randomizer.randomize_house(rand = rand)
+        self.task_desc_ui.model.set_value("Added floor/wall material")
+
+    def randomize_sky(self, sky_type = None):
         """
         Randomize house materials
         """
         self.randomizer = Randomizer()
-        self.randomizer.randomize_house()
-        self.task_desc_ui.model.set_value("Random floor/wall material")
-
-    def randomize_sky(self):
-        """
-        Randomize house materials
-        """
-        self.randomizer = Randomizer()
-        self.randomizer.randomize_sky()
-        self.task_desc_ui.model.set_value("Random sky")
+        self.randomizer.randomize_sky(sky_type = sky_type)
+        self.task_desc_ui.model.set_value("Sky added.")
     
     def randomize_light(self):
         """
@@ -360,6 +393,28 @@ class MyExtension(omni.ext.IExt):
         self.randomizer = Randomizer()
         self.randomizer.randomize_light()
         self.task_desc_ui.model.set_value("Random light")
+
+    def change_light_intensity(self, intensity):
+        """
+        Change default light intensity
+        """
+        self.stage = omni.usd.get_context().get_stage()
+        light_prim = self.stage.GetPrimAtPath("/World/defaultLight")
+
+        if not light_prim:
+            # Create basic DistantLight
+            omni.kit.commands.execute(
+                "CreatePrim",
+                prim_path="/World/defaultLight",
+                prim_type="DistantLight",
+                select_new_prim=False,
+                attributes={pxr.UsdLux.Tokens.angle: 1.0, pxr.UsdLux.Tokens.intensity: 1000},
+                create_default_xform=True,
+            )
+
+            light_prim = self.stage.GetPrimAtPath("/World/defaultLight")
+
+        light_prim.GetAttribute("intensity").Set(float(intensity))
 
     
     ################################################################################################
