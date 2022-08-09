@@ -39,11 +39,7 @@ USE_ISO_SURFACE = False
 
 #Annotator
 ANNOTATORS = [
-    "Steven",
-    "Xiaofeng",
     "Yizhou",
-    "AWS",
-    "Ziheng",
 ]
 
 # Task

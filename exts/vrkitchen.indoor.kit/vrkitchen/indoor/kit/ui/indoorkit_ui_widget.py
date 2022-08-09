@@ -546,7 +546,7 @@ class CustomRenderTypeSelectionGroup(CustomBaseWidget):
 
     def _build_body(self):
         with ui.HStack():
-            self.button_rgb = ui.Button("RGB", name = "control_button")
+            self.button_rgb = ui.Button("RGB", name = "control_button_pressed3")
             self.button_depth= ui.Button("Depth", name = "control_button")
             self.button_semantic = ui.Button("Semantic", name = "control_button")
 
@@ -555,17 +555,18 @@ class CustomRenderTypeSelectionGroup(CustomBaseWidget):
         self.button_semantic.set_clicked_fn(lambda : self._on_button("semantic"))
 
         self.button_list = [self.button_rgb, self.button_depth, self.button_semantic]
+        
 
     def enable_buttons(self):
         for button in self.button_list:
             button.enabled = True
             button.name = "control_button"
 
-    def _on_button(self, sky_type:str):
+    def _on_button(self, render_type:str):
         if self.on_select_fn:
-            self.on_select_fn(sky_type.capitalize())
+            self.on_select_fn(render_type.capitalize())
         self.enable_buttons()
-        button = getattr(self, f"button_{sky_type}")
+        button = getattr(self, f"button_{render_type}")
         button.name = f"control_button_pressed{3}"
         self.revert_img.enabled = True
 
@@ -574,8 +575,9 @@ class CustomRenderTypeSelectionGroup(CustomBaseWidget):
         if self.revert_img.enabled:
             self.revert_img.enabled = False
             self.enable_buttons()
-            if self.on_select_fn:
-                self.on_select_fn("")
+            self._on_button("rgb")
+
+import subprocess, os, platform
 
 class CustomPathButtonWidget:
     """A compound widget for holding a path in a StringField, and a button
@@ -594,7 +596,7 @@ class CustomPathButtonWidget:
         self.__btn = None
         self.__callback = btn_callback
         self.__frame = ui.Frame()
-        
+
         with self.__frame:
             self._build_fn()
 
@@ -637,11 +639,26 @@ class CustomPathButtonWidget:
             # # TODO: Add clippingType=ELLIPSIS_LEFT for long paths
             self.__pathfield.model.set_value(self.__path)
 
-            self.__btn = ui.Button(
-                self.__btn_label,
-                name="tool_button",
-                height=50,
-                clicked_fn=lambda path=self.get_path(): self.__callback(path),
-            )
+            with ui.HStack():
+                self.__btn = ui.Button(
+                    self.__btn_label,
+                    name="tool_button",
+                    height=50,
+                    clicked_fn=lambda path=self.get_path(): self.__callback(path),
+                )
 
-                
+                self.__btn2 = ui.Button(
+                    "Open folder",
+                    name="tool_button",
+                    height=50,
+                    width = 80,
+                    clicked_fn=lambda path=self.get_path(): self.open_path(path),
+                )
+
+    def open_path(self, path):
+        if platform.system() == "Darwin":  # macOS
+            subprocess.call(("open", path))
+        elif platform.system() == "Windows":  # Windows
+            os.startfile(path)
+        else:  # linux variants
+            subprocess.call(("xdg-open", path))

@@ -478,6 +478,14 @@ class MyExtension(omni.ext.IExt):
 
         self.task_desc_ui.model.set_value("Scene recorded! Please a start a new scene and load.")
 
+        dialog = MessageDialog(
+            title="Scene Recorded",
+            message=f"Scene recorded! Please a start a new scene and load.",
+            disable_cancel_button=True,
+            ok_handler=lambda dialog: dialog.hide()
+        )
+        dialog.show()
+
     def record_obj_new(self):
         """
         New pipeline to record game objects
@@ -524,12 +532,18 @@ class MyExtension(omni.ext.IExt):
         self.load_robot_new()
         self.load_house_new()
 
+        # focus on game
+        selection = omni.usd.get_context().get_selection()
+        selection.clear_selected_prim_paths()
+        selection.set_prim_path_selected("/World/game", True, True, True, True)
+
+        viewport = omni.kit.viewport_legacy.get_viewport_interface()
+        if viewport:
+            viewport.get_viewport_window().focus_on_selected()
+
+        selection.clear_selected_prim_paths()
         dialog.hide()
-        dialog.destroy()
         
-
-        
-
     def load_obj_new(self):
         """
         New pipeline to load game objs
@@ -591,7 +605,7 @@ class MyExtension(omni.ext.IExt):
             wall_prim = self.stage.GetPrimAtPath("/World/layout/roomStruct")
             if wall_prim:
                 add_semantics(wall_prim, "wall")
-                
+
             from .layout.randomizer import Randomizer
             
             if not hasattr(self, "house_randomizer"):
