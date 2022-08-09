@@ -352,7 +352,7 @@ class MyExtension(omni.ext.IExt):
 
         layout_prim = self.stage.GetPrimAtPath("/World/layout")
         if layout_prim:
-            self.task_desc_ui.model.set_value("House added!")
+            self.task_desc_ui.model.set_value("House added! Feel feel to move the /World/game and record scene.")
             selection = omni.usd.get_context().get_selection()
             selection.clear_selected_prim_paths()
             selection.set_prim_path_selected("/World/game", True, True, True, True)
@@ -476,7 +476,7 @@ class MyExtension(omni.ext.IExt):
         self.house.record_robot_info()
         self.house.record_house_info()
 
-        self.task_desc_ui.model.set_value("Scene recorded! Please a start a new scene and load.")
+        self.task_desc_ui.model.set_value("Scene recorded! Please start a new empty scene (Gp tp `File -> New` or Press `Ctrl + N`) and then `Load scene`")
 
         dialog = MessageDialog(
             title="Scene Recorded",
@@ -542,7 +542,16 @@ class MyExtension(omni.ext.IExt):
             viewport.get_viewport_window().focus_on_selected()
 
         selection.clear_selected_prim_paths()
+
         dialog.hide()
+
+        dialog2 = MessageDialog(
+            title="Loading scene ......",
+            message=f"Loading scene complete!",
+            disable_cancel_button=True,
+            ok_handler=lambda dialog2: dialog2.hide()
+        )
+        dialog2.show()
         
     def load_obj_new(self):
         """

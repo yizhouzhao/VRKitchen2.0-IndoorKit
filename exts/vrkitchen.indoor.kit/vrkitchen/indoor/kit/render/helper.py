@@ -29,11 +29,11 @@ class CustomSyntheticDataHelper:
         viewport = omni.kit.viewport_legacy.get_viewport_interface()
         # viewport_handle = viewport.get_instance("Viewport")
         self.viewport_window = viewport.get_viewport_window(None)
-        self.stage = omni.usd.get_context().get_stage()
         self.timeline = omni.timeline.get_timeline_interface()
         
         
     def render_image(self, export_folder = None, prefix = ""):
+        self.stage = omni.usd.get_context().get_stage()
         # get camera
         # self.viewport_window.set_texture_resolution(*resolution)
         camera_name = self.viewport_window.get_active_camera().replace("/","")
@@ -47,17 +47,27 @@ class CustomSyntheticDataHelper:
             img_save_path = f"{export_folder}/{prefix}_{camera_name}_{self.render_type}_{time_str}.png"
     
         # get render type
-        synthetic_type = syn._syntheticdata.SensorType.Rgb
-        if self.render_type == "Depth":
-            synthetic_type = syn._syntheticdata.SensorType.DepthLinear
-        elif self.render_type == "Semantic":
-            synthetic_type = syn._syntheticdata.SensorType.SemanticSegmentation
+        # synthetic_type = syn._syntheticdata.SensorType.Rgb
+        # if self.render_type == "Depth":
+        #     synthetic_type = syn._syntheticdata.SensorType.DepthLinear
+        # elif self.render_type == "Semantic":
+        #     synthetic_type = syn._syntheticdata.SensorType.SemanticSegmentation
 
         # render and export
         async def render_img():
             # Render one frame  
             await omni.kit.app.get_app().next_update_async()
-            await syn.sensors.initialize_async(self.viewport_window, [synthetic_type])
+
+            syn.sensors.enable_sensors(
+                self.viewport_window,
+                [
+                    syn._syntheticdata.SensorType.Rgb, 
+                    syn._syntheticdata.SensorType.DepthLinear, 
+                    syn._syntheticdata.SensorType.SemanticSegmentation, 
+                    syn._syntheticdata.SensorType.InstanceSegmentation
+                ],
+            )
+            # await syn.sensors.initialize_async(self.viewport_window, [])
             await syn.sensors.next_sensor_data_async(self.viewport_window.get_id()) 
             if self.render_type == "Depth":
                 from omni.syntheticdata.scripts.visualize import get_depth
@@ -66,8 +76,8 @@ class CustomSyntheticDataHelper:
                 img = Image.fromarray(data.astype(np.uint8))
 
             elif self.render_type == "Semantic":
-                from omni.syntheticdata.scripts.visualize import get_semantic_segmentation 
-                data = get_semantic_segmentation(self.viewport_window, mode = "raw") 
+                from omni.syntheticdata.scripts.visualize import get_instance_segmentation 
+                data = get_instance_segmentation(self.viewport_window, mode = "raw") 
                 img = Image.fromarray(data.astype(np.uint8))
             else:
                 data = syn.sensors.get_rgb(self.viewport_window)
