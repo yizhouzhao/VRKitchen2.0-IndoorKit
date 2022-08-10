@@ -191,9 +191,12 @@ class MyExtension(omni.ext.IExt):
                             ui.Line(style_type_name_override="HeaderLine")
 
                             # scene id notice
-                            self.id_note_ui = CustomIdNotice()
+                            # self.id_note_ui = CustomIdNotice()
                             
                             # scene loading
+                                    # open a new stage
+        
+                            ui.Button("New scene", height = 40, name = "load_button", clicked_fn=lambda : omni.kit.window.file.new(), style={ "margin": 4}, tooltip = "open a new empty stage")
                             ui.Button("Load scene", height = 40, name = "load_button", clicked_fn=self.load_scene, style={ "margin": 4})
              
                             # ground plan
@@ -250,8 +253,6 @@ class MyExtension(omni.ext.IExt):
                                         btn_label="Capture image",
                                         btn_callback = self.render_an_image,
                                     )
-
-
 
     ################################################################################################
     ######################################## Auto task labeling ####################################
@@ -476,11 +477,11 @@ class MyExtension(omni.ext.IExt):
         self.house.record_robot_info()
         self.house.record_house_info()
 
-        self.task_desc_ui.model.set_value("Scene recorded! Please start a new empty scene (Gp tp `File -> New` or Press `Ctrl + N`) and then `Load scene`")
+        self.task_desc_ui.model.set_value("Scene recorded! Please start a new empty scene `Load scene` \n Note: you don't have to save the current stage.")
 
         dialog = MessageDialog(
             title="Scene Recorded",
-            message=f"Scene recorded! Please a start a new scene and load.",
+            message=f"Scene recorded! Please start a new empty scene `Load scene` \n Note: you don't have to save the current stage.",
             disable_cancel_button=True,
             ok_handler=lambda dialog: dialog.hide()
         )
@@ -520,6 +521,7 @@ class MyExtension(omni.ext.IExt):
         """
         Load obj + robot + house
         """
+
         dialog = MessageDialog(
             title="Loading scene ......",
             message=f"Please wait ......",
@@ -756,34 +758,7 @@ class MyExtension(omni.ext.IExt):
 
         physxSceneAPI.CreateEnableStabilizationAttr().Set(True)
 
-    def get_robot_info(self, robot_prim_path = "/World/game/franka"):
-        """
-        Get robot information at robot_prim_path
-        """
-        self.stage = omni.usd.get_context().get_stage()
-        robot_prim = self.stage.GetPrimAtPath(robot_prim_path)
-        if not robot_prim or not pxr.UsdGeom.Xform.Get(self.stage, robot_prim_path):
-            raise Exception(f"Must have a robot with XForm at path {robot_prim_path}")
-        
-        quad = robot_prim.GetAttribute("xformOp:orient").Get()
-        if not quad:
-            rotateXYZ = robot_prim.GetAttribute("xformOp:rotateXYZ").Get()
-            # print(rotateXYZ)
-            quad = rotationXYZ_to_quaternion(rotateXYZ)
-        translate = robot_prim.GetAttribute("xformOp:translate").Get()
-        scale = robot_prim.GetAttribute("xformOp:scale").Get()
-
-        quad = eval(str(quad))
-        # print(quad)
-
-        robot_info = {
-            "position": [round(translate[0], 3), round(translate[1],3), round(translate[2], 3)],
-            "rotation": [round(quad[0], 3), round(quad[1], 3), round(quad[2], 3), round(quad[3], 3)],
-        }
-        
-        return robot_info
-
-    def fix_linear_joint(self, fix_driver = True, damping_cofficient = 1 ):
+    def fix_linear_joint(self, fix_driver = True, damping_cofficient = 1):
         self.stage = omni.usd.get_context().get_stage()
         prim_list = self.stage.TraverseAll()
         for prim in prim_list:

@@ -418,10 +418,6 @@ class CupFluidHelper():
 
         gprim.GetRadiusAttr().Set(self._fluidSphereDiameter)
 
-        
-
-      
-
 
        
     def set_cup(self):
@@ -479,8 +475,6 @@ class CupFluidHelper():
         massAPI.GetMassAttr().Set(PARTICLE_PROPERTY._cup_mass)
 
         
-       
-
     def transform_mesh(self, mesh, loc, orient=pxr.Gf.Quatf(1.0), scale=pxr.Gf.Vec3d(1.0, 1.0, 1.0)):
         for op in mesh.GetOrderedXformOps():
             if op.GetOpType() == pxr.UsdGeom.XformOp.TypeTranslate:

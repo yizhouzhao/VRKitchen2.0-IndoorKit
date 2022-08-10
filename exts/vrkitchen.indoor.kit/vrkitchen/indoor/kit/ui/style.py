@@ -67,6 +67,7 @@ url.radio_btn_off_icon = f"{EXTENSION_FOLDER_PATH}/icons/radio_btn_off.svg"
 url.diag_bg_lines_texture = f"{EXTENSION_FOLDER_PATH}/icons/diagonal_texture_screenshot.png"
 
 ####################### Indoor Kit ###########################################
+# url.start_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/random.svg"       
 url.start_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/toolbar_play.svg"  
 url.replay_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/toolbar_replay.svg" 
 url.stop_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/toolbar_stop.svg" 
