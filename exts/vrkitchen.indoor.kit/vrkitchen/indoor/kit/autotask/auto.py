@@ -175,13 +175,14 @@ class AutoTasker():
         #if self.task_type  "reorient_object":
         orient  = AUTOTASK_META[self.task_type][self.meta_id]["orient"]
         print("orient: ", orient)
-        mat = pxr.UsdGeom.Xformable(prim).ComputeLocalToWorldTransform(0)
-        obj_xform = pxr.Gf.Matrix4d().SetRotate(pxr.Gf.Quatf(*orient))
-        new_xform = obj_xform * mat
-        # print("new_xform", new_xform, "\n scale:", scale)
+        mat = pxr.Gf.Matrix4f(pxr.UsdGeom.Xformable(prim).ComputeLocalToWorldTransform(0))
+        obj_xform = pxr.Gf.Matrix4f().SetScale(scale) * pxr.Gf.Matrix4f().SetRotate(pxr.Gf.Quatf(*orient))
+        new_xform = obj_xform
+        # new_xform = obj_xform * mat 
+        print("new_xform", prim, obj_xform, mat, "rot", new_xform.ExtractRotationQuat(), "scale:", scale)
         omni.kit.commands.execute(
             "TransformPrimCommand",
-            path=prim.GetPath().pathString,
+            path=prim.GetPath().pathString, 
             new_transform_matrix=new_xform,
         ) 
 

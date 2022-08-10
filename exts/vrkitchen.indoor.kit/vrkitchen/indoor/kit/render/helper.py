@@ -11,6 +11,7 @@ from PIL import Image
 import os
 
 import omni.syntheticdata as syn
+from omni.kit.window.popup_dialog import MessageDialog
 
 class CustomSyntheticDataHelper:
     def __init__(self):
@@ -87,6 +88,14 @@ class CustomSyntheticDataHelper:
             if export_folder: 
                 img.save(img_save_path)
                 print("image saved at path: ", img_save_path)
+
+            dialog = MessageDialog(
+                title="Image capture",
+                message=f"Screenshot captured!",
+                disable_cancel_button=True,
+                ok_handler=lambda dialog: dialog.hide()
+            )
+            dialog.show()
 
         asyncio.ensure_future(render_img())
 

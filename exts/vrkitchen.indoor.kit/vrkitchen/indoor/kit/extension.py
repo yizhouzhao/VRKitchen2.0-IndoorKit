@@ -635,14 +635,16 @@ class MyExtension(omni.ext.IExt):
             if wall_prim:
                 add_semantics(wall_prim, "wall")
 
-            from .layout.randomizer import Randomizer
+            # from .layout.randomizer import Randomizer
+
+            # if not hasattr(self, "house_randomizer"):
+            #     self.house_randomizer = Randomizer(None)
             
-            if not hasattr(self, "house_randomizer"):
-                self.house_randomizer = Randomizer(None)
-            
-            self.house_randomizer.randomize_house(randomize_floor=True, randomize_wall=True)
+            # self.house_randomizer.randomize_house(randomize_floor=True, randomize_wall=True)
             # if IS_IN_CREAT:
-            #     self.house_randomizer.randomize_sky()
+            # self.house_randomizer.randomize_sky()
+            self.randomize_material(rand=True)
+            # self.randomize_sky(sky_type="")
 
             
 
@@ -858,12 +860,12 @@ class MyExtension(omni.ext.IExt):
         task_id = self.task_id_ui.model.get_value_as_int()
         # robot_id = self.robot_id_ui.model.get_value_as_int()
         # mission_id = self.mission_id_ui.model.get_value_as_int()
-        # house_id = self.house_id_ui.model.get_value_as_int()
+        house_id = self.house_id_ui.model.get_value_as_int()
         # anchor_id = self.anchor_id_ui.model.get_value_as_int()
         annotator_index = self.annotator_ui.model.get_item_value_model().get_value_as_int()
         annotator = ANNOTATORS[annotator_index]
 
-        root_dir = '-'.join([str(os.path.join(SAVE_ROOT, annotator, task_type)),str(task_id)])#, \
+        root_dir = '-'.join([str(os.path.join(SAVE_ROOT, annotator, task_type)),str(task_id), str(house_id)])#, \
             #str(robot_id), str(mission_id), str(house_id), str(anchor_id)])
 
         traj_dir = os.path.join(root_dir, TRAJ_FOLDER)
