@@ -18,7 +18,7 @@ import numpy as np
 from .param import *
 # from .layout.house import House
 from .layout.randomizer import Randomizer
-from .layout.utils import rotationXYZ_to_quaternion, add_semantics
+from .layout.utils import add_semantics
 
 from .layout.house_new import House as HouseNew
 from .autotask.auto import AutoTasker
@@ -58,6 +58,7 @@ class MyExtension(omni.ext.IExt):
         self.task_type = None
 
         # set up render
+        self.use_isosurface = False # use isosurface
         self.render_folder = f"{ROOT}/data_render"
         self.render_helper = CustomSyntheticDataHelper()
 
@@ -188,26 +189,28 @@ class MyExtension(omni.ext.IExt):
                     ui.Line(style_type_name_override="HeaderLine")
                     with ui.CollapsableFrame("SCENE UTILITY"):
                         with ui.VStack(height=0, spacing=4):
-                            # with ui.HStack(height=30):
                             ui.Line(style_type_name_override="HeaderLine")
 
-                            # scene id notice
-                            # self.id_note_ui = CustomIdNotice()
-                            
-                            # scene loading
-                                    # open a new stage
-        
+                            # open a new stage
                             ui.Button("New scene", height = 40, name = "load_button", clicked_fn=lambda : omni.kit.window.file.new(), style={ "margin": 4}, tooltip = "open a new empty stage")
+                            
+                            # load recorded scene
                             ui.Button("Load scene", height = 40, name = "load_button", clicked_fn=self.load_scene, style={ "margin": 4})
              
                             # ground plan
                             CustomBoolWidget(label="Visible ground:", default_value=False, on_checked_fn = self.auto_add_ground)
+                            
                             # light intensity
                             CustomSliderWidget(min=0, max=3000, label="Light intensity:", default_val=1000, on_slide_fn = self.change_light_intensity)
+                            
                             # sky selection
                             CustomSkySelectionGroup(on_select_fn=self.randomize_sky)
+                            
                             # house material
                             CustomBoolWidget(label="Random house material:", default_value=False, on_checked_fn = self.randomize_material)
+
+                            # water isosurface
+                            CustomBoolWidget(label="Enable isosurface:", default_value=False, on_checked_fn = self.enable_isosurface)
 
                     # PLAY group
                     ui.Spacer(height = 10)
@@ -244,8 +247,6 @@ class MyExtension(omni.ext.IExt):
                             CustomPathButtonWidget(label="Task folder:", path=DATA_PATH_NEW)
                             CustomPathButtonWidget(label="Record folder:", path=SAVE_ROOT)
                             CustomPathButtonWidget(label="Render folder:", path=self.render_folder)
-
-                           
 
     ################################################################################################
     ######################################## Auto task labeling ####################################
@@ -374,10 +375,6 @@ class MyExtension(omni.ext.IExt):
         self.init_auto_tasker()
         self.auto_tasker.add_task()
 
-    def on_shutdown(self):
-        print("[vrkitchen.indoor.kit] VRKitchen2.0-Indoor-Kit shutdown")
-
-
     ################################################################################################
     ######################################## Modify Scene ##########################################
     ################################################################################################              
@@ -453,6 +450,18 @@ class MyExtension(omni.ext.IExt):
 
         light_prim.GetAttribute("intensity").Set(float(intensity))
 
+    def enable_isosurface(self, enable = False):
+        """
+        enable isosurface for water scene
+        """
+        self.use_isosurface = enable
+        dialog = MessageDialog(
+            title="Isosurface",
+            message=f"Enabled iso surface: {self.use_isosurface} \n Please a `New Scene` and `Load Scene` for water task again.",
+            disable_cancel_button=True,
+            ok_handler=lambda dialog: dialog.hide()
+        )
+        dialog.show()
     
     ################################################################################################
     ######################################## Load / Record #########################################
@@ -593,7 +602,7 @@ class MyExtension(omni.ext.IExt):
             else:
                 self.fix_linear_joint(fix_driver=True, damping_cofficient=10)
         if task_type in ["pour_water", "transfer_water", "tap_water"]:
-            self.add_liquid_to_cup(task_type)
+            self.add_liquid_to_cup(task_type, self.use_isosurface)
 
     def load_robot_new(self):
         """
@@ -768,6 +777,9 @@ class MyExtension(omni.ext.IExt):
         physxSceneAPI.CreateEnableStabilizationAttr().Set(True)
 
     def fix_linear_joint(self, fix_driver = True, damping_cofficient = 1):
+        """
+        Fix the linear joint limit when scaling an object
+        """
         self.stage = omni.usd.get_context().get_stage()
         prim_list = self.stage.TraverseAll()
         for prim in prim_list:
@@ -801,22 +813,22 @@ class MyExtension(omni.ext.IExt):
     ###################################################################################
    
 
-    def init_fluid_helper(self):
+    def init_fluid_helper(self, use_isosurface = False):
         from .layout.fluid.cup_setup import CupFluidHelper
         # cup_id = 0 # self.cup_id_ui.model.get_value_as_int()
         # r = self.r_ui.model.get_value_as_float()
         # g = self.g_ui.model.get_value_as_float()
         # b = self.b_ui.model.get_value_as_float()
  
-        self.cup_fluid_helper = CupFluidHelper()
+        self.cup_fluid_helper = CupFluidHelper(use_isosurface)
 
-    def set_up_fluid_helper(self): 
-        # Fluid System setup
-        self.init_fluid_helper()
-        self.cup_fluid_helper.create()
+    # def set_up_fluid_helper(self): 
+    #     # Fluid System setup
+    #     self.init_fluid_helper()
+    #     self.cup_fluid_helper.create()
     
-    def add_liquid_to_cup(self, task_type):
-        self.init_fluid_helper()
+    def add_liquid_to_cup(self, task_type, use_isosurface = False):
+        self.init_fluid_helper(use_isosurface)
         self.stage = omni.usd.get_context().get_stage()
         game_prim = self.stage.GetPrimAtPath("/World/game")
 
@@ -969,7 +981,9 @@ class MyExtension(omni.ext.IExt):
                 self.id_note_ui.object_ui.text = f"Object: {task_id}"
                 self.id_note_ui.house_ui.text = f"House: {house_id}"
 
-    ############################# render #########################
+    ############################# shot down #########################
 
+    def on_shutdown(self):
+        print("[vrkitchen.indoor.kit] VRKitchen2.0-Indoor-Kit shutdown")
 
     

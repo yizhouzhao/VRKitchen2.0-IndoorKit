@@ -1,11 +1,11 @@
 import math
 import os
 from ..param import ROOT as root
-from ...param import IS_IN_ISAAC_SIM, APP_VERION
+from ...param import IS_IN_ISAAC_SIM, APP_VERION, USE_ISO_SURFACE
 import carb
 import omni
 import pxr
-from pxr import Gf, UsdPhysics, Sdf, Usd, UsdGeom, PhysxSchema
+from pxr import Gf, UsdPhysics, Sdf, Usd, UsdGeom, PhysxSchema, Vt
 from omni.physx.scripts import utils, physicsUtils
 
 if APP_VERION.startswith("2022"):
@@ -29,13 +29,15 @@ def setGridFilteringPass(gridFilteringFlags: int, passIndex: int, operation: int
     return gridFilteringFlags
 
 class CupFluidHelper():
-    def __init__(self, cup_id = 0, r = 0.1, g  = 0.4,b =0.6, material = None, height = None) -> None:
+    def __init__(self, use_isosurface = USE_ISO_SURFACE, cup_id = 0, r = 0.1, g  = 0.4, b =0.6, material = None, height = None) -> None:
         self.stage = omni.usd.get_context().get_stage()
 
         self.cup_id = cup_id
         self.rgb =[r,g,b]
         self.material = material
         self.height = height
+
+        self.use_isosurface = use_isosurface
     
     def create(self):
         # needs to be called first: set_up_fluid_physical_scene
@@ -64,7 +66,7 @@ class CupFluidHelper():
 
         # modify particleSystemStr
         if add_liquid:
-            particleSystemStr = game_prim.GetPath().AppendPath("Fluid").pathString
+            particleSystemStr =  "/World/Fluid" # game_prim.GetPath().AppendPath("Fluid").pathString
             self.particleSystemPath = pxr.Sdf.Path(particleSystemStr)
             self.particleInstanceStr = game_prim.GetPath().AppendPath("Particles").pathString
 
@@ -234,6 +236,7 @@ class CupFluidHelper():
             positions_list  = generate_inside_point_cloud(sphereDiameter=particle_rest_offset * (2.0 + 0.08), cloud_points = self.cloud_points, scale=1.0)
 
         for _ in range(len(positions_list)):
+            # print("position:", positions_list[_])
             velocities_list.append(pxr.Gf.Vec3f(0, 0, 0))
             protoIndices_list.append(0)
 
@@ -247,152 +250,104 @@ class CupFluidHelper():
         positions = pxr.Vt.Vec3fArray(positions_list)
         velocities = pxr.Vt.Vec3fArray(velocities_list)
 
-        if APP_VERION.startswith("2022"):
-            particleUtils.add_physx_particleset_pointinstancer(
-                self.stage,
-                particleInstancePath,
-                positions,
-                velocities,
-                self.particleSystemPath,
-                self_collision=True,
-                fluid=True,
-                particle_group=0,
-                particle_mass=PARTICLE_PROPERTY._particle_mass,
-                density=0.0,
-            )
+        # if APP_VERION.startswith("2022"):
+        #     particleUtils.add_physx_particleset_pointinstancer(
+        #         self.stage,
+        #         particleInstancePath,
+        #         positions,
+        #         velocities,
+        #         self.particleSystemPath,
+        #         self_collision=True,
+        #         fluid=True,
+        #         particle_group=0,
+        #         particle_mass=PARTICLE_PROPERTY._particle_mass,
+        #         density=0.0,
+        #     )
+        # else:
+        #     addPhysxParticlesSimple(
+        #         self.stage, particleInstancePath, protoArray, protoIndices, positions, velocities, self.particleSystemPath
+        #     )
 
-            # mtl_created = []
-            # omni.kit.commands.execute(
-            #     "CreateAndBindMdlMaterialFromLibrary",
-            #     mdl_name="OmniSurfacePresets.mdl",
-            #     mtl_name="OmniSurface_ClearWater",
-            #     mtl_created_list=mtl_created,
-            # )
-            # pbd_particle_material_path = mtl_created[0]
-            # omni.kit.commands.execute(
-            #     "BindMaterial", prim_path=self.particleSystemPath, material_path=pbd_particle_material_path
-            # )
-
-            # # Create a pbd particle material and set it on the particle system
-            # particleUtils.add_pbd_particle_material(
-            #     self.stage,
-            #     pbd_particle_material_path,
-            #     cohesion=0.01,
-            #     viscosity=0.0091,
-            #     surface_tension=0.0074,
-            #     friction=0.1,
-            # )
-        else:
-            addPhysxParticlesSimple(
-                self.stage, particleInstancePath, protoArray, protoIndices, positions, velocities, self.particleSystemPath
-            )
-        
-        # isosurfaceAPI = PhysxSchema.PhysxParticleIsosurfaceAPI.Apply(self._particleSystem.GetPrim())
-        # isosurfaceAPI.CreateIsosurfaceEnabledAttr().Set(True)
-        # isosurfaceAPI.CreateMaxVerticesAttr().Set(1024 * 1024)
-        # isosurfaceAPI.CreateMaxTrianglesAttr().Set(2 * 1024 * 1024)
-        # isosurfaceAPI.CreateMaxSubgridsAttr().Set(1024 * 4)
-        # isosurfaceAPI.CreateGridSpacingAttr().Set(particle_rest_offset * 1.5)
-        # isosurfaceAPI.CreateSurfaceDistanceAttr().Set(particle_rest_offset * 1.6)
-        # isosurfaceAPI.CreateGridFilteringPassesAttr().Set("")
-        # isosurfaceAPI.CreateGridSmoothingRadiusAttr().Set(particle_rest_offset * 2)
-
-        return
-        # FIXME:DEBUG
-        # make sure scales and orientations are authored
-        pprim = self.stage.GetPrimAtPath(self.particleInstanceStr)
-        pprim.GetAttribute("scales").Set([PARTICLE_PROPERTY._particle_scale for i in range(len(positions_list))])
-        pprim.GetAttribute("orientations").Set([Gf.Quath(1.0, 0.0, 0.0, 0.0) for i in range(len(positions_list))])
-
-         # Enable Flow rendering, plus shadows, reflections, and translucency
-        flowRenderSettings = {
-            "rtx:flow:enabled": True,
-            "rtx:flow:rayTracedTranslucencyEnabled": True,
-            "rtx:flow:rayTracedReflectionsEnabled": True,
-            "rtx:flow:rayTracedShadowsEnabled": True,
-            "rtx:flow:compositeEnabled": False,  # use translucency instead
-            "rtx:flow:useFlowLibraryComposite": False,  # we want to use native rendering
-            "rtx:flow:useFlowLibrarySelfShadow": False,  # not implemented for isosurfaces yet
-        }
-
-        metadata = self.stage.GetMetadata("customLayerData")
-        if "renderSettings" in metadata:
-            renderSettings = metadata["renderSettings"]
-        else:
-            renderSettings = {}
-        metadata["renderSettings"] = {**renderSettings, **flowRenderSettings}
-        self.stage.SetMetadata("customLayerData", metadata)
-
-        def create_isoSurface():
-            # isosurface render params
-            filterSmooth = 1
-            filtering = 0
-            passIndex = 0
-            filtering = setGridFilteringPass(filtering, passIndex, filterSmooth)
-            passIndex = passIndex + 1
-            filtering = setGridFilteringPass(filtering, passIndex, filterSmooth)
-            passIndex = passIndex + 1
-            iso_surface_params = {
-                "maxIsosurfaceVertices": [Sdf.ValueTypeNames.Int, True,  1024 * 1024],
-                "maxIsosurfaceTriangles": [Sdf.ValueTypeNames.Int, True, 2 * 1024 * 1024],
-                "maxNumIsosurfaceSubgrids": [Sdf.ValueTypeNames.Int, True,  1024 * 4],
-                "isosurfaceGridSpacing": [Sdf.ValueTypeNames.Float, True, 0.2],
-                "isosurfaceKernelRadius": [Sdf.ValueTypeNames.Float, True,  0.5 ], 
-                "isosurfaceLevel": [ Sdf.ValueTypeNames.Float, True, -0.3 ],
-                "isosurfaceGridFilteringFlags": [Sdf.ValueTypeNames.Int, True, filtering ],
-                "isosurfaceGridSmoothingRadiusRelativeToCellSize": [Sdf.ValueTypeNames.Float, True, 0.3 ],
-                "isosurfaceEnableAnisotropy": [Sdf.ValueTypeNames.Bool, True, False ],
-                "isosurfaceAnisotropyMin": [ Sdf.ValueTypeNames.Float, True, 0.1 ],
-                "isosurfaceAnisotropyMax": [ Sdf.ValueTypeNames.Float, True, 2.0 ],
-                "isosurfaceAnisotropyRadius": [ Sdf.ValueTypeNames.Float, True, 0.5 ],
-                "numIsosurfaceMeshSmoothingPasses": [ Sdf.ValueTypeNames.Int,  True, 5 ],
-                "numIsosurfaceMeshNormalSmoothingPasses": [ Sdf.ValueTypeNames.Int, True, 5 ],
-                "isosurfaceDoNotCastShadows": [Sdf.ValueTypeNames.Bool, True, True ]
-            }
-            radius = 0.2
-            particleSystem.CreateAttribute("enableIsosurface", Sdf.ValueTypeNames.Bool, True).Set(True)
-            isopath = self.particleInstanceStr + "/flowIsosurface"
-            isoprim = self.stage.DefinePrim(isopath, "FlowIsosurface")
-            isoprim.CreateAttribute("densityCellSize", Sdf.ValueTypeNames.Float, False).Set(radius / 2.0)
-            isoprim.CreateAttribute("layer", Sdf.ValueTypeNames.Int, False).Set(0)
-            isoprim.CreateAttribute("positionValues", Sdf.ValueTypeNames.Float4Array, False).Set([])
+        if self.use_isosurface:
+            print("isosurface settings")
+            particle_system = self._particleSystem
             
-            elprim = self.stage.DefinePrim(isopath + "/ellipsoidRaster", "FlowEllipsoidRasterParams")
-            elprim.CreateAttribute("allocationScale", Sdf.ValueTypeNames.Float, False).Set(2.5)
-            elprim.CreateAttribute("scale", Sdf.ValueTypeNames.Float, False).Set(1)
-            elprim.CreateAttribute("smoothIterations", Sdf.ValueTypeNames.UInt, False).Set(3)
+            mtl_created = []
+            omni.kit.commands.execute(
+                "CreateAndBindMdlMaterialFromLibrary",
+                mdl_name="OmniSurfacePresets.mdl",
+                mtl_name="OmniSurface_DeepWater",
+                mtl_created_list=mtl_created,
+            )
+            pbd_particle_material_path = mtl_created[0]
+            omni.kit.commands.execute(
+                "BindMaterial", prim_path=self.particleSystemPath, material_path=pbd_particle_material_path
+            )
 
-            for key,value in iso_surface_params.items():
-                    if isinstance(value, list):
-                        particleSystem.CreateAttribute(key, value[0], value[1]).Set(value[2])
-                    else:
-                        particleSystem.GetAttribute(key).Set(value)
+            # Create a pbd particle material and set it on the particle system
+            particleUtils.add_pbd_particle_material(
+                self.stage,
+                pbd_particle_material_path,
+                cohesion=0.01,
+                viscosity=0.0091,
+                surface_tension=0.0074,
+                friction=0.1,
+            )
+            physicsUtils.add_physics_material_to_prim(self.stage, particle_system.GetPrim(), pbd_particle_material_path)
 
-            self.stage.SetInterpolationType(Usd.InterpolationTypeHeld)  
-            pt, aE1t, aE2t, aE3t = [], [], [], []
-            for v in self.positions_list:
-                pt.append((v[0], v[1], v[2], 0.0))
-                aE1t.append((1.0, 0.0, 0.0, 0.5))
-                aE2t.append((0.0, 1.0, 0.0, 0.5))
-                aE3t.append((0.0, 0.0, 1.0, 0.5))
+            particle_system.CreateMaxVelocityAttr().Set(200)
 
-            elprim.CreateAttribute("positions", Sdf.ValueTypeNames.Float4Array, False).Set(pt)
-            elprim.CreateAttribute("anisotropyE1s", Sdf.ValueTypeNames.Float4Array, False).Set(aE1t)
-            elprim.CreateAttribute("anisotropyE2s", Sdf.ValueTypeNames.Float4Array, False).Set(aE2t)
-            elprim.CreateAttribute("anisotropyE3s", Sdf.ValueTypeNames.Float4Array, False).Set(aE3t)
+            # add particle anisotropy
+            anisotropyAPI = PhysxSchema.PhysxParticleAnisotropyAPI.Apply(particle_system.GetPrim())
+            anisotropyAPI.CreateParticleAnisotropyEnabledAttr().Set(True)
+            aniso_scale = 5.0
+            anisotropyAPI.CreateScaleAttr().Set(aniso_scale)
+            anisotropyAPI.CreateMinAttr().Set(1.0)
+            anisotropyAPI.CreateMaxAttr().Set(2.0)
 
-            marchprim = self.stage.DefinePrim(isopath + "/rayMarchIsosurface", "FlowRayMarchIsosurfaceParams")
-            marchprim.CreateAttribute("densityThreshold", Sdf.ValueTypeNames.Float, False).Set(0.1)
-            marchprim.CreateAttribute("stepSizeScale", Sdf.ValueTypeNames.Float, False).Set(0.75)
-            marchprim.CreateAttribute("visualizeNormals", Sdf.ValueTypeNames.Bool, False).Set(False)
-            marchprim.CreateAttribute("fluidColor", Sdf.ValueTypeNames.Float3, False).Set(Gf.Vec3f(1, 0, 0))
-            marchprim.CreateAttribute("fluidDiffuseReflectance", Sdf.ValueTypeNames.Float3, False).Set(Gf.Vec3f(0.6, 0, 0))
+            # add particle smoothing
+            smoothingAPI = PhysxSchema.PhysxParticleSmoothingAPI.Apply(particle_system.GetPrim())
+            smoothingAPI.CreateParticleSmoothingEnabledAttr().Set(True)
+            smoothingAPI.CreateStrengthAttr().Set(0.5)
 
-        print("creating Isosurface")
-        from ...param import USE_ISO_SURFACE
-        if USE_ISO_SURFACE:
-            print("creating Isosurface")
-            create_isoSurface()
+            fluidRestOffset = self._particleSystemSchemaParameters["rest_offset"]
+            # apply isosurface params
+            isosurfaceAPI = PhysxSchema.PhysxParticleIsosurfaceAPI.Apply(particle_system.GetPrim())
+            isosurfaceAPI.CreateIsosurfaceEnabledAttr().Set(True)
+            isosurfaceAPI.CreateMaxVerticesAttr().Set(1024 * 1024)
+            isosurfaceAPI.CreateMaxTrianglesAttr().Set(2 * 1024 * 1024)
+            isosurfaceAPI.CreateMaxSubgridsAttr().Set(1024 * 4)
+            isosurfaceAPI.CreateGridSpacingAttr().Set(fluidRestOffset * 1.5)
+            isosurfaceAPI.CreateSurfaceDistanceAttr().Set(fluidRestOffset * 1.6)
+            isosurfaceAPI.CreateGridFilteringPassesAttr().Set("")
+            isosurfaceAPI.CreateGridSmoothingRadiusAttr().Set(fluidRestOffset * 2)
+
+            isosurfaceAPI.CreateNumMeshSmoothingPassesAttr().Set(1)
+
+            primVarsApi = UsdGeom.PrimvarsAPI(particle_system)
+            primVarsApi.CreatePrimvar("doNotCastShadows", Sdf.ValueTypeNames.Bool).Set(True)
+
+            self.stage.SetInterpolationType(Usd.InterpolationTypeHeld)
+
+        particleUtils.add_physx_particleset_pointinstancer(
+            stage=self.stage,
+            path= particleInstancePath, # 
+            positions=Vt.Vec3fArray(positions),
+            velocities=Vt.Vec3fArray(velocities),
+            particle_system_path=self.particleSystemPath,
+            self_collision=True,
+            fluid=True,
+            particle_group=0,
+            particle_mass=PARTICLE_PROPERTY._particle_mass,
+            density=0.0,
+        )
+
+        # if self.use_isosurface:
+        # particle_instance_prim = self.stage.GetPrimAtPath(particleInstancePath.pathString)
+        
+        # # set partile up offset
+        # particles = pxr.UsdGeom.Xformable(particle_instance_prim)
+        # particles.AddTranslateOp()
 
     def set_color(self):
         # Set color
@@ -407,8 +362,8 @@ class CupFluidHelper():
         
         # TODO: debug transperency 
         gprim.CreateDisplayOpacityAttr([float(0.1)])
-        from ...param import USE_ISO_SURFACE
-        if USE_ISO_SURFACE:
+
+        if self.use_isosurface:
             gprim.GetPrim().GetAttribute('visibility').Set('invisible')
 
         # usdPrim = stage.GetPrimAtPath(particleInstancePath)
@@ -507,9 +462,3 @@ class CupFluidHelper():
             collisionAPI = pxr.UsdPhysics.CollisionAPI.Apply(prim)
         # apply material
         physicsUtils.add_physics_material_to_prim(self.stage, prim, self._physicsMaterialPath)
-
-    def set_particle_offset(self):
-        # set partile up offset
-        default_prim_path = self.stage.GetDefaultPrim().GetPath()
-        particles = pxr.UsdGeom.Xformable(self.stage.GetPrimAtPath(default_prim_path.AppendPath("Particles")))
-        particles.AddTranslateOp().Set(self._mugInitPos + self._fluidPositionOffset)
