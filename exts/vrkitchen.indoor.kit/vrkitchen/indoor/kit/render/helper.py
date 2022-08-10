@@ -72,7 +72,7 @@ class CustomSyntheticDataHelper:
             if self.render_type == "Depth":
                 from omni.syntheticdata.scripts.visualize import get_depth
                 data = get_depth(self.viewport_window, mode = "linear") 
-                print("img", data.shape)
+                # print("img", data.shape)
                 img = Image.fromarray(data.astype(np.uint8))
 
             elif self.render_type == "Semantic":
@@ -81,7 +81,7 @@ class CustomSyntheticDataHelper:
                 img = Image.fromarray(data.astype(np.uint8))
             else:
                 data = syn.sensors.get_rgb(self.viewport_window)
-                print("img", data.shape, data.dtype)
+                # print("img", data.shape, data.dtype)
                 img = Image.fromarray(data)
 
             if export_folder: 

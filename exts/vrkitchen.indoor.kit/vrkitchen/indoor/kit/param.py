@@ -1,8 +1,16 @@
+import omni
 import carb
 import os
 from pathlib import Path
 
-ROOT = str(Path(__file__).parent.joinpath("../../../../../").resolve())
+EXTENSION_FOLDER_PATH = Path(
+    omni.kit.app.get_app().get_extension_manager().get_extension_path_by_module(__name__)
+)
+
+ROOT = str(EXTENSION_FOLDER_PATH.parent.parent.resolve())
+# ROOT = str(Path(__file__).parent.joinpath("../../../../../").resolve())
+
+print("EXTENSION_FOLDER_PATH", EXTENSION_FOLDER_PATH, "ROOT", ROOT)
 
 IS_IN_ISAAC_SIM = str(carb.settings.get_settings().get("/app/window/title")).startswith("Isaac Sim")
 IS_IN_CREAT = str(carb.settings.get_settings().get("/app/window/title")).startswith("Create")

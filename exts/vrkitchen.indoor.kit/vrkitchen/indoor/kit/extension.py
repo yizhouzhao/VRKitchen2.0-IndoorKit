@@ -490,7 +490,7 @@ class MyExtension(omni.ext.IExt):
 
         dialog = MessageDialog(
             title="Scene Recorded",
-            message=f"Scene recorded! Please start a `New scene` and then `Load scene` \n Note: you don't have to save the current stage.",
+            message=f"Scene recorded! \nPlease start a `New scene` and then `Load scene` \nNote: you don't have to save the current stage.",
             disable_cancel_button=True,
             ok_handler=lambda dialog: dialog.hide()
         )
@@ -925,7 +925,7 @@ class MyExtension(omni.ext.IExt):
         house_id = self.house_id_ui.model.get_value_as_int()
 
         self.render_helper.render_image(self.render_folder, prefix = f"{task_type}_{task_id}_{house_id}")
-
+        self.task_desc_ui.model.set_value("image captured!")
     
     ######################## ui ###############################
        

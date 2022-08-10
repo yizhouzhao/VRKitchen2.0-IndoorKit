@@ -307,7 +307,7 @@ class CustomRecordGroup:
 
 class CustomControlGroup():
     def __init__(self) -> None:
-        self.collapse_frame = ui.CollapsableFrame("\tRobot control")
+        self.collapse_frame = ui.CollapsableFrame("Robot control")
         self.collapse_frame.collapsed = False
         self.collapse_frame.enabled = True
         
