@@ -39,7 +39,7 @@ cl.field_border = cl(1.0, 1.0, 1.0, 0.2)
 cl.btn_border = cl(1.0, 1.0, 1.0, 0.4)
 cl.slider_fill = cl(1.0, 1.0, 1.0, 0.3)
 cl.revert_arrow_enabled = cl(.25, .5, .75, 1.0)
-cl.revert_arrow_disabled = cl(.35, .35, .35, 1.0)
+cl.revert_arrow_disabled = cl(.75, .75, .75, 1.0)
 cl.transparent = cl(0, 0, 0, 0)
 
 fl.main_label_attr_hspacing = 10
@@ -72,7 +72,8 @@ url.start_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/toolbar_play.svg"
 url.replay_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/toolbar_replay.svg" 
 url.stop_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/toolbar_stop.svg" 
 url.pause_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/timeline_pause.svg" 
-
+url.pencil_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/pencil.svg" 
+url.open_folder_btn_on_icon = f"{EXTENSION_FOLDER_PATH}/icons/open_folder.svg" 
 
 # The main style dict
 julia_modeler_style = {
@@ -137,7 +138,23 @@ julia_modeler_style = {
         "image_url": url.revert_arrow_icon,
         "color": cl.revert_arrow_enabled,
     },
-    "Image::revert_arrow:disabled": {"color": cl.revert_arrow_disabled},
+    "Image::revert_arrow:disabled": {
+        "image_url": url.revert_arrow_icon, 
+        "color": cl.revert_arrow_disabled
+        },
+     "Image::revert_arrow_task_type": {
+        "image_url": url.revert_arrow_icon,
+        "color": cl.revert_arrow_enabled,
+    },
+    "Image::revert_arrow_task_type:disabled": {
+        "image_url": url.pencil_btn_on_icon, 
+        "color": cl.revert_arrow_disabled
+        },
+    "Image::open_folder": {
+        "image_url": url.open_folder_btn_on_icon, 
+        "color": cl.revert_arrow_disabled
+        },
+
     "Image::checked": {"image_url": url.checkbox_on_icon},
     "Image::unchecked": {"image_url": url.checkbox_off_icon},
     "Image::slider_bg_texture": {

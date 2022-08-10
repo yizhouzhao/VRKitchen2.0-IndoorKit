@@ -27,8 +27,7 @@ from .render.helper import CustomSyntheticDataHelper
 
 
 ###################### ui import ################
-from .ui.custom_combobox_widget import TaskTypeComboboxWidget
-from .ui.indoorkit_ui_widget import CustomRecordGroup, CustomControlGroup, CustomBoolWidget, CustomSliderWidget, \
+from .ui.indoorkit_ui_widget import TaskTypeComboboxWidget, CustomRecordGroup, CustomControlGroup, CustomBoolWidget, CustomSliderWidget, \
     CustomSkySelectionGroup, CustomIdNotice, CustomPathButtonWidget, CustomRenderTypeSelectionGroup
 
 from omni.kit.window.popup_dialog import MessageDialog
@@ -49,7 +48,7 @@ class MyExtension(omni.ext.IExt):
         carb.settings.get_settings().set_int("/app/runLoops/main/rateLimitFrequency", int( FPS))
         # carb.settings.get_settings().set_int("/persistent/simulation/minFrameRate", int(FPS))
 
-        # stage and time
+        # stage and timeline
         self.stage = omni.usd.get_context().get_stage()
         self.timeline = omni.timeline.get_timeline_interface()
 
@@ -58,11 +57,13 @@ class MyExtension(omni.ext.IExt):
         # self.auto_labeler = AutoLabeler(None)
         self.task_type = None
 
+        # set up render
+        self.render_folder = f"{ROOT}/data_render"
+        self.render_helper = CustomSyntheticDataHelper()
+
         # build windows
         self.build_setup_layout_window()
 
-        # set up render
-        self.render_helper = CustomSyntheticDataHelper()
     
     ################################################################################################
     ######################################## Build omni ui window ##################################
@@ -97,7 +98,7 @@ class MyExtension(omni.ext.IExt):
                                 # default_task_index = self.task_types.index("pickup_object")
                                 # self.task_type_ui = ui.ComboBox(default_task_index, width = 200, *self.task_types, style={ "margin": 8, "color": "cornflowerblue", "font_size":18})
  
-                                self.task_type_ui = TaskTypeComboboxWidget(label="Task type:\t", options=self.task_types)
+                                self.task_type_ui = TaskTypeComboboxWidget(label="Task type:\t", options=self.task_types, on_restore_fn=self.fill_task_info)
                                 
                                 
                                 # ui.Button(" + ", clicked_fn=self.auto_next_task, width = 20, style={ "margin_height": 8})
@@ -105,7 +106,7 @@ class MyExtension(omni.ext.IExt):
 
                                 self.annotators = ANNOTATORS
                                 ui.Label("  Annotator: ", width = 30, style={ "font_size": 12 , "color": "PowderBlue"}, visible = False)
-                                annotator_index = ANNOTATORS.index("Yizhou")
+                                annotator_index = ANNOTATORS.index("MyLuckyUser")
                                 self.annotator_ui = ui.ComboBox(annotator_index, width = 100, *self.annotators, style={ "margin_height": 8, "font_size": 12, "color": "PowderBlue" }, visible=False)
                                 # self.auto_suggest.annotator_ui = self.annotator_ui
 
@@ -205,17 +206,10 @@ class MyExtension(omni.ext.IExt):
                             CustomSliderWidget(min=0, max=3000, label="Light intensity:", default_val=1000, on_slide_fn = self.change_light_intensity)
                             # sky selection
                             CustomSkySelectionGroup(on_select_fn=self.randomize_sky)
-                                # ui.Button("Add Ground", clicked_fn=self.auto_add_ground, style={ "margin": 2})
-                             # Randomize house material
-                            
+                            # house material
                             CustomBoolWidget(label="Random house material:", default_value=False, on_checked_fn = self.randomize_material)
-                                      
-                            # with ui.HStack(height=30):
-                                # ui.Button("Randomize house material", clicked_fn=self.randomize_material, style={ "margin": 2}) 
-                                # ui.Button("Randomize sky", clicked_fn=self.randomize_sky, style={ "margin": 2}) 
-                                # ui.Button("Randomize light", clicked_fn=self.randomize_light, style={ "margin": 2}) 
 
-
+                    # PLAY group
                     ui.Spacer(height = 10)
                     ui.Line(style_type_name_override="HeaderLine")
                     with ui.CollapsableFrame("PLAY"):
@@ -223,7 +217,6 @@ class MyExtension(omni.ext.IExt):
                             ui.Line(style_type_name_override="HeaderLine") 
                             ui.Spacer(height = 12)
                             
-               
                             # play and record
                             record_group = CustomRecordGroup(
                                 on_click_record_fn=self.start_record,
@@ -233,30 +226,46 @@ class MyExtension(omni.ext.IExt):
 
                             # robot control
                             control_group = CustomControlGroup()
-                            record_group.control_group = control_group
-             
-                            # with ui.HStack(height=30, visible = False):
-                            #     ui.Button("Start & Record", clicked_fn=self.start_record, style={ "margin": 4, "font-weight": "bold", "color": "lightgreen"})
-                            #     ui.Button("Stop", clicked_fn=self.stop_record, style={ "margin": 4, "color": "red"})
-                            #     ui.Button("Replay", clicked_fn=self.replay_record, style={ "margin": 4, "color": "yellow"})
-
-                            # ui.Button("render", clicked_fn = self.setup_viewport)
-
-                            # CustomBoolWidget(label="Render image:", default_value=False, on_checked_fn = self.randomize_material)
-                            
+                            record_group.control_group = control_group                            
+                           
                             with ui.CollapsableFrame("Render"):
                                 with ui.VStack(height=0, spacing=0):
                                     CustomRenderTypeSelectionGroup(on_select_fn=self.set_render_type)
-                                    CustomPathButtonWidget(
-                                        label="Export folder:",
-                                        path=f"{ROOT}/data_render",
-                                        btn_label="Capture image",
-                                        btn_callback = self.render_an_image,
-                                    )
+                                    ui.Button("Capture image", height = 40, name = "tool_button", clicked_fn=self.render_an_image, style={ "margin": 4}, tooltip = "Capture current screenshot")
+                    
+                    # PATH group
+                    ui.Spacer(height = 10)
+                    ui.Line(style_type_name_override="HeaderLine")
+                    with ui.CollapsableFrame("PATH", collapsed = True):
+                        with ui.VStack(height=0, spacing=0):
+                            ui.Line(style_type_name_override="HeaderLine") 
+                            ui.Spacer(height = 12)
+
+                            CustomPathButtonWidget(label="Task folder:", path=DATA_PATH_NEW)
+                            CustomPathButtonWidget(label="Record folder:", path=SAVE_ROOT)
+                            CustomPathButtonWidget(label="Render folder:", path=self.render_folder)
+
+                           
 
     ################################################################################################
     ######################################## Auto task labeling ####################################
-    ################################################################################################              
+    ################################################################################################   
+
+    def fill_task_info(self, reset = False):
+        """
+        Automatically (randomly fill task type, housing id, and object id)
+        :: params:
+            reset: if true, set all to zeros
+        """
+   
+        task_type_id = np.random.randint(len(self.task_types)) if not reset else 0
+        object_id = np.random.randint(20) if not reset else 0 # task id
+        house_id = np.random.randint(20) if not reset else 0 # house id
+
+        self.task_type_ui.model.get_item_value_model().set_value(task_type_id)
+        self.task_id_ui.model.set_value(object_id)
+        self.house_id_ui.model.set_value(house_id)
+    
 
     def init_auto_tasker(self): 
         """
@@ -277,7 +286,7 @@ class MyExtension(omni.ext.IExt):
         
         # FIXME: add annotator
         # annotator_index = self.annotator_ui.model.get_item_value_model().get_value_as_int()
-        annotator = "Yizhou" # self.annotators[annotator_index]
+        annotator = "MyLuckyUser" # self.annotators[annotator_index]
         
         self.auto_tasker = AutoTasker(task_type, task_id, robot_id, mission_id, house_id, anchor_id, annotator=annotator)
         AutoTasker.TASK_DESCRIPTION = self.task_desc_ui.model.get_value_as_string()
@@ -481,7 +490,7 @@ class MyExtension(omni.ext.IExt):
 
         dialog = MessageDialog(
             title="Scene Recorded",
-            message=f"Scene recorded! Please start a new empty scene `Load scene` \n Note: you don't have to save the current stage.",
+            message=f"Scene recorded! Please start a `New scene` and then `Load scene` \n Note: you don't have to save the current stage.",
             disable_cancel_button=True,
             ok_handler=lambda dialog: dialog.hide()
         )
@@ -906,14 +915,16 @@ class MyExtension(omni.ext.IExt):
         self.render_helper.render_type = render_type
         print("Setting render_type", self.render_helper.render_type)
 
-    def render_an_image(self, export_folder: str = None):
-        
+    def render_an_image(self):
+        """
+        Render an image to render folder according render type
+        """
         task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
         task_type = self.task_types[task_index]
         task_id = self.task_id_ui.model.get_value_as_int()
         house_id = self.house_id_ui.model.get_value_as_int()
 
-        self.render_helper.render_image(export_folder, prefix = f"{task_type}_{task_id}_{house_id}")
+        self.render_helper.render_image(self.render_folder, prefix = f"{task_type}_{task_id}_{house_id}")
 
     
     ######################## ui ###############################

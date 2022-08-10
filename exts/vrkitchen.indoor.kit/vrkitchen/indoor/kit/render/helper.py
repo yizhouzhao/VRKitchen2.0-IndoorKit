@@ -25,7 +25,7 @@ class CustomSyntheticDataHelper:
 
     def reset(self):
         # viewport
-        self.render_type = ""
+        self.render_type = "Rgb"
         viewport = omni.kit.viewport_legacy.get_viewport_interface()
         # viewport_handle = viewport.get_instance("Viewport")
         self.viewport_window = viewport.get_viewport_window(None)
