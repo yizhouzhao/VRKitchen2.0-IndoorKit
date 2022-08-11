@@ -78,9 +78,9 @@ class CupFluidHelper():
         if not cup_shape_prim:
             raise Exception(f"Cup shape must exist at path {cup_shape_prim_path}")
 
-        if IS_IN_ISAAC_SIM :
-            from omni.isaac.core.utils.semantics import add_update_semantics
-            add_update_semantics(cup_shape_prim, "Cup")
+        # if IS_IN_ISAAC_SIM :
+        #     from omni.isaac.core.utils.semantics import add_update_semantics
+        #     add_update_semantics(cup_shape_prim, "Cup")
         
         # utils.setPhysics(prim=cup_shape_prim, kinematic=False)    
         # utils.setCollider(prim=cup_shape_prim, approximationShape="convexDecomposition")
@@ -114,7 +114,19 @@ class CupFluidHelper():
         utils.setRigidBody(cup_prim, "convexDecomposition", False)
         utils.removeCollider(cup_volume_prim)
 
-
+        # add material
+        # create material 2
+        mtl_created_list = []
+        omni.kit.commands.execute(
+            "CreateAndBindMdlMaterialFromLibrary",
+            mdl_name="OmniGlass.mdl",
+            mtl_name="OmniGlass",
+            mtl_created_list=mtl_created_list,
+        )
+        mtl_path = mtl_created_list[0]
+        omni.kit.commands.execute(
+            "BindMaterial", prim_path=pxr.Sdf.Path(cup_shape_prim_path), material_path=mtl_path, strength=pxr.UsdShade.Tokens.strongerThanDescendants
+        )
 
         if add_liquid:
             self.volume_mesh = pxr.UsdGeom.Mesh.Get(self.stage, cup_prim.GetPath().AppendPath(f"cup_volume"))    
