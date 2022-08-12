@@ -1,6 +1,6 @@
 # Omniverse IndoorKit Extension
 
-![teaser](img/teaser_new2.png)
+![teaser](img/teaser_new2.PNG)
 
 
 This extension allows to load and record indoor scene tasks for robotics. 
