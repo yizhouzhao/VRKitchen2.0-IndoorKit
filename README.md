@@ -1,6 +1,6 @@
 # Omniverse IndoorKit Extension
 
-![teaser](img/teaser_new.png)
+![teaser](img/teaser_new2.png)
 
 
 This extension allows to load and record indoor scene tasks for robotics. 
@@ -10,7 +10,7 @@ In the field of robotics, it requires a lot of effort to set up even a simple ta
 Besides, we design a complete pipline to **load and record the scene**, **control and replay the robot actions**, and **render images**d. We hope this work could encourage academic researches in related field.
 
 
-<img src="img/ui.png" width="200">
+<img src="img/ui.png" width="300">
 
 # Get started with Omniverse Code/Create/Isaac-Sim [version >= 2022]
 
