@@ -148,3 +148,14 @@ You may render the desired type of the image at any time playing, replaying or p
 Finally, you can open the data folders:
 
 ![path_ui](img/path_ui.png)
+
+# License
+
+- The rooms in this repository are from [3D-FRONT](https://tianchi.aliyun.com/dataset/dataDetail?dataId=65347&lang=en-us), under the [NonCommercial Creative Common License](https://creativecommons.org/licenses/by-nc-sa/4.0/?spm=5176.12282016.0.0.2e917474Ikche7)
+- The drawers and bottles in this repository are from [SAPIEN](https://sapien.ucsd.edu/), under this [NonCommercial Term of Use](https://sapien.ucsd.edu/about#term)
+- The cups in this repository are from AI2THOR, under the [Apache License](https://github.com/allenai/ai2thor/blob/main/LICENSE).
+
+- This repository is for OMNIVERSE CODE CONTEST, under the [OMNIVERSE PUBLISHING AGREEMENT
+](https://developer.download.nvidia.com/Omniverse/secure/Omniverse_Publishing_Agreement_12May2022.pdf?jrPi6OXFm7gWYIsdrQGrSTgF4P3LNZ8cXw3jyHdg--8TYsFEK7bOTc5Az6My5OyURuC8xMU9_Ii1u8H7aPReCvxYFGCrc9VVKVdbfFShmc5sktkTrqywjogIpKeoYLtY-fdBX-WjCl_Vjziylc0Dddy0PXlVdlotRtzLmQ&t=eyJscyI6ImdzZW8iLCJsc2QiOiJodHRwczpcL1wvd3d3Lmdvb2dsZS5jb21cLyJ9).
+
+# Acknowledgement
