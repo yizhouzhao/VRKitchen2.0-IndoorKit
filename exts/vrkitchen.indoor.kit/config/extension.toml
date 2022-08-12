@@ -3,8 +3,12 @@
 version = "1.0.0"
 
 # The title and description fields are primarily for displaying extension info in UI
-title = "Simple UI Extension Template"
-description="The simplest python extension example. Use it as a starting point for your extensions."
+title = "Indoorkit"
+description="The python extension with omniverse for robotic tasks"
+
+# preview
+preview_image = "icons/preview.png"
+icon = "icons/logo_large.png"
 
 # Path (relative to the root) or content of readme markdown file for UI.
 readme  = "docs/README.md"
@@ -16,7 +20,7 @@ repository = ""
 category = "Example"
 
 # Keywords for the extension
-keywords = ["kit", "example"]
+keywords = ["kit", "example", "robotics", "machine learning"]
 
 
 # Use omni.ui to build simple UI

@@ -40,7 +40,7 @@ class FrankaTensor():
         self.is_record = False
 
         # counting and index 
-        self.count_down = 120
+        self.count_down = 80
         self.button_status = 0 
         self.npz_index = 0
         self.is_start = True
