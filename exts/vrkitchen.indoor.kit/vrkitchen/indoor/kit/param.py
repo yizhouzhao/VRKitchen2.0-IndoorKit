@@ -33,11 +33,15 @@ CUSTOM_ASSET_PATH = ROOT  + "/asset/Custom/"
 # STORAGE_ASSET_PATH =  ROOT + "/asset/sapien_parsed/StorageFurniture/"
 
 # Data path
-DATA_PATH = ROOT + "/data/"
-DATA_PATH_NEW = ROOT + "/data_auto/"
+DATA_PATH_ROOT = ROOT + "/data/"
+DATA_PATH_NEW = DATA_PATH_ROOT + "/data_auto/"
+SAVE_ROOT = DATA_PATH_ROOT + '/data_record/'
+RENDER_ROOT = DATA_PATH_ROOT + '/data_render/'
+
+# 
 ROBOT_PATH = ROOT + "/asset/robot/"
 
-SAVE_ROOT = ROOT + '/data_record/'
+
 ORIGINAL_IMAGES_FORLDER = "raw_images"
 TRAJ_FOLDER = "trajectory"
 DEPTH_IMAGES_FOLDER = "depth_images"

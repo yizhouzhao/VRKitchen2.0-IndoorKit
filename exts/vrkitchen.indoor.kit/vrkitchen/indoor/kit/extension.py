@@ -59,7 +59,7 @@ class MyExtension(omni.ext.IExt):
 
         # set up render
         self.use_isosurface = False # use isosurface
-        self.render_folder = f"{ROOT}/data_render"
+        self.render_folder = RENDER_ROOT
         self.render_helper = CustomSyntheticDataHelper()
 
         # build windows
@@ -687,7 +687,7 @@ class MyExtension(omni.ext.IExt):
             task_id = self.task_id_ui.model.get_value_as_int()
             house_id = self.house_id_ui.model.get_value_as_int()
             object_id = self.object_id_ui.model.get_value_as_int()
-            task_json = os.path.join(DATA_PATH, "tasks", task_type, str(house_id), str(object_id), str(task_id) + ".json")
+            task_json = os.path.join(DATA_PATH_ROOT, "tasks", task_type, str(house_id), str(object_id), str(task_id) + ".json")
             print("task json: ", task_json)
 
             has_robot_info = False

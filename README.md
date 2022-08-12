@@ -1,52 +1,26 @@
-# Extension Project Template
+# Omniverse IndoorKit Extension
 
-This project was automatically generated.
+![teaser](img/teaser_new.png)
 
-- `app` - It is a folder link to the location of your *Omniverse Kit* based app.
-- `exts` - It is a folder where you can add new extensions. It was automatically added to extension search path. (Extension Manager -> Gear Icon -> Extension Search Path).
+This extension allows to load and record indoor scene tasks for robotics. 
 
-Open this folder using Visual Studio Code. It will suggest you to install few extensions that will make python experience better.
+In the field of robotics, it requires a lot of effort to set up even a simple task (e,g. pick up an object) for a robot in the real scene. At present, with the help of Omniverse, not only can we set up tasks for robots in a **photo-realistic** and **physics-reliable** manner, but we build this extension to bring high-quality content with a wide range of **variability** and **randomness**. 
 
-Look for "vrkitchen.indoor.kit" extension in extension manager and enable it. Try applying changes to any python files, it will hot-reload and you can observe results immediately.
+Besides, we design a complete pipline to **load and record the scene**, **control and replay the robot actions**, and **render images**d. We hope this work could encourage academic researches in related field.
 
-Alternatively, you can launch your app from console with this folder added to search path and your extension enabled, e.g.:
+
+# Getting started with Omniverse Code/Create/Isaac-Sim [version >= 2022]
+
+Download the [release]() or clone the this repository 
+
+> **Note**
+> The size of the extension including model assets is about 2GB
+
 
 ```
-> app\omni.code.bat --ext-folder exts --enable omni.hello.world
+git clone https://github.com/yizhouzhao/VRKitchen2.0-IndoorKit
 ```
 
-# App Link Setup
+Upzip or locate the root folder as <your-path-to-VRKitchen2.0-IndoorKit>
 
-If `app` folder link doesn't exist or broken it can be created again. For better developer experience it is recommended to create a folder link named `app` to the *Omniverse Kit* app installed from *Omniverse Launcher*. Convenience script to use is included.
-
-Run:
-
-```
-> link_app.bat
-```
-
-If successful you should see `app` folder link in the root of this repo.
-
-If multiple Omniverse apps is installed script will select recommended one. Or you can explicitly pass an app:
-
-```
-> link_app.bat --app create
-```
-
-You can also just pass a path to create link to:
-
-```
-> link_app.bat --path "C:/Users/bob/AppData/Local/ov/pkg/create-2021.3.4"
-```
-
-
-# Sharing Your Extensions
-
-This folder is ready to be pushed to any git repository. Once pushed direct link to a git repository can be added to *Omniverse Kit* extension search paths.
-
-Link might look like this: `git://github.com/[user]/[your_repo].git?branch=main&dir=exts`
-
-Notice `exts` is repo subfolder with extensions. More information can be found in "Git URL as Extension Search Paths" section of developers manual.
-
-To add a link to your *Omniverse Kit* based app go into: Extension Manager -> Gear Icon -> Extension Search Path
-
+Thie 

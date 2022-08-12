@@ -8,7 +8,7 @@ import carb
 # phyxc
 from omni.physx.scripts.utils import setCollider, setRigidBody, setStaticCollider, set_physics_scene_asyncsimrender
 
-from ..param import SAPIEN_ASSET_PATH, HOUSE_INFO_PATH, DATA_PATH, RIGIDBODY_OBJ_TYPES, GAME_OBJ_NAMES
+from ..param import SAPIEN_ASSET_PATH, HOUSE_INFO_PATH, DATA_PATH_ROOT, RIGIDBODY_OBJ_TYPES, GAME_OBJ_NAMES
 from .utils import rename_prim, rotationXYZ_to_quaternion
 
 # from omni.isaac.core.utils.stage import (
@@ -18,7 +18,7 @@ from pxr import UsdGeom, UsdLux, Gf, Vt, UsdPhysics, PhysxSchema, Usd, UsdShade,
 
 class House():
     def __init__(self, 
-        data_path:str = DATA_PATH, 
+        data_path:str = DATA_PATH_ROOT, 
         sapien_asset_path:str = SAPIEN_ASSET_PATH,  
         house_info_path:str = HOUSE_INFO_PATH):
 

@@ -9,7 +9,7 @@ import json
 
 from omni.kit.material.library import get_material_prim_path, create_mdl_material
 
-from ..param import IS_IN_ISAAC_SIM, SAPIEN_ASSET_PATH, HOUSE_INFO_PATH, DATA_PATH
+from ..param import IS_IN_ISAAC_SIM, SAPIEN_ASSET_PATH, HOUSE_INFO_PATH, DATA_PATH_ROOT
 
 class Randomizer():
     def __init__(self, task_json_path=None, random_seed = 1) -> None:
