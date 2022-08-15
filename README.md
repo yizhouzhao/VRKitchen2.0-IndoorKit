@@ -3,7 +3,7 @@
 ![teaser](img/teaser_new2.PNG)
 
 
-This extension allows to load and record indoor scene tasks for robotics. 
+This extension allows to load and record indoor scene tasks for robotics. [Introduction video here.](https://drive.google.com/file/d/1_u2uGuuxoSeeE6WiKhx703ZjQvJQ0ESa/view?usp=sharing)
 
 <div>
     <img src='./img/pickup_AdobeExpress.gif' width='320px'>
