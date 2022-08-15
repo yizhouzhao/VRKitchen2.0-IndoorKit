@@ -5,13 +5,12 @@
 
 This extension allows to load and record indoor scene tasks for robotics. 
 
-<img src='./img/pickup_AdobeExpress.gif' width='320px'>
-<img src='./img/drawer_AdobeExpress.gif' width='320px'>
-<img src='./img/rotate_AdobeExpress.gif' width='320px'>
-<img src='./img/water_AdobeExpress.gif' width='320px'>
-
-
-
+<div>
+    <img src='./img/pickup_AdobeExpress.gif' width='320px'>
+    <img src='./img/drawer_AdobeExpress.gif' width='320px'>
+    <img src='./img/rotate_AdobeExpress.gif' width='320px'>
+    <img src='./img/water_AdobeExpress.gif' width='320px'>
+</div>
 
 
 In the field of robotics, it requires a lot of effort to set up even a simple task (e,g. pick up an object) for a robot in the real scene. At present, with the help of Omniverse, not only can we set up tasks for robots in a **photo-realistic** and **physics-reliable** manner, but we build this extension to bring high-quality content with a wide range of **variability** and **randomness**. 
@@ -39,9 +38,14 @@ The file structure of this extension should look like:
 
 ```
 <your-path-to-VRKitchen2.0-IndoorKit>
-    └───asset   [Asset (object, house, e.t.c.) needed for robot tasks]
     └───data    [Folder to save the labeling data]
     └───exts    [Omniverse extenstion]
+         └───vrkitchen.indoor.kit
+                └───asset   [Asset (object, house, e.t.c.) needed for robot tasks]
+                └───config  [Extension config]
+                └───data    [Extension data]
+                └───icons   [Extension icons]
+                └───vrkitchen/indoor/kit   [source code]
     └───img   
     └───tool
     │   README.md  

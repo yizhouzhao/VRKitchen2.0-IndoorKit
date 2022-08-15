@@ -331,8 +331,19 @@ class MyExtension(omni.ext.IExt):
         self.auto_tasker.reconfig(0)
         self.task_desc_ui.model.set_value(AutoTasker.TASK_DESCRIPTION)
 
-    def auto_add_obj(self):    
+    def auto_add_obj(self):   
         self.init_auto_tasker()
+
+        if self.stage.GetPrimAtPath("/World/game"):
+            dialog = MessageDialog(
+            title="Add Object",
+            message=f"Already have `/World/game` in the scene. Please start a new stage.",
+            disable_cancel_button=True,
+            ok_handler=lambda dialog: dialog.hide()
+            )
+            dialog.show()
+            return
+
         self.auto_tasker.add_obj() 
         self.auto_tasker.build_HUD()
 
@@ -359,6 +370,17 @@ class MyExtension(omni.ext.IExt):
 
     def auto_add_house(self):
         self.init_auto_tasker()
+
+        if self.stage.GetPrimAtPath("/World/game"):
+            dialog = MessageDialog(
+            title="Add house",
+            message=f"Already have `/World/layout` in the scene. Please start a new stage.",
+            disable_cancel_button=True,
+            ok_handler=lambda dialog: dialog.hide()
+            )
+            dialog.show()
+            return
+
         self.auto_tasker.add_house()
 
         layout_prim = self.stage.GetPrimAtPath("/World/layout")
@@ -457,7 +479,7 @@ class MyExtension(omni.ext.IExt):
         self.use_isosurface = enable
         dialog = MessageDialog(
             title="Isosurface",
-            message=f"Enabled iso surface: {self.use_isosurface} \n Please a `New Scene` and `Load Scene` for water task again.",
+            message=f"Enabled iso surface: {self.use_isosurface} \n Please a [New Scene] and [Load Scene] for water task again.",
             disable_cancel_button=True,
             ok_handler=lambda dialog: dialog.hide()
         )
@@ -495,11 +517,11 @@ class MyExtension(omni.ext.IExt):
         self.house.record_robot_info()
         self.house.record_house_info()
 
-        self.task_desc_ui.model.set_value("Scene recorded! Please start a new empty scene `Load scene` \n Note: you don't have to save the current stage.")
+        self.task_desc_ui.model.set_value("Scene recorded! Please start a new empty scene [Load scene] \n Note: you don't have to save the current stage.")
 
         dialog = MessageDialog(
             title="Scene Recorded",
-            message=f"Scene recorded! \nPlease start a `New scene` and then `Load scene` \nNote: you don't have to save the current stage.",
+            message=f"Scene recorded! \nPlease start a [New scene] and then [Load scene] \nNote: you don't have to save the current stage.",
             disable_cancel_button=True,
             ok_handler=lambda dialog: dialog.hide()
         )
@@ -539,6 +561,16 @@ class MyExtension(omni.ext.IExt):
         """
         Load obj + robot + house
         """
+        self.stage = omni.usd.get_context().get_stage()
+        if self.stage.GetPrimAtPath("/World/game"):
+            dialog = MessageDialog(
+            title="Load scene",
+            message=f"Already have `/World/game` in the scene. Please start a new stage.",
+            disable_cancel_button=True,
+            ok_handler=lambda dialog: dialog.hide()
+            )
+            dialog.show()
+            return
 
         dialog = MessageDialog(
             title="Loading scene ......",
@@ -547,6 +579,8 @@ class MyExtension(omni.ext.IExt):
             ok_handler=lambda dialog: dialog.hide()
         )
         dialog.show()
+
+
         
         self.load_obj_new()
         self.load_robot_new()

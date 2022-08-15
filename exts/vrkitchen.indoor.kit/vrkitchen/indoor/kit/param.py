@@ -26,10 +26,10 @@ print("APP name: ", str(carb.settings.get_settings().get("/app/window/title")), 
 # ROOT = '/home/nikepupu/Desktop' if IS_IN_ISAAC_SIM else 'E:/researches' 
 
 # Asset paths
-ASSET_PATH =  ROOT + "/asset/"
-SAPIEN_ASSET_PATH = ROOT  + "/asset/Sapien/"
-HOUSE_INFO_PATH = ROOT +  "/asset/3DFront/" 
-CUSTOM_ASSET_PATH = ROOT  + "/asset/Custom/" 
+ASSET_PATH =  ROOT + "/exts/vrkitchen.indoor.kit/asset/"
+SAPIEN_ASSET_PATH = ASSET_PATH  + "/Sapien/"
+HOUSE_INFO_PATH = ASSET_PATH +  "/3DFront/" 
+CUSTOM_ASSET_PATH = ASSET_PATH  + "/Custom/" 
 # STORAGE_ASSET_PATH =  ROOT + "/asset/sapien_parsed/StorageFurniture/"
 
 # Data path
@@ -39,7 +39,7 @@ SAVE_ROOT = DATA_PATH_ROOT + '/data_record/'
 RENDER_ROOT = DATA_PATH_ROOT + '/data_render/'
 
 # 
-ROBOT_PATH = ROOT + "/asset/robot/"
+ROBOT_PATH = ASSET_PATH + "/robot/"
 
 
 ORIGINAL_IMAGES_FORLDER = "raw_images"
