@@ -172,3 +172,5 @@ Finally, you can open the data folders:
 ](https://developer.download.nvidia.com/Omniverse/secure/Omniverse_Publishing_Agreement_12May2022.pdf?jrPi6OXFm7gWYIsdrQGrSTgF4P3LNZ8cXw3jyHdg--8TYsFEK7bOTc5Az6My5OyURuC8xMU9_Ii1u8H7aPReCvxYFGCrc9VVKVdbfFShmc5sktkTrqywjogIpKeoYLtY-fdBX-WjCl_Vjziylc0Dddy0PXlVdlotRtzLmQ&t=eyJscyI6ImdzZW8iLCJsc2QiOiJodHRwczpcL1wvd3d3Lmdvb2dsZS5jb21cLyJ9).
 
 # Acknowledgement
+
+Thanks to the [NVIDIA Academic Hardware Grant Program](https://mynvidia.force.com/HardwareGrant/s/Application). Without its general support, this extension could not have possibly been  developed so fast and so well.
