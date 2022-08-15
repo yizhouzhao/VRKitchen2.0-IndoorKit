@@ -25,7 +25,7 @@ Besides, we design a complete pipline to **load and record the scene**, **contro
 ## Download the [release](https://github.com/yizhouzhao/VRKitchen2.0-IndoorKit/releases/tag/0.1) or clone the this repository 
 
 > **Note**:
-> The size of the extension including model assets is about 2GB
+> The size of the extension including model assets is more than 1GB
 
 
 ```
