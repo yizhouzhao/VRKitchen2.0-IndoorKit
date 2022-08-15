@@ -22,7 +22,7 @@ Besides, we design a complete pipline to **load and record the scene**, **contro
 
 # Get started with Omniverse Code/Create/Isaac-Sim [version >= 2022]
 
-## Download the [release]() or clone the this repository 
+## Download the [release](https://github.com/yizhouzhao/VRKitchen2.0-IndoorKit/releases/tag/0.1) or clone the this repository 
 
 > **Note**:
 > The size of the extension including model assets is about 2GB
