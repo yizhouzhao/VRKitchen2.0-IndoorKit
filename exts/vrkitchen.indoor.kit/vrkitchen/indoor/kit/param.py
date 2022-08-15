@@ -39,7 +39,7 @@ SAVE_ROOT = DATA_PATH_ROOT + '/data_record/'
 RENDER_ROOT = DATA_PATH_ROOT + '/data_render/'
 
 # 
-ROBOT_PATH = ASSET_PATH + "/robot/"
+ROBOT_PATH = ASSET_PATH + "Robot/"
 
 
 ORIGINAL_IMAGES_FORLDER = "raw_images"

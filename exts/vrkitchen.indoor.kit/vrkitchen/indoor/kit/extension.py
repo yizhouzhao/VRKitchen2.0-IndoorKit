@@ -50,6 +50,7 @@ class MyExtension(omni.ext.IExt):
 
         # stage and timeline
         self.stage = omni.usd.get_context().get_stage()
+        pxr.UsdGeom.SetStageUpAxis(self.stage, pxr.UsdGeom.Tokens.y)
         self.timeline = omni.timeline.get_timeline_interface()
 
         # robot
@@ -275,6 +276,7 @@ class MyExtension(omni.ext.IExt):
         
         # update stage
         self.stage = omni.usd.get_context().get_stage()
+        pxr.UsdGeom.SetStageUpAxis(self.stage, pxr.UsdGeom.Tokens.y)
 
         task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
         task_type = self.task_types[task_index]
@@ -345,7 +347,7 @@ class MyExtension(omni.ext.IExt):
             return
 
         self.auto_tasker.add_obj() 
-        self.auto_tasker.build_HUD()
+        # self.auto_tasker.build_HUD()
 
         if self.stage.GetPrimAtPath("/World/game"):
             self.task_desc_ui.model.set_value("Task object added!")
@@ -371,7 +373,7 @@ class MyExtension(omni.ext.IExt):
     def auto_add_house(self):
         self.init_auto_tasker()
 
-        if self.stage.GetPrimAtPath("/World/game"):
+        if self.stage.GetPrimAtPath("/World/layout"):
             dialog = MessageDialog(
             title="Add house",
             message=f"Already have `/World/layout` in the scene. Please start a new stage.",
@@ -505,7 +507,7 @@ class MyExtension(omni.ext.IExt):
         annotator = self.annotators[annotator_index]
 
         self.house = HouseNew(task_type, task_id, robot_id, mission_id, house_id, anchor_id, annotator)
-        self.house.build_HUD()
+        # self.house.build_HUD()
         # print("robot", self.house.robot_id) 
     
     def record_scene(self):
@@ -562,6 +564,8 @@ class MyExtension(omni.ext.IExt):
         Load obj + robot + house
         """
         self.stage = omni.usd.get_context().get_stage()
+        pxr.UsdGeom.SetStageUpAxis(self.stage, pxr.UsdGeom.Tokens.y)
+
         if self.stage.GetPrimAtPath("/World/game"):
             dialog = MessageDialog(
             title="Load scene",
@@ -580,8 +584,6 @@ class MyExtension(omni.ext.IExt):
         )
         dialog.show()
 
-
-        
         self.load_obj_new()
         self.load_robot_new()
         self.load_house_new()
@@ -887,7 +889,7 @@ class MyExtension(omni.ext.IExt):
         Init franka tensor controller
         """
         from .param import APP_VERION
-        assert APP_VERION >= "2022.1.0", "need Omniverse Isaac-Sim/Create in 2022"
+        assert APP_VERION >= "2022.0.0", "need Omniverse Isaac-Sim/Create in 2022"
 
         task_index = self.task_type_ui.model.get_item_value_model().get_value_as_int()
         task_type = self.task_types[task_index]

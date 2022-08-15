@@ -8,7 +8,7 @@ from .style import ATTR_LABEL_WIDTH, cl, fl
 from .custom_base_widget import CustomBaseWidget
 from ..robot_setup.controller import Controller
 
-SPACING = 5 
+SPACING = 5  
 
 class TaskTypeComboboxWidget():
     """A customized combobox widget"""

@@ -20,7 +20,7 @@ Besides, we design a complete pipline to **load and record the scene**, **contro
 
 <img src="img/ui.png" width="300">
 
-# Get started with Omniverse Code/Create/Isaac-Sim [version >= 2022]
+# Get started with Omniverse Code/Create [version >= 2022]
 
 ## Download the [release](https://github.com/yizhouzhao/VRKitchen2.0-IndoorKit/releases/tag/0.1) or clone the this repository 
 
