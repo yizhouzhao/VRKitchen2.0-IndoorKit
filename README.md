@@ -5,13 +5,13 @@
 
 This extension allows to load and record indoor scene tasks for robotics. 
 
-<video src="/img/pickup.mp4" controls="controls" style="max-width: 320px;">
+<video src="./img/pickup.mp4" controls="controls" style="max-width: 320px;">
 </video>
-<video src="/img/drawer.mp4" controls="controls" style="max-width: 320px;">
+<video src="./img/drawer.mp4" controls="controls" style="max-width: 320px;">
 </video>
-<video src="/img/rotate.mp4" controls="controls" style="max-width: 320px;">
+<video src="./img/rotate.mp4" controls="controls" style="max-width: 320px;">
 </video>
-<video src="/img/water.mp4" controls="controls" style="max-width: 320px;">
+<video src="./img/water.mp4" controls="controls" style="max-width: 320px;">
 </video>
 
 
