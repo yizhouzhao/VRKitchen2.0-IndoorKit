@@ -5,14 +5,12 @@
 
 This extension allows to load and record indoor scene tasks for robotics. 
 
-<video src="./img/pickup.mp4" controls="controls" style="max-width: 320px;">
-</video>
-<video src="./img/drawer.mp4" controls="controls" style="max-width: 320px;">
-</video>
-<video src="./img/rotate.mp4" controls="controls" style="max-width: 320px;">
-</video>
-<video src="./img/water.mp4" controls="controls" style="max-width: 320px;">
-</video>
+<img src='./img/pickup_AdobeExpress.gif' width='320px'>
+<img src='./img/drawer_AdobeExpress.gif' width='320px'>
+<img src='./img/rotate_AdobeExpress.gif' width='320px'>
+<img src='./img/water_AdobeExpress.gif' width='320px'>
+
+
 
 
 
