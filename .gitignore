@@ -8,5 +8,6 @@ _*/
 *.py[cod]
 
 /.vs
+.vscode/*
 
 /app
