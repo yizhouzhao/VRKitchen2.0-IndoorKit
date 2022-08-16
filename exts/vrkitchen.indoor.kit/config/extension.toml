@@ -26,6 +26,7 @@ keywords = ["kit", "example", "robotics", "machine learning"]
 # Use omni.ui to build simple UI
 [dependencies]
 "omni.kit.uiapp" = {}
+"omni.syntheticdata" = {}
 
 # Main python module this extension provides, it will be publicly available as "import omni.hello.world".
 [[python.module]]
