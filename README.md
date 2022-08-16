@@ -13,9 +13,9 @@ This extension allows to load and record indoor scene tasks for robotics. [Intro
 </div>
 
 
-In the field of robotics, it requires a lot of effort to set up even a simple task (e,g. pick up an object) for a robot in the real scene. At present, with the help of Omniverse, not only can we set up tasks for robots in a **photo-realistic** and **physics-reliable** manner, but we build this extension to bring high-quality content with a wide range of **variability** and **randomness**. 
+In the field of robotics, it requires a lot of effort to set up even a simple task (e,g. picking up an object) for a robot in a real scene. At present, with the help of Omniverse, not only can we set up tasks for robots in a photo-realistic and physics-reliable manner, but we build this extension to bring high-quality content with a wide range of variability and randomness.
 
-Besides, we design a complete pipline to **load and record the scene**, **control and replay the robot actions**, and **render images**d. We hope this work could encourage academic researches in related field.
+Besides, we design a complete pipeline to load and record the scene, control and replay the robot actions, and render images. We hope this work could encourage academic research in related fields.
 
 
 <img src="img/ui.png" width="300">
