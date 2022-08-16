@@ -22,7 +22,7 @@ Besides, we design a complete pipeline to load and record the scene, control and
 
 # Get started with Omniverse Code/Create [version >= 2022]
 
-## Download the [release](https://github.com/yizhouzhao/VRKitchen2.0-IndoorKit/releases/tag/0.1) or clone the this repository 
+## Download the [release](https://github.com/yizhouzhao/VRKitchen2.0-IndoorKit/releases/tag/0.2) or clone the this repository 
 
 > **Note**:
 > The size of the extension including model assets is more than 1GB
