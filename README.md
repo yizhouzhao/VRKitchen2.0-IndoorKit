@@ -25,7 +25,7 @@ Besides, we design a complete pipeline to load and record the scene, control and
 ## Download the [release](https://github.com/yizhouzhao/VRKitchen2.0-IndoorKit/releases/tag/0.2) or clone the this repository 
 
 > **Note**:
-> The size of the extension including model assets is more than 1GB
+> The size of the extension including model assets is about 300 MB
 
 
 ```
@@ -164,8 +164,8 @@ Finally, you can open the data folders:
 
 # License
 
-- The rooms in this repository are from [3D-FRONT](https://tianchi.aliyun.com/dataset/dataDetail?dataId=65347&lang=en-us), under the [NonCommercial Creative Common License](https://creativecommons.org/licenses/by-nc-sa/4.0/?spm=5176.12282016.0.0.2e917474Ikche7)
-- The drawers and bottles in this repository are from [SAPIEN](https://sapien.ucsd.edu/), under this [NonCommercial Term of Use](https://sapien.ucsd.edu/about#term)
+- The rooms in this repository are from [Trescope](https://github.com/alibaba/Trescope), under the [MIT License](https://github.com/alibaba/Trescope/blob/main/LICENSE)
+- The drawers and bottles in this repository are from [SAPIEN](https://sapien.ucsd.edu/), under this [Term of Use](https://sapien.ucsd.edu/about#term)
 - The cups in this repository are from AI2THOR, under the [Apache License](https://github.com/allenai/ai2thor/blob/main/LICENSE).
 
 - This repository is for OMNIVERSE CODE CONTEST, under the [OMNIVERSE PUBLISHING AGREEMENT
