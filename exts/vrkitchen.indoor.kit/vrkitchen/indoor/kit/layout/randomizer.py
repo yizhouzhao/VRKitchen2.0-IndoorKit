@@ -218,7 +218,7 @@ class Randomizer():
 
         self.setup_material_helper()
         floor_parent = self.stage.GetPrimAtPath("/World/layout/floors")
-        wall_parent = self.stage.GetPrimAtPath("/World/layout/roomStruct")
+        wall_parent = self.stage.GetPrimAtPath("/World/layout/structure") # roomStruct
         self.random_info["floor_materials"] = [x for k in ["Wood"] for x in self.material_dict[k]] # Carpet
         self.random_info["wall_materials"] = [x for k in ["Wall_Board"] for x in self.material_dict[k]] # "Masonry", "Architecture"
         # print(self.random_info["floor_materials"])

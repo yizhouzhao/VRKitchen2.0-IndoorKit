@@ -81,7 +81,9 @@ class MyExtension(omni.ext.IExt):
         with self._window.frame:
             self._window.frame.style = julia_modeler_style
             with ui.ScrollingFrame():
+                
                 with ui.VStack(height=0):
+                    # ui.Button("Debug", clicked_fn = self.debug)
                     self.task_desc_ui = ui.StringField(height=20, style={ "margin_height": 2})
                     self.task_desc_ui.model.set_value(" Welcome to VRKitchen2.0 Indoor Kit!")
                     ui.Spacer(height=10)
@@ -1025,3 +1027,10 @@ class MyExtension(omni.ext.IExt):
         print("[vrkitchen.indoor.kit] VRKitchen2.0-Indoor-Kit shutdown")
 
     
+    ############################# debug #############################
+
+    def debug(self):
+        """
+        Debug
+        """
+        print("debug")
