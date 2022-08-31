@@ -158,7 +158,7 @@ class MyExtension(omni.ext.IExt):
                                 self.house_id_ui = omni.ui.IntField(width = 30, name = "choose_id", style={"color": "Plum"})
                                 self.house_id_ui.model.set_value(0)
                                 ui.Button("+", width = 30, style={"margin_height": 8, "font_size": 14,  "color": "Plum", "border_color": 1, "border_width": 1},
-                                    clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 19)))
+                                    clicked_fn=lambda: self.house_id_ui.model.set_value(min(self.house_id_ui.model.get_value_as_int() + 1, 2)))
                                 ui.Button("-", width = 30, style={ "margin_height": 8, "font_size": 14,  "color": "Plum", "border_color": 1, "border_width": 1},
                                     clicked_fn=lambda: self.house_id_ui.model.set_value(max(self.house_id_ui.model.get_value_as_int() - 1, 0)))
                                 ui.Button("Add house", name = "add_button", clicked_fn=self.auto_add_house, style={ "color": "Plum"})
@@ -262,7 +262,7 @@ class MyExtension(omni.ext.IExt):
    
         task_type_id = np.random.randint(len(self.task_types)) if not reset else 0
         object_id = np.random.randint(20) if not reset else 0 # task id
-        house_id = np.random.randint(20) if not reset else 0 # house id
+        house_id = np.random.randint(3) if not reset else 0 # house id
 
         self.task_type_ui.model.get_item_value_model().set_value(task_type_id)
         self.task_id_ui.model.set_value(object_id)

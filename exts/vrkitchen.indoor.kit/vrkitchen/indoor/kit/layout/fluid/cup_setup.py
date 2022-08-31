@@ -177,7 +177,7 @@ class CupFluidHelper():
         scene.CreateGravityMagnitudeAttr().Set(self._gravityMagnitude)
         physxSceneAPI = PhysxSchema.PhysxSceneAPI.Apply(scene.GetPrim())
         physxSceneAPI.CreateEnableCCDAttr().Set(True)
-        physxSceneAPI.GetTimeStepsPerSecondAttr().Set(120)
+        physxSceneAPI.GetTimeStepsPerSecondAttr().Set(60)
         physxSceneAPI.CreateEnableGPUDynamicsAttr().Set(True)
         physxSceneAPI.CreateEnableEnhancedDeterminismAttr().Set(True)
 
