@@ -1,4 +1,4 @@
-# Omniverse IndoorKit Extension
+# Omniverse IndoorKit Extension (#ExtendOmniverse 2022 Contest Overall Winner)
 
 ![teaser](img/teaser_new2.PNG)
 
@@ -162,6 +162,21 @@ Finally, you can open the data folders:
 
 ![path_ui](img/path_ui.png)
 
+# Cite this work
+
+```
+@article{zhao2022vrkitchen2,
+  title={VRKitchen2. 0-IndoorKit: A Tutorial for Augmented Indoor Scene Building in Omniverse},
+  author={Zhao, Yizhou and Gong, Steven and Gao, Xiaofeng and Ai, Wensi and Zhu, Song-Chun},
+  journal={arXiv preprint arXiv:2206.11887},
+  year={2022}
+}
+```
+
+# Need more rooms?
+
+Go to this repository: https://github.com/yizhouzhao/VRKitchen2.0-Tutorial
+
 # License
 
 - The rooms in this repository are from [Trescope](https://github.com/alibaba/Trescope), under the [MIT License](https://github.com/alibaba/Trescope/blob/main/LICENSE)
@@ -170,6 +185,8 @@ Finally, you can open the data folders:
 
 - This repository is for OMNIVERSE CODE CONTEST, under the [OMNIVERSE PUBLISHING AGREEMENT
 ](https://developer.download.nvidia.com/Omniverse/secure/Omniverse_Publishing_Agreement_12May2022.pdf?jrPi6OXFm7gWYIsdrQGrSTgF4P3LNZ8cXw3jyHdg--8TYsFEK7bOTc5Az6My5OyURuC8xMU9_Ii1u8H7aPReCvxYFGCrc9VVKVdbfFShmc5sktkTrqywjogIpKeoYLtY-fdBX-WjCl_Vjziylc0Dddy0PXlVdlotRtzLmQ&t=eyJscyI6ImdzZW8iLCJsc2QiOiJodHRwczpcL1wvd3d3Lmdvb2dsZS5jb21cLyJ9).
+
+
 
 # Acknowledgement
 
