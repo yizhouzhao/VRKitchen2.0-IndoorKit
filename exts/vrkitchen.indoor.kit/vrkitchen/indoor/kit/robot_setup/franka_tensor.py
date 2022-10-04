@@ -241,7 +241,7 @@ class FrankaTensor():
         else: # self.is_replay:
             if self.count_down == 0:
                 
-                self.count_down = 6
+                self.count_down = 4 
                 # pause when record not exist
                 if len(self.record_lines) == 0:
                     omni.timeline.get_timeline_interface().pause()
