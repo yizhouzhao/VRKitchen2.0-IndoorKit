@@ -938,7 +938,6 @@ class MyExtension(omni.ext.IExt):
         self.ft.load_record()
        
         self.timeline.play()
-
         self.task_desc_ui.model.set_value("Start replaying...")
 
     def start_record(self):
