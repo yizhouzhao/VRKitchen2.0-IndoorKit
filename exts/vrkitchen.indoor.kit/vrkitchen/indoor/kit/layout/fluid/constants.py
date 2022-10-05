@@ -2,7 +2,7 @@ from ...param import APP_VERION
 
 from pxr import Gf
 
-particel_scale = 3
+particel_scale = 2.5
 
 if APP_VERION.startswith("2022"):
     class PARTICLE_PROPERTY:

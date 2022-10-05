@@ -288,7 +288,7 @@ class CupFluidHelper():
             omni.kit.commands.execute(
                 "CreateAndBindMdlMaterialFromLibrary",
                 mdl_name="OmniSurfacePresets.mdl",
-                mtl_name="OmniSurface_DeepWater",
+                mtl_name="OmniSurface_ClearWater",
                 mtl_created_list=mtl_created,
             )
             pbd_particle_material_path = mtl_created[0]
@@ -307,7 +307,7 @@ class CupFluidHelper():
             )
             physicsUtils.add_physics_material_to_prim(self.stage, particle_system.GetPrim(), pbd_particle_material_path)
 
-            particle_system.CreateMaxVelocityAttr().Set(200)
+            particle_system.CreateMaxVelocityAttr().Set(20)
 
             # add particle anisotropy
             anisotropyAPI = PhysxSchema.PhysxParticleAnisotropyAPI.Apply(particle_system.GetPrim())

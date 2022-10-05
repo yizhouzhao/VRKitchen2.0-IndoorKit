@@ -552,10 +552,12 @@ class House():
         # setStaticCollider(furniture_prim, approximationShape="convexDecomposition")
         
         furniture_prim = self.stage.GetPrimAtPath(house_prim_path + "/furniture")
-        if furniture_prim:
-            setStaticCollider(furniture_prim, approximationShape="convexHull")
-        else:
-            return False
+        
+        # if furniture_prim:
+        #     setStaticCollider(furniture_prim, approximationShape="convexHull")
+        # else:
+        #     return False
+
         # if not self.task_type in ["tap_water", "transfer_water", "pour_water"] and enable_collision:
         #     room_struct_prim = self.stage.GetPrimAtPath(house_prim_path + "/roomStruct")
         #     setStaticCollider(room_struct_prim, approximationShape="none")

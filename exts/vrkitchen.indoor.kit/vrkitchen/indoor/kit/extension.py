@@ -367,9 +367,13 @@ class MyExtension(omni.ext.IExt):
             selection.clear_selected_prim_paths()
             selection.set_prim_path_selected(franka_prim.GetPath().pathString, True, True, True, True)
 
-            viewport = omni.kit.viewport_legacy.get_viewport_interface()
+            viewport = omni.kit.viewport_legacy.get_viewport_interface() 
+            viewport = viewport.get_viewport_window() if viewport else None
             if viewport:
-                viewport.get_viewport_window().focus_on_selected()
+                viewport.focus_on_selected()
+            else:
+                from omni.kit.viewport.utility import frame_viewport_selection
+                frame_viewport_selection(force_legacy_api=True)
 
 
     def auto_add_house(self):
@@ -595,9 +599,13 @@ class MyExtension(omni.ext.IExt):
         selection.clear_selected_prim_paths()
         selection.set_prim_path_selected("/World/game", True, True, True, True)
 
-        viewport = omni.kit.viewport_legacy.get_viewport_interface()
+        viewport = omni.kit.viewport_legacy.get_viewport_interface() 
+        viewport = viewport.get_viewport_window() if viewport else None
         if viewport:
-            viewport.get_viewport_window().focus_on_selected()
+            viewport.focus_on_selected()
+        else:
+            from omni.kit.viewport.utility import frame_viewport_selection
+            frame_viewport_selection(force_legacy_api=True)
 
         selection.clear_selected_prim_paths()
 
